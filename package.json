@@ -26,7 +26,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/index.ts",
-    "test": "node --import tsx --test $(find src -name '*.test.ts' -type f)",
+    "test": "node --import tsx --test --test-reporter=dot $(find src -name '*.test.ts' -type f)",
+    "test:verbose": "node --import tsx --test $(find src -name '*.test.ts' -type f)",
     "test:watch": "node --import tsx --test --watch $(find src -name '*.test.ts' -type f)",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

@@ -12,13 +12,15 @@
 
 ## Features
 
-- 🌟 **Astronomical Calculations** - Julian dates, sidereal time, coordinate conversions
-- 🪐 **Planetary Positions** - Accurate ephemeris calculations for all planets
-- ♈ **Zodiac System** - Tropical zodiac signs with full metadata
-- 🏠 **House Systems** - Multiple house calculation methods (Placidus, Equal, Whole Sign, etc.)
-- 📐 **Aspects** - Angular relationships between celestial bodies
+- ✅ **Time Calculations** - Julian dates, Julian centuries, sidereal time, ΔT corrections
+- ✅ **Date Conversions** - Calendar ↔ Julian Date with full validation
+- ✅ **NASA Verified** - All calculations tested against official reference data
+- 🪐 **Planetary Positions** - Accurate ephemeris calculations (coming soon)
+- ♈ **Zodiac System** - Tropical zodiac signs with full metadata (coming soon)
+- 🏠 **House Systems** - Multiple methods (Placidus, Equal, Whole Sign, etc.) (coming soon)
+- 📐 **Aspects** - Angular relationships between celestial bodies (coming soon)
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
-- 🧪 **Well-tested** - Built with Node.js native test runner
+- 🧪 **Well-tested** - 309 unit tests with 100% coverage
 - 🚀 **Zero runtime dependencies** - Lightweight and fast
 
 ## Installation
@@ -30,7 +32,7 @@ npm install celestine
 ## Quick Start
 
 ```typescript
-import { julianDate, eclipticToZodiac } from 'celestine';
+import { julianDate, eclipticToZodiac } from "celestine";
 
 // Calculate Julian Date for J2000.0 epoch
 const jd = julianDate(2000, 1, 1, 12);
@@ -46,18 +48,65 @@ console.log(position);
 
 ### Time Calculations
 
-```typescript
-import { julianDate } from 'celestine';
+The Time module provides comprehensive astronomical time calculations, all verified against NASA reference data.
 
-// Calculate Julian Date for any moment
-const jd = julianDate(2025, 12, 18, 12);
-console.log(jd); // Julian Date for December 18, 2025, 12:00 UT
+```typescript
+import { time } from "celestine";
+
+// Julian Date conversions
+const jd = time.toJulianDate({
+  year: 2025,
+  month: 12,
+  day: 18,
+  hour: 15,
+  minute: 30,
+  second: 0,
+});
+const date = time.fromJulianDate(jd); // Convert back to calendar date
+
+// Julian Centuries from J2000.0 epoch
+const T = time.toJulianCenturies(jd); // For ephemeris calculations
+
+// Sidereal Time (for house calculations)
+const gmst = time.greenwichMeanSiderealTime(jd); // Greenwich Mean Sidereal Time
+const lst = time.localSiderealTime(gmst, -5.0); // Local Sidereal Time (longitude: -5°)
+
+// Delta T corrections (TT ↔ UT)
+const deltaT = time.deltaT(2025, 12); // ΔT in seconds
+const ttJD = time.utToTT(jd, 2025, 12); // Convert UT to Terrestrial Time
+
+// Time validation
+const isValid = time.isValidDate(2024, 2, 29); // true (leap year)
+const validation = time.validateCalendarDateTime({
+  year: 2025,
+  month: 12,
+  day: 18,
+  hour: 15,
+  minute: 30,
+  second: 0,
+}); // { valid: true, errors: [] }
+
+// Constants
+console.log(time.J2000_EPOCH); // 2451545.0
+console.log(time.DAYS_PER_CENTURY); // 36525
 ```
+
+**Available:**
+
+- Julian Date ↔ Calendar Date (Meeus algorithm, handles Gregorian/Julian calendars)
+- Julian Centuries from J2000.0 epoch
+- Greenwich Mean Sidereal Time & Local Sidereal Time
+- ΔT corrections (Espenak & Meeus polynomials, verified against NASA data)
+- Date/time validation (leap years, month boundaries, etc.)
+- Time utilities (angle normalization, conversions, formatting)
+- 36 astronomical constants (J2000, Unix epoch, sidereal day, etc.)
+
+All calculations are based on authoritative sources (Meeus, NASA, IERS) and tested against 309 unit tests including 17 NASA official reference values.
 
 ### Zodiac Conversions
 
 ```typescript
-import { eclipticToZodiac } from 'celestine';
+import { eclipticToZodiac } from "celestine";
 
 // Convert any ecliptic longitude to zodiac position
 const sunPosition = eclipticToZodiac(120.5);
@@ -76,6 +125,7 @@ Full API documentation is available at [https://anonyfox.github.io/celestine](ht
 Calculates the Julian Date for a given date and time.
 
 **Parameters:**
+
 - `year` - Year (Gregorian calendar)
 - `month` - Month (1-12)
 - `day` - Day (1-31)
@@ -88,6 +138,7 @@ Calculates the Julian Date for a given date and time.
 Converts ecliptic longitude to zodiac sign and position.
 
 **Parameters:**
+
 - `longitude` - Ecliptic longitude in degrees (0-360)
 
 **Returns:** Object with sign index, sign name, degree within sign, and formatted string
@@ -140,4 +191,3 @@ If this package helps your project, consider sponsoring its maintenance:
 **[Anonyfox](https://anonyfox.com) • [MIT License](LICENSE)**
 
 </div>
-
