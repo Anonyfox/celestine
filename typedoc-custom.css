@@ -1,0 +1,88 @@
+/* Custom styling for Celestine documentation */
+
+:root {
+  --color-primary: #7c3aed; /* Purple - celestial/mystical color */
+  --color-primary-hover: #5b21b6;
+  --color-footer-bg: #000000;
+  --color-footer-text: #ffffff;
+}
+
+/* Brand color for links */
+.tsd-navigation a,
+.tsd-index-link a,
+.tsd-signature-type a,
+.tsd-breadcrumb a {
+  color: var(--color-primary);
+}
+
+.tsd-navigation a:hover,
+.tsd-index-link a:hover,
+.tsd-signature-type a:hover,
+.tsd-breadcrumb a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Better code blocks */
+pre code {
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* Improved spacing */
+.tsd-page-title {
+  margin-bottom: 2rem;
+}
+
+.tsd-panel-group {
+  margin: 2rem 0;
+}
+
+/* Signature highlighting */
+.tsd-signature {
+  border-left: 3px solid var(--color-primary);
+  padding-left: 1rem;
+}
+
+/* Better example blocks */
+.tsd-comment pre {
+  background: var(--color-background-alt);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Custom Footer */
+.tsd-page-footer {
+  margin-top: 4rem;
+  padding: 2rem 0;
+  background-color: var(--color-footer-bg);
+  color: var(--color-footer-text);
+  text-align: center;
+  border-top: 1px solid #333;
+}
+
+.tsd-page-footer p {
+  margin: 0.5rem 0;
+}
+
+.tsd-page-footer a {
+  color: var(--color-primary);
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.tsd-page-footer a:hover {
+  color: var(--color-primary-hover);
+  text-decoration: none;
+}
+
+/* Ensure footer is at bottom */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container-main {
+  flex: 1;
+}
+

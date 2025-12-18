@@ -1,0 +1,83 @@
+{
+  "name": "celestine",
+  "version": "0.1.0",
+  "description": "A TypeScript library for astronomical and astrological calculations",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "test": "node --import tsx --test $(find src -name '*.test.ts' -type f)",
+    "test:watch": "node --import tsx --test --watch $(find src -name '*.test.ts' -type f)",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "check": "npm run typecheck && npm run lint",
+    "prepublishOnly": "npm run check && npm run build",
+    "typecheck": "tsc --noEmit",
+    "docs": "typedoc",
+    "docs:serve": "npx serve docs",
+    "release:patch": "npm run check && npm version patch -m 'Release v%s' && git push && git push --tags",
+    "release:minor": "npm run check && npm version minor -m 'Release v%s' && git push && git push --tags",
+    "release:major": "npm run check && npm version major -m 'Release v%s' && git push && git push --tags"
+  },
+  "keywords": [
+    "astrology",
+    "astronomy",
+    "ephemeris",
+    "natal chart",
+    "horoscope",
+    "zodiac",
+    "planets",
+    "celestial"
+  ],
+  "author": {
+    "name": "Anonyfox",
+    "email": "max@anonyfox.com",
+    "url": "https://anonyfox.com"
+  },
+  "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Anonyfox"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Anonyfox/celestine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Anonyfox/celestine/issues"
+  },
+  "homepage": "https://anonyfox.github.io/celestine",
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.10",
+    "@types/node": "^25.0.3",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typedoc": "^0.28.15",
+    "typescript": "^5.9.3"
+  }
+}

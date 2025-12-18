@@ -1,0 +1,36 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "docs",
+  "name": "Celestine",
+  "includeVersion": true,
+  "readme": "README.md",
+  "githubPages": true,
+  "hideGenerator": true,
+  "searchInComments": true,
+  "categorizeByGroup": true,
+  "sort": ["source-order"],
+  "kindSortOrder": ["Function", "TypeAlias", "Interface", "Class", "Enum", "Variable"],
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": false
+  },
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/node_modules/**", "**/dist/**"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "treatWarningsAsErrors": false,
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "customCss": "./typedoc-custom.css",
+  "customFooterHtml": "<footer class=\"tsd-page-footer\"><div class=\"container\"><p>Made with <span style=\"color: #7c3aed\">♥</span> by <a href=\"https://anonyfox.com\" target=\"_blank\" rel=\"noopener\">Anonyfox</a></p></div></footer>"
+}

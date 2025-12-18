@@ -1,0 +1,83 @@
+# GitHub Actions workflow for publishing to npm
+#
+# This workflow will:
+# 1. Only run when you push a version tag (e.g., v1.0.0)
+# 2. Run all checks (typecheck, lint, test, build)
+# 3. Publish to npm with provenance
+# 4. Create a GitHub release
+#
+# How to use:
+# 1. Set up NPM_TOKEN in GitHub Secrets (see below)
+# 2. Bump version: npm version patch|minor|major
+# 3. Push with tags: git push && git push --tags
+# 4. Workflow runs automatically!
+
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: "npm-publish"
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run type checking
+        run: npm run typecheck
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            ## Changes in ${{ github.ref_name }}
+
+            See [CHANGELOG](https://github.com/Anonyfox/celestine/blob/main/CHANGELOG.md) for details.
+
+            ### Installation
+            ```bash
+            npm install celestine@${{ github.ref_name }}
+            ```
+          draft: false
+          prerelease: false
+

@@ -1,0 +1,63 @@
+# GitHub Actions workflow for continuous integration
+#
+# This workflow runs on:
+# - All pushes to any branch (except main, to avoid duplication with docs workflow)
+# - All pull requests
+#
+# It will verify:
+# - TypeScript type checking passes
+# - Linting passes
+# - All tests pass
+# - Package builds successfully
+
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run type checking
+        run: npm run typecheck
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build package
+        run: npm run build
+
+      - name: Check package exports
+        run: node -e "import('file://$PWD/dist/index.js').then(() => console.log('✅ ESM import works'))"
+
+      - name: Check package size
+        run: |
+          echo "📦 Package sizes:"
+          ls -lh dist/index.js dist/index.cjs | awk '{print $9, $5}'
+
