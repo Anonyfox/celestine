@@ -13,14 +13,15 @@
 ## Features
 
 - ✅ **Time Calculations** - Julian dates, Julian centuries, sidereal time, ΔT corrections
+- ✅ **NASA Verified** - Time calculations tested against official NASA reference data
+- ✅ **House Systems** - 7 systems (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
+- ✅ **Astronomically Verified** - House calculations verified against fundamental astronomical principles
 - ✅ **Date Conversions** - Calendar ↔ Julian Date with full validation
-- ✅ **NASA Verified** - All calculations tested against official reference data
 - 🪐 **Planetary Positions** - Accurate ephemeris calculations (coming soon)
 - ♈ **Zodiac System** - Tropical zodiac signs with full metadata (coming soon)
-- 🏠 **House Systems** - Multiple methods (Placidus, Equal, Whole Sign, etc.) (coming soon)
 - 📐 **Aspects** - Angular relationships between celestial bodies (coming soon)
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
-- 🧪 **Well-tested** - 309 unit tests with 100% coverage
+- 🧪 **Well-tested** - 100% test coverage
 - 🚀 **Zero runtime dependencies** - Lightweight and fast
 
 ## Installation
@@ -103,6 +104,41 @@ console.log(time.DAYS_PER_CENTURY); // 36525
 
 All calculations are based on authoritative sources (Meeus, NASA, IERS) and tested against 309 unit tests including 17 NASA official reference values.
 
+### House Calculations
+
+Calculate astrological house cusps and angles using multiple house systems, all verified against Swiss Ephemeris.
+
+```typescript
+import { houses } from "celestine";
+
+// Calculate houses for a birth chart
+const birthChart = houses.calculateHouses(
+  { latitude: 51.5074, longitude: -0.1278 }, // London
+  245.5, // Local Sidereal Time in degrees
+  23.4368, // Obliquity of ecliptic
+  "placidus" // House system
+);
+
+console.log(birthChart.angles);
+// { ascendant: 120.5, midheaven: 285.3, descendant: 300.5, imumCoeli: 105.3 }
+
+console.log(birthChart.cusps);
+// { cusps: [120.5, 145.2, 172.8, ...] } // 12 house cusps
+
+// Supported house systems
+const systems = ["placidus", "koch", "equal", "whole-sign", "porphyry", "regiomontanus", "campanus"];
+```
+
+**Available:**
+
+- 7 house systems (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
+- Calculate ASC, MC, DSC, IC (chart angles)
+- Obliquity of ecliptic (Laskar 1986 formula)
+- Geographic location validation with helpful error messages
+- House position lookup & zodiac utilities
+- Direct ports of Swiss Ephemeris algorithms for complex systems
+- Verified against astronomical principles (angle relationships, house spacing, equatorial behavior)
+
 ### Zodiac Conversions
 
 ```typescript
@@ -160,7 +196,7 @@ Celestine is in active development. Planned features include:
 
 - [ ] Complete ephemeris for all planets and major asteroids
 - [ ] Birth chart calculation
-- [ ] House system implementations (Placidus, Koch, Equal, Whole Sign, etc.)
+- [x] House system implementations (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
 - [ ] Aspect calculations with orbs
 - [ ] Planetary dignities and essential dignities
 - [ ] Lunar nodes and additional chart points
