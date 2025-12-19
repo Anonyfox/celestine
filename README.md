@@ -694,29 +694,6 @@ npm run lint       # Check linting
 npm run format     # Format code
 ```
 
-## Roadmap
-
-Celestine is in active development. Planned features include:
-
-- [x] Complete ephemeris for all planets and major asteroids
-- [x] Lunar nodes (Mean & True) and Lilith (Mean & True)
-- [x] Arabic Parts (Part of Fortune, Part of Spirit)
-- [x] Retrograde detection
-- [x] House system implementations (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
-- [x] Zodiac system with tropical signs and essential dignities
-- [x] Aspect calculations with orbs, patterns, and applying/separating detection
-- [x] Birth chart calculation (combining all modules)
-- [x] Transit calculations (exact timing, house ingress, retrograde handling)
-- [x] Progression calculations (secondary, solar arc, minor, tertiary)
-
-## Project Philosophy
-
-Celestine is built on solid astronomical foundations. All calculations follow established astronomical algorithms (primarily Jean Meeus' "Astronomical Algorithms") and are designed to be accurate, well-documented, and easy to understand.
-
-## License
-
-MIT
-
 ---
 
 <div align="center">
