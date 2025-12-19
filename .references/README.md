@@ -88,6 +88,70 @@ Our TypeScript implementation is independent but verified against these sources.
 
 ---
 
+---
+
+## Planetary Ephemeris (Moshier)
+
+**Source URL**: https://github.com/aloistr/swisseph
+**Location**: `swisseph/planetary/`
+**License**: AGPL-3.0 / Swiss Ephemeris Professional License (dual license)
+**Authors**: Steve Moshier (original), Dieter Koch & Alois Treindl (Swiss Ephemeris adaptation)
+**Copyright**: Astrodienst AG, Switzerland
+
+### Files Downloaded
+
+- `planetary/swemplan.c` - Moshier analytical planetary ephemeris
+  - URL: https://raw.githubusercontent.com/aloistr/swisseph/master/swemplan.c
+  - Self-contained planetary position calculations
+  - 967 lines
+- `planetary/swemptab.h` - Moshier planetary coefficient tables
+  - URL: https://raw.githubusercontent.com/aloistr/swisseph/master/swemptab.h
+  - Trigonometric series coefficients for all planets
+  - 10,640 lines (mostly data tables)
+- `planetary/sweph.c` - Main Swiss Ephemeris core
+  - URL: https://raw.githubusercontent.com/aloistr/swisseph/master/sweph.c
+  - Complete ephemeris calculation routines
+  - 8,614 lines
+- `planetary/sweph.h` - Swiss Ephemeris header
+  - URL: https://raw.githubusercontent.com/aloistr/swisseph/master/sweph.h
+  - Planet constants, orbital elements
+  - 849 lines
+- `planetary/swephexp.h` - Swiss Ephemeris export header
+  - URL: https://raw.githubusercontent.com/aloistr/swisseph/master/swephexp.h
+  - Public API definitions
+  - 1,020 lines
+- `planetary/sweodef.h` - Swiss Ephemeris definitions
+  - URL: https://raw.githubusercontent.com/aloistr/swisseph/master/sweodef.h
+  - Platform-specific definitions
+  - 326 lines
+
+### Purpose
+
+Reference implementation for planetary position calculations:
+
+- **Moshier Ephemeris**: Self-contained analytical ephemeris (~1 arcsecond accuracy)
+  - Based on Steve Moshier's implementation of Bretagnon & Francou's VSOP87
+  - No external data files needed
+  - Covers all planets Mercury through Pluto
+- **Lunar calculations**: Moon position algorithms
+- **Coordinate transformations**: Heliocentric → Geocentric conversions
+- **Perturbation corrections**: Planetary perturbations and nutation
+
+### Algorithm Notes
+
+The Moshier ephemeris uses:
+
+- **VSOP87 theory** for inner planets (truncated for efficiency)
+- **Series expansions** for outer planets
+- **Chebyshev polynomials** for interpolation
+- Accuracy: ~1 arcsecond for planets, ~3 arcseconds for Moon (1800-2200 CE)
+
+For our simplified implementation (arcminute accuracy), we use Jean Meeus'
+"Astronomical Algorithms" which provides cleaner, more educational formulas
+while still achieving astrologically-sufficient precision.
+
+---
+
 ## Notes
 
 Swiss Ephemeris is the gold standard for astrological calculations and is used by

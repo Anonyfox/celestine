@@ -1,0 +1,535 @@
+{
+  "generator": "pyswisseph",
+  "version": "2.10.03",
+  "generated_at": "2025-12-19T11:00:55.886253",
+  "dates": {
+    "2451545.0": {
+      "description": "2000-Jan-01 12:00 TT (J2000.0)",
+      "jd": 2451545.0,
+      "positions": {
+        "Sun": {
+          "longitude": 280.36892,
+          "latitude": 0.000232,
+          "distance": 0.983328,
+          "longitude_speed": 1.019432,
+          "latitude_speed": -1e-06,
+          "is_retrograde": false
+        },
+        "Moon": {
+          "longitude": 223.323775,
+          "latitude": 5.170815,
+          "distance": 0.00269,
+          "longitude_speed": 12.021183,
+          "latitude_speed": -0.178063,
+          "is_retrograde": false
+        },
+        "Mercury": {
+          "longitude": 271.889275,
+          "latitude": -0.994825,
+          "distance": 1.415469,
+          "longitude_speed": 1.556254,
+          "latitude_speed": -0.097492,
+          "is_retrograde": false
+        },
+        "Venus": {
+          "longitude": 241.565798,
+          "latitude": 2.066348,
+          "distance": 1.137579,
+          "longitude_speed": 1.20904,
+          "latitude_speed": -0.028074,
+          "is_retrograde": false
+        },
+        "Mars": {
+          "longitude": 327.963313,
+          "latitude": -1.067783,
+          "distance": 1.849687,
+          "longitude_speed": 0.775673,
+          "latitude_speed": 0.012476,
+          "is_retrograde": false
+        },
+        "Jupiter": {
+          "longitude": 25.25303,
+          "latitude": -1.262173,
+          "distance": 4.621181,
+          "longitude_speed": 0.040761,
+          "latitude_speed": 0.005173,
+          "is_retrograde": false
+        },
+        "Saturn": {
+          "longitude": 40.395639,
+          "latitude": -2.444823,
+          "distance": 8.652796,
+          "longitude_speed": -0.019945,
+          "latitude_speed": 0.004743,
+          "is_retrograde": true
+        },
+        "Uranus": {
+          "longitude": 314.809223,
+          "latitude": -0.658333,
+          "distance": 20.727169,
+          "longitude_speed": 0.050344,
+          "latitude_speed": 0.00025,
+          "is_retrograde": false
+        },
+        "Neptune": {
+          "longitude": 303.192981,
+          "latitude": 0.234991,
+          "distance": 31.024527,
+          "longitude_speed": 0.03557,
+          "latitude_speed": -0.000224,
+          "is_retrograde": false
+        },
+        "Pluto": {
+          "longitude": 251.454709,
+          "latitude": 10.855202,
+          "distance": 31.06439,
+          "longitude_speed": 0.035153,
+          "latitude_speed": 0.001467,
+          "is_retrograde": false
+        }
+      }
+    },
+    "2448724.5": {
+      "description": "1992-Apr-12 00:00 TT (Meeus Ex 47.a)",
+      "jd": 2448724.5,
+      "positions": {
+        "Sun": {
+          "longitude": 22.340448,
+          "latitude": -0.000175,
+          "distance": 1.002498,
+          "longitude_speed": 0.980426,
+          "latitude_speed": -2.5e-05,
+          "is_retrograde": false
+        },
+        "Moon": {
+          "longitude": 133.176821,
+          "latitude": -3.229981,
+          "distance": 0.002463,
+          "longitude_speed": 14.283601,
+          "latitude_speed": -0.969996,
+          "is_retrograde": false
+        },
+        "Mercury": {
+          "longitude": 359.061623,
+          "latitude": -0.838636,
+          "distance": 0.686766,
+          "longitude_speed": 0.234968,
+          "latitude_speed": -0.216496,
+          "is_retrograde": false
+        },
+        "Venus": {
+          "longitude": 5.792458,
+          "latitude": -1.511414,
+          "distance": 1.629291,
+          "longitude_speed": 1.232727,
+          "latitude_speed": 0.000222,
+          "is_retrograde": false
+        },
+        "Mars": {
+          "longitude": 341.559538,
+          "latitude": -1.288116,
+          "distance": 1.985167,
+          "longitude_speed": 0.774295,
+          "latitude_speed": -0.003816,
+          "is_retrograde": false
+        },
+        "Jupiter": {
+          "longitude": 155.174153,
+          "latitude": 1.339448,
+          "distance": 4.679599,
+          "longitude_speed": -0.057103,
+          "latitude_speed": -0.002342,
+          "is_retrograde": true
+        },
+        "Saturn": {
+          "longitude": 316.774354,
+          "latitude": -0.737369,
+          "distance": 10.290341,
+          "longitude_speed": 0.070734,
+          "latitude_speed": -0.002312,
+          "is_retrograde": false
+        },
+        "Uranus": {
+          "longitude": 287.97434,
+          "latitude": -0.400307,
+          "distance": 19.424958,
+          "longitude_speed": 0.008415,
+          "latitude_speed": -0.000489,
+          "is_retrograde": false
+        },
+        "Neptune": {
+          "longitude": 288.938124,
+          "latitude": 0.740913,
+          "distance": 30.116711,
+          "longitude_speed": 0.004653,
+          "latitude_speed": 0.000243,
+          "is_retrograde": false
+        },
+        "Pluto": {
+          "longitude": 232.36201,
+          "latitude": 15.225036,
+          "distance": 28.852151,
+          "longitude_speed": -0.023029,
+          "latitude_speed": 0.003511,
+          "is_retrograde": true
+        }
+      }
+    },
+    "2415020.5": {
+      "description": "1900-Jan-01 00:00 TT",
+      "jd": 2415020.5,
+      "positions": {
+        "Sun": {
+          "longitude": 280.153362,
+          "latitude": 5.7e-05,
+          "distance": 0.983266,
+          "longitude_speed": 1.019848,
+          "latitude_speed": 3.6e-05,
+          "is_retrograde": false
+        },
+        "Moon": {
+          "longitude": 272.416373,
+          "latitude": 1.108409,
+          "distance": 0.002463,
+          "longitude_speed": 14.322771,
+          "latitude_speed": 1.28674,
+          "is_retrograde": false
+        },
+        "Mercury": {
+          "longitude": 258.997774,
+          "latitude": 1.126415,
+          "distance": 1.142067,
+          "longitude_speed": 1.276594,
+          "latitude_speed": -0.141112,
+          "is_retrograde": false
+        },
+        "Venus": {
+          "longitude": 306.374451,
+          "latitude": -1.683099,
+          "distance": 1.464596,
+          "longitude_speed": 1.243507,
+          "latitude_speed": -0.006978,
+          "is_retrograde": false
+        },
+        "Mars": {
+          "longitude": 283.867742,
+          "latitude": -0.925408,
+          "distance": 2.400964,
+          "longitude_speed": 0.770423,
+          "latitude_speed": -0.005684,
+          "is_retrograde": false
+        },
+        "Jupiter": {
+          "longitude": 241.135908,
+          "latitude": 0.814271,
+          "distance": 6.113064,
+          "longitude_speed": 0.195622,
+          "latitude_speed": 0.000249,
+          "is_retrograde": false
+        },
+        "Saturn": {
+          "longitude": 267.716811,
+          "latitude": 1.007668,
+          "distance": 11.024664,
+          "longitude_speed": 0.11636,
+          "latitude_speed": -0.000736,
+          "is_retrograde": false
+        },
+        "Uranus": {
+          "longitude": 250.1392,
+          "latitude": 0.063397,
+          "distance": 19.837817,
+          "longitude_speed": 0.055359,
+          "latitude_speed": -0.000128,
+          "is_retrograde": false
+        },
+        "Neptune": {
+          "longitude": 85.218754,
+          "latitude": -1.299631,
+          "distance": 28.920301,
+          "longitude_speed": -0.027201,
+          "latitude_speed": 0.000341,
+          "is_retrograde": true
+        },
+        "Pluto": {
+          "longitude": 75.251368,
+          "latitude": -9.776932,
+          "distance": 46.078928,
+          "longitude_speed": -0.017268,
+          "latitude_speed": 0.002223,
+          "is_retrograde": true
+        }
+      }
+    },
+    "2440587.5": {
+      "description": "1970-Jan-01 00:00 TT (Unix epoch)",
+      "jd": 2440587.5,
+      "positions": {
+        "Sun": {
+          "longitude": 280.156285,
+          "latitude": -2.1e-05,
+          "distance": 0.983311,
+          "longitude_speed": 1.019252,
+          "latitude_speed": -2.8e-05,
+          "is_retrograde": false
+        },
+        "Moon": {
+          "longitude": 190.699048,
+          "latitude": -2.287832,
+          "distance": 0.00262,
+          "longitude_speed": 12.547671,
+          "latitude_speed": -0.997716,
+          "is_retrograde": false
+        },
+        "Mercury": {
+          "longitude": 299.021474,
+          "latitude": -0.508588,
+          "distance": 0.889288,
+          "longitude_speed": 0.562173,
+          "latitude_speed": 0.24244,
+          "is_retrograde": false
+        },
+        "Venus": {
+          "longitude": 274.45327,
+          "latitude": -0.260587,
+          "distance": 1.698669,
+          "longitude_speed": 1.258318,
+          "latitude_speed": -0.039432,
+          "is_retrograde": false
+        },
+        "Mars": {
+          "longitude": 342.236252,
+          "latitude": -0.810855,
+          "distance": 1.578605,
+          "longitude_speed": 0.745758,
+          "latitude_speed": 0.018327,
+          "is_retrograde": false
+        },
+        "Jupiter": {
+          "longitude": 212.325003,
+          "latitude": 1.209235,
+          "distance": 5.74463,
+          "longitude_speed": 0.136761,
+          "latitude_speed": 0.002797,
+          "is_retrograde": false
+        },
+        "Saturn": {
+          "longitude": 32.062306,
+          "latitude": -2.524529,
+          "distance": 8.80282,
+          "longitude_speed": -0.005422,
+          "latitude_speed": 0.004881,
+          "is_retrograde": true
+        },
+        "Uranus": {
+          "longitude": 188.720589,
+          "latitude": 0.719658,
+          "distance": 18.265659,
+          "longitude_speed": 0.011624,
+          "latitude_speed": 0.000615,
+          "is_retrograde": false
+        },
+        "Neptune": {
+          "longitude": 239.885861,
+          "latitude": 1.652384,
+          "distance": 31.066795,
+          "longitude_speed": 0.030457,
+          "latitude_speed": 0.000546,
+          "is_retrograde": false
+        },
+        "Pluto": {
+          "longitude": 177.39227,
+          "latitude": 15.810679,
+          "distance": 31.454269,
+          "longitude_speed": -0.000944,
+          "latitude_speed": 0.009153,
+          "is_retrograde": true
+        }
+      }
+    },
+    "2459580.5": {
+      "description": "2022-Jan-01 00:00 TT",
+      "jd": 2459580.5,
+      "positions": {
+        "Sun": {
+          "longitude": 280.528942,
+          "latitude": -0.000129,
+          "distance": 0.983356,
+          "longitude_speed": 1.019637,
+          "latitude_speed": -3.1e-05,
+          "is_retrograde": false
+        },
+        "Moon": {
+          "longitude": 255.479602,
+          "latitude": -1.280912,
+          "distance": 0.002399,
+          "longitude_speed": 15.061198,
+          "latitude_speed": -1.323573,
+          "is_retrograde": false
+        },
+        "Mercury": {
+          "longitude": 298.182797,
+          "latitude": -1.82107,
+          "distance": 1.141717,
+          "longitude_speed": 1.423461,
+          "latitude_speed": 0.095753,
+          "is_retrograde": false
+        },
+        "Venus": {
+          "longitude": 293.294732,
+          "latitude": 2.884562,
+          "distance": 0.273759,
+          "longitude_speed": -0.485978,
+          "latitude_speed": 0.260725,
+          "is_retrograde": true
+        },
+        "Mars": {
+          "longitude": 253.099122,
+          "latitude": -0.131998,
+          "distance": 2.341153,
+          "longitude_speed": 0.710925,
+          "latitude_speed": -0.010997,
+          "is_retrograde": false
+        },
+        "Jupiter": {
+          "longitude": 330.545918,
+          "latitude": -0.996655,
+          "distance": 5.567361,
+          "longitude_speed": 0.195426,
+          "latitude_speed": 0.001229,
+          "is_retrograde": false
+        },
+        "Saturn": {
+          "longitude": 311.902803,
+          "latitude": -0.823505,
+          "distance": 10.746143,
+          "longitude_speed": 0.108206,
+          "latitude_speed": -0.000477,
+          "is_retrograde": false
+        },
+        "Uranus": {
+          "longitude": 40.952696,
+          "latitude": -0.405082,
+          "distance": 19.206677,
+          "longitude_speed": -0.015019,
+          "latitude_speed": 0.00044,
+          "is_retrograde": true
+        },
+        "Neptune": {
+          "longitude": 350.669123,
+          "latitude": -1.134688,
+          "distance": 30.240063,
+          "longitude_speed": 0.017276,
+          "latitude_speed": 0.000474,
+          "is_retrograde": false
+        },
+        "Pluto": {
+          "longitude": 295.934448,
+          "latitude": -1.727989,
+          "distance": 35.380316,
+          "longitude_speed": 0.032134,
+          "latitude_speed": -0.001214,
+          "is_retrograde": false
+        }
+      }
+    },
+    "2488069.5": {
+      "description": "2100-Jan-01 00:00 TT",
+      "jd": 2488069.5,
+      "positions": {
+        "Sun": {
+          "longitude": 280.604429,
+          "latitude": 7.8e-05,
+          "distance": 0.983358,
+          "longitude_speed": 1.018891,
+          "latitude_speed": -5.2e-05,
+          "is_retrograde": false
+        },
+        "Moon": {
+          "longitude": 157.415835,
+          "latitude": 1.091289,
+          "distance": 0.002485,
+          "longitude_speed": 14.011835,
+          "latitude_speed": -1.211553,
+          "is_retrograde": false
+        },
+        "Mercury": {
+          "longitude": 288.006172,
+          "latitude": -2.112699,
+          "distance": 1.386106,
+          "longitude_speed": 1.62287,
+          "latitude_speed": -0.023246,
+          "is_retrograde": false
+        },
+        "Venus": {
+          "longitude": 320.070776,
+          "latitude": -1.852416,
+          "distance": 1.125741,
+          "longitude_speed": 1.202736,
+          "latitude_speed": 0.022139,
+          "is_retrograde": false
+        },
+        "Mars": {
+          "longitude": 29.525436,
+          "latitude": 0.951746,
+          "distance": 0.869963,
+          "longitude_speed": 0.40664,
+          "latitude_speed": 0.019424,
+          "is_retrograde": false
+        },
+        "Jupiter": {
+          "longitude": 201.206361,
+          "latitude": 1.276599,
+          "distance": 5.545843,
+          "longitude_speed": 0.106319,
+          "latitude_speed": 0.003667,
+          "is_retrograde": false
+        },
+        "Saturn": {
+          "longitude": 205.631622,
+          "latitude": 2.422209,
+          "distance": 9.873999,
+          "longitude_speed": 0.057993,
+          "latitude_speed": 0.00411,
+          "is_retrograde": false
+        },
+        "Uranus": {
+          "longitude": 17.741279,
+          "latitude": -0.629451,
+          "distance": 19.824768,
+          "longitude_speed": 0.004545,
+          "latitude_speed": 0.000634,
+          "is_retrograde": false
+        },
+        "Neptune": {
+          "longitude": 167.28997,
+          "latitude": 0.963864,
+          "distance": 29.804937,
+          "longitude_speed": -0.007192,
+          "latitude_speed": 0.000674,
+          "is_retrograde": true
+        },
+        "Pluto": {
+          "longitude": 32.403378,
+          "latitude": -16.921201,
+          "distance": 48.574562,
+          "longitude_speed": -0.005422,
+          "latitude_speed": 0.005709,
+          "is_retrograde": true
+        }
+      }
+    }
+  },
+  "planets": [
+    "Sun",
+    "Moon",
+    "Mercury",
+    "Venus",
+    "Mars",
+    "Jupiter",
+    "Saturn",
+    "Uranus",
+    "Neptune",
+    "Pluto"
+  ]
+}
