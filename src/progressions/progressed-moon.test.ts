@@ -71,8 +71,8 @@ describe('progressions/progressed-moon', () => {
       const moon = getProgressedMoon(birthJD, birthJD);
 
       assert.ok(
-        Math.abs(moon.progressedLongitude - moon.natalLongitude) < 0.01,
-        `Natal: ${moon.natalLongitude}, Progressed: ${moon.progressedLongitude}`,
+        Math.abs(moon.longitude - moon.natalLongitude) < 0.01,
+        `Natal: ${moon.natalLongitude}, Progressed: ${moon.longitude}`,
       );
       assert.equal(moon.name, 'Moon');
       assert.ok(!moon.isRetrograde, 'Moon should never be retrograde');
@@ -121,8 +121,9 @@ describe('progressions/progressed-moon', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const moon = getProgressedMoon(birthJD, birthJD + 30 * 365.25);
 
-      assert.equal(moon.arcDirection, 'direct');
+      // Moon is always direct (never retrograde)
       assert.ok(!moon.isRetrograde);
+      assert.ok(moon.longitudeSpeed > 0);
     });
   });
 
@@ -332,8 +333,8 @@ describe('progressions/progressed-moon', () => {
       const report = getProgressedMoonReport(J2000_BIRTH, target);
 
       assert.equal(report.current.name, 'Moon');
-      assert.ok(report.current.progressedLongitude >= 0);
-      assert.ok(report.current.progressedLongitude < 360);
+      assert.ok(report.current.longitude >= 0);
+      assert.ok(report.current.longitude < 360);
     });
   });
 

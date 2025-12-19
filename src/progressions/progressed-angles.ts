@@ -88,10 +88,10 @@ function longitudeToZodiac(longitude: number): {
 }
 
 /**
- * Create a ProgressedAngle object.
+ * Create a ProgressedPosition object for an angle.
  */
 function createProgressedAngle(
-  name: 'ASC' | 'MC' | 'DSC' | 'IC',
+  _name: 'ASC' | 'MC' | 'DSC' | 'IC',
   natalLongitude: number,
   progressedLongitude: number,
 ): ProgressedPosition {
@@ -357,7 +357,7 @@ export function getProgressedASC(
   latitude: number,
   longitude: number,
   method: AngleProgressionMethod = 'solar-arc',
-): ProgressedAngle {
+): ProgressedPosition {
   const angles = getProgressedAngles(birthJD, targetJD, latitude, longitude, method);
   return angles.ascendant;
 }
@@ -371,7 +371,7 @@ export function getProgressedMC(
   latitude: number,
   longitude: number,
   method: AngleProgressionMethod = 'solar-arc',
-): ProgressedAngle {
+): ProgressedPosition {
   const angles = getProgressedAngles(birthJD, targetJD, latitude, longitude, method);
   return angles.midheaven;
 }
@@ -448,10 +448,10 @@ export function estimateAgeForMCSign(natalMC: number, targetSignIndex: number): 
 export function formatProgressedAngles(angles: ProgressedAngles): string {
   const lines: string[] = [
     `Progressed Angles (${angles.method}, Solar Arc: ${angles.solarArc.toFixed(2)}°)`,
-    `  ASC: ${angles.ascendant.progressedFormatted} (natal: ${angles.ascendant.natalFormatted})`,
-    `  MC:  ${angles.midheaven.progressedFormatted} (natal: ${angles.midheaven.natalFormatted})`,
-    `  DSC: ${angles.descendant.progressedFormatted}`,
-    `  IC:  ${angles.imumCoeli.progressedFormatted}`,
+    `  ASC: ${angles.ascendant.formatted}`,
+    `  MC:  ${angles.midheaven.formatted}`,
+    `  DSC: ${angles.descendant.formatted}`,
+    `  IC:  ${angles.imumCoeli.formatted}`,
   ];
 
   if (angles.ascendant.hasChangedSign) {

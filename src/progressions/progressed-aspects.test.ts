@@ -7,11 +7,12 @@
 
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
+import { AspectType } from '../aspects/types.js';
 import {
-  calculateProgressionAspects,
+  calculateProgressedAspects,
+  detectProgressedAspects,
   detectProgressedToNatalAspects,
   detectProgressedToProgressedAspects,
-  detectProgressionAspects,
   formatAspect,
   formatAspects,
   getAspectsByType,
@@ -130,12 +131,12 @@ describe('progressions/progressed-aspects', () => {
     });
   });
 
-  describe('detectProgressionAspects', () => {
+  describe('detectProgressedAspects', () => {
     it('should return complete detection result', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
 
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       assert.ok(result.aspects);
       assert.ok(result.exactAspects);
@@ -149,7 +150,7 @@ describe('progressions/progressed-aspects', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
 
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       // Summary counts should match
       assert.equal(result.aspects.length, result.summary.total);
@@ -157,7 +158,7 @@ describe('progressions/progressed-aspects', () => {
 
       // All exact aspects should have isExact = true
       for (const aspect of result.exactAspects) {
-        assert.ok(aspect.isExact);
+        assert.ok(aspect.phase === 'exact');
       }
     });
 
@@ -165,11 +166,11 @@ describe('progressions/progressed-aspects', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
 
-      const withPtoP = detectProgressionAspects(birthJD, targetJD, 'secondary', {
+      const withPtoP = detectProgressedAspects(birthJD, targetJD, 'secondary', {
         includeProgressedToProgressed: true,
       });
 
-      const withoutPtoP = detectProgressionAspects(birthJD, targetJD, 'secondary', {
+      const withoutPtoP = detectProgressedAspects(birthJD, targetJD, 'secondary', {
         includeProgressedToProgressed: false,
       });
 
@@ -178,10 +179,10 @@ describe('progressions/progressed-aspects', () => {
     });
   });
 
-  describe('calculateProgressionAspects', () => {
+  describe('calculateProgressedAspects', () => {
     it('should work with date objects', () => {
       const target = { year: 2030, month: 1, day: 1 };
-      const result = calculateProgressionAspects(J2000_BIRTH, target);
+      const result = calculateProgressedAspects(J2000_BIRTH, target);
 
       assert.ok(result.aspects);
       assert.ok(result.summary);
@@ -196,7 +197,7 @@ describe('progressions/progressed-aspects', () => {
     it('should filter by natal body', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       const sunAspects = getAspectsToNatalBody(result.aspects, 'Sun');
 
@@ -210,7 +211,7 @@ describe('progressions/progressed-aspects', () => {
     it('should filter by progressed body', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       const moonAspects = getAspectsFromProgressedBody(result.aspects, 'Moon');
 
@@ -224,7 +225,7 @@ describe('progressions/progressed-aspects', () => {
     it('should return strongest aspect', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       if (result.aspects.length > 0) {
         const strongest = getStrongestAspect(result.aspects);
@@ -247,12 +248,12 @@ describe('progressions/progressed-aspects', () => {
     it('should filter by aspect type', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
-      const conjunctions = getAspectsByType(result.aspects, 'conjunction');
+      const conjunctions = getAspectsByType(result.aspects, AspectType.Conjunction);
 
       for (const aspect of conjunctions) {
-        assert.equal(aspect.aspectType, 'conjunction');
+        assert.equal(aspect.aspectType, AspectType.Conjunction);
       }
     });
   });
@@ -261,7 +262,7 @@ describe('progressions/progressed-aspects', () => {
     it('should sort strongest first', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       const sorted = sortByStrength(result.aspects);
 
@@ -276,7 +277,7 @@ describe('progressions/progressed-aspects', () => {
     it('should not modify original array', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       if (result.aspects.length > 0) {
         const firstStrength = result.aspects[0].strength;
@@ -294,12 +295,13 @@ describe('progressions/progressed-aspects', () => {
     it('should format aspect information', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       if (result.aspects.length > 0) {
         const formatted = formatAspect(result.aspects[0]);
         assert.ok(formatted.includes(result.aspects[0].progressedBody));
-        assert.ok(formatted.includes(result.aspects[0].aspectType));
+        assert.ok(formatted.includes(result.aspects[0].symbol)); // Uses symbol, not aspectType
+        assert.ok(formatted.includes(result.aspects[0].natalBody));
       }
     });
   });
@@ -308,7 +310,7 @@ describe('progressions/progressed-aspects', () => {
     it('should format full result', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       const formatted = formatAspects(result);
 
@@ -326,7 +328,7 @@ describe('progressions/progressed-aspects', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
 
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       // After 30 years of progressions, there should be some aspects
       assert.ok(result.aspects.length > 0, 'Should find at least one aspect after 30 years');
@@ -336,7 +338,7 @@ describe('progressions/progressed-aspects', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
 
-      const result = detectProgressionAspects(birthJD, targetJD);
+      const result = detectProgressedAspects(birthJD, targetJD);
 
       for (const aspect of result.aspects) {
         assert.ok(aspect.strength >= 0 && aspect.strength <= 100);

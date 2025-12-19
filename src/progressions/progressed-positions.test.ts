@@ -11,6 +11,7 @@
 
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
+import { CelestialBody } from '../ephemeris/positions.js';
 import {
   calculateProgressedPositions,
   getAllProgressedPositions,
@@ -125,8 +126,8 @@ describe('progressions/progressed-positions', () => {
       const pos = getProgressedPosition('Sun', birthJD, birthJD, 'secondary');
 
       assert.ok(
-        Math.abs(pos.progressedLongitude - pos.natalLongitude) < 0.01,
-        `Natal: ${pos.natalLongitude}, Progressed: ${pos.progressedLongitude}`,
+        Math.abs(pos.longitude - pos.natalLongitude) < 0.01,
+        `Natal: ${pos.natalLongitude}, Progressed: ${pos.longitude}`,
       );
       assert.ok(pos.arcFromNatal < 0.01, `Arc should be ~0, got ${pos.arcFromNatal}`);
       assert.ok(!pos.hasChangedSign, 'Should not have changed sign');
@@ -164,7 +165,8 @@ describe('progressions/progressed-positions', () => {
 
       // Sun should have changed sign in 50 years
       // Natal in Capricorn (sign 9), should move to Aquarius (10) or Pisces (11)
-      assert.ok(pos.progressedSignIndex !== pos.natalSignIndex);
+      const natalSignIndex = Math.floor(pos.natalLongitude / 30);
+      assert.ok(pos.signIndex !== natalSignIndex);
       assert.ok(pos.hasChangedSign);
     });
 
@@ -173,8 +175,9 @@ describe('progressions/progressed-positions', () => {
       const targetJD = birthJD + 30 * 365.25;
       const pos = getProgressedPosition('Sun', birthJD, targetJD, 'secondary');
 
-      assert.ok(pos.progressedFormatted.includes(pos.progressedSignName));
-      assert.ok(pos.natalFormatted.includes(pos.natalSignName));
+      assert.ok(pos.formatted.includes(pos.signName));
+      // Verify basic properties exist
+      assert.ok(pos.natalLongitude >= 0);
       assert.equal(pos.name, 'Sun');
     });
 
@@ -287,9 +290,7 @@ describe('progressions/progressed-positions', () => {
       const positions = getProgressedPositions(['Sun'], birthJD, targetJD);
       const explicit = getProgressedPositions(['Sun'], birthJD, targetJD, 'secondary');
 
-      assert.ok(
-        Math.abs(positions[0].progressedLongitude - explicit[0].progressedLongitude) < 0.001,
-      );
+      assert.ok(Math.abs(positions[0].longitude - explicit[0].longitude) < 0.001);
     });
   });
 
@@ -321,14 +322,14 @@ describe('progressions/progressed-positions', () => {
       const positions = calculateProgressedPositions(J2000_BIRTH, target);
 
       assert.ok(positions.length > 0);
-      assert.ok(positions[0].progressedLongitude > 0);
+      assert.ok(positions[0].longitude > 0);
     });
 
     it('should respect config options', () => {
       const target = { year: 2030, month: 1, day: 1 };
       const positions = calculateProgressedPositions(J2000_BIRTH, target, {
         type: 'solar-arc',
-        bodies: ['Sun', 'Moon'] as unknown as string[],
+        bodies: [CelestialBody.Sun, CelestialBody.Moon],
       });
 
       assert.equal(positions.length, 2);
@@ -341,7 +342,7 @@ describe('progressions/progressed-positions', () => {
       const pos = getProgressedBodyFromDates('Sun', J2000_BIRTH, target);
 
       assert.equal(pos.name, 'Sun');
-      assert.ok(pos.progressedLongitude > 0);
+      assert.ok(pos.longitude > 0);
     });
   });
 
@@ -424,8 +425,8 @@ describe('progressions/progressed-positions', () => {
 
       for (let i = 1; i < sorted.length; i++) {
         assert.ok(
-          sorted[i].progressedLongitude >= sorted[i - 1].progressedLongitude,
-          `Not sorted: ${sorted[i - 1].progressedLongitude} > ${sorted[i].progressedLongitude}`,
+          sorted[i].longitude >= sorted[i - 1].longitude,
+          `Not sorted: ${sorted[i - 1].longitude} > ${sorted[i].longitude}`,
         );
       }
     });
@@ -435,10 +436,10 @@ describe('progressions/progressed-positions', () => {
       const targetJD = birthJD + 30 * 365.25;
 
       const positions = getAllProgressedPositions(birthJD, targetJD);
-      const firstLongitude = positions[0].progressedLongitude;
+      const firstLongitude = positions[0].longitude;
       sortByLongitude(positions);
 
-      assert.equal(positions[0].progressedLongitude, firstLongitude);
+      assert.equal(positions[0].longitude, firstLongitude);
     });
   });
 
@@ -453,7 +454,7 @@ describe('progressions/progressed-positions', () => {
       // Verify grouping is correct
       for (const [sign, bodies] of grouped) {
         for (const body of bodies) {
-          assert.equal(body.progressedSignName, sign);
+          assert.equal(body.signName, sign);
         }
       }
 

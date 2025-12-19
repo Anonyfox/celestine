@@ -29,7 +29,14 @@ import {
   type ProgressedBodyName,
 } from './progressed-positions.js';
 import { birthToJD, targetToJD } from './progression-date.js';
-import type { ProgressionBirthData, ProgressionTargetDate, ProgressionType } from './types.js';
+import type {
+  ProgressedAspect,
+  ProgressedAspectPhase,
+  ProgressedPlanet,
+  ProgressionBirthData,
+  ProgressionTargetDate,
+  ProgressionType,
+} from './types.js';
 
 // =============================================================================
 // TYPE DEFINITIONS
@@ -118,20 +125,29 @@ function calculateStrength(separation: number, exactAngle: number, orb: number):
 }
 
 /**
- * Determine if aspect is applying or separating.
+ * Determine aspect phase: applying, exact, or separating.
  *
  * @param progressedLong - Current progressed longitude
  * @param natalLong - Natal longitude
  * @param aspectAngle - Aspect angle
  * @param dailyMotion - Estimated daily motion (positive = direct)
- * @returns 'applying' or 'separating'
+ * @param deviation - Current deviation from exact
+ * @param exactThreshold - Threshold for 'exact' classification
+ * @returns Phase: 'applying', 'exact', or 'separating'
  */
 function determineAspectPhase(
   progressedLong: number,
   natalLong: number,
   aspectAngle: number,
   dailyMotion: number,
-): 'applying' | 'separating' {
+  deviation: number,
+  exactThreshold: number,
+): ProgressedAspectPhase {
+  // If within exact threshold, it's exact
+  if (deviation <= exactThreshold) {
+    return 'exact';
+  }
+
   const currentSep = angularSeparation(progressedLong, natalLong);
   // Simulate small time forward
   const futureLong = progressedLong + dailyMotion * 0.01;
@@ -169,7 +185,7 @@ export function detectProgressedToNatalAspects(
     // Skip self-aspects
     if (natal.name === progressedBody.name) continue;
 
-    const separation = angularSeparation(progressedBody.progressedLongitude, natal.longitude);
+    const separation = angularSeparation(progressedBody.longitude, natal.longitude);
 
     for (const aspectType of aspectTypes) {
       const exactAngle = getAspectAngle(aspectType);
@@ -180,26 +196,32 @@ export function detectProgressedToNatalAspects(
         const strength = calculateStrength(separation, exactAngle, orb);
 
         if (strength >= minimumStrength) {
-          // Estimate daily motion based on arc (rough approximation)
-          const dailyMotion = progressedBody.arcDirection === 'direct' ? 1 : -1;
+          // Use longitudeSpeed for motion direction
+          const dailyMotion = progressedBody.longitudeSpeed;
 
           const phase = determineAspectPhase(
-            progressedBody.progressedLongitude,
+            progressedBody.longitude,
             natal.longitude,
             exactAngle,
             dailyMotion,
+            deviation,
+            exactThreshold,
           );
 
           aspects.push({
             progressedBody: progressedBody.name,
+            progressedLongitude: progressedBody.longitude,
             natalBody: natal.name,
+            natalLongitude: natal.longitude,
             aspectType,
+            symbol: getAspectSymbol(aspectType),
             exactAngle,
-            actualAngle: separation,
-            orb: deviation,
-            isExact: deviation <= exactThreshold,
-            isApplying: phase === 'applying',
+            separation,
+            deviation,
+            orb,
             strength,
+            phase,
+            isRetrograde: progressedBody.isRetrograde,
           });
         }
       }
@@ -230,7 +252,7 @@ export function detectProgressedToProgressedAspects(
       const body1 = positions[i];
       const body2 = positions[j];
 
-      const separation = angularSeparation(body1.progressedLongitude, body2.progressedLongitude);
+      const separation = angularSeparation(body1.longitude, body2.longitude);
 
       for (const aspectType of aspectTypes) {
         const exactAngle = getAspectAngle(aspectType);
@@ -241,16 +263,24 @@ export function detectProgressedToProgressedAspects(
           const strength = calculateStrength(separation, exactAngle, orb);
 
           if (strength >= minimumStrength) {
+            // Determine phase based on relative motion
+            const phase: ProgressedAspectPhase =
+              deviation <= exactThreshold ? 'exact' : 'separating';
+
             aspects.push({
               progressedBody: body1.name,
+              progressedLongitude: body1.longitude,
               natalBody: `P.${body2.name}`, // Mark as progressed
+              natalLongitude: body2.longitude,
               aspectType,
+              symbol: getAspectSymbol(aspectType),
               exactAngle,
-              actualAngle: separation,
-              orb: deviation,
-              isExact: deviation <= exactThreshold,
-              isApplying: false, // Hard to determine for P-P aspects
+              separation,
+              deviation,
+              orb,
               strength,
+              phase,
+              isRetrograde: body1.isRetrograde,
             });
           }
         }
@@ -282,6 +312,29 @@ function getAspectAngle(aspectType: AspectType): number {
     decile: 36,
   };
   return angles[aspectType] ?? 0;
+}
+
+/**
+ * Get the symbol for an aspect type.
+ */
+function getAspectSymbol(aspectType: AspectType): string {
+  const symbols: Record<AspectType, string> = {
+    conjunction: '☌',
+    opposition: '☍',
+    trine: '△',
+    square: '□',
+    sextile: '⚹',
+    quincunx: '⚻',
+    'semi-sextile': '⚺',
+    'semi-square': '∠',
+    sesquiquadrate: '⚼',
+    quintile: 'Q',
+    biquintile: 'bQ',
+    septile: 'S',
+    novile: 'N',
+    decile: 'D',
+  };
+  return symbols[aspectType] ?? '?';
 }
 
 // =============================================================================
@@ -332,9 +385,9 @@ export function detectProgressedAspects(
   const allAspects = [...pToNAspects, ...pToPAspects];
 
   // Categorize aspects
-  const exactAspects = allAspects.filter((a) => a.isExact);
-  const applyingAspects = allAspects.filter((a) => a.isApplying);
-  const separatingAspects = allAspects.filter((a) => !a.isApplying);
+  const exactAspects = allAspects.filter((a) => a.phase === 'exact');
+  const applyingAspects = allAspects.filter((a) => a.phase === 'applying');
+  const separatingAspects = allAspects.filter((a) => a.phase === 'separating');
 
   return {
     aspects: allAspects,
@@ -429,11 +482,10 @@ export function sortByStrength(aspects: ProgressedAspect[]): ProgressedAspect[] 
  * Format aspect for display.
  */
 export function formatAspect(aspect: ProgressedAspect): string {
-  const exactMarker = aspect.isExact ? '★' : '';
-  const phase = aspect.isApplying ? 'applying' : 'separating';
+  const exactMarker = aspect.phase === 'exact' ? '★' : '';
   return (
-    `${aspect.progressedBody} ${aspect.aspectType} ${aspect.natalBody} ` +
-    `(${aspect.orb.toFixed(2)}° orb, ${aspect.strength}% strength, ${phase})${exactMarker}`
+    `${aspect.progressedBody} ${aspect.symbol} ${aspect.natalBody} ` +
+    `(${aspect.deviation.toFixed(2)}° orb, ${aspect.strength}% strength, ${aspect.phase})${exactMarker}`
   );
 }
 

@@ -26,11 +26,13 @@ import { getPlutoPosition } from '../ephemeris/planets/pluto.js';
 import { getSaturnPosition } from '../ephemeris/planets/saturn.js';
 import { getUranusPosition } from '../ephemeris/planets/uranus.js';
 import { getVenusPosition } from '../ephemeris/planets/venus.js';
+import { CelestialBody } from '../ephemeris/positions.js';
 import { getSunPosition } from '../ephemeris/sun.js';
 import { DEFAULT_PROGRESSION_BODIES, SIGN_NAMES } from './constants.js';
 import { birthToJD, getProgressedJD, targetToJD } from './progression-date.js';
 import { applySolarArc, calculateSolarArc } from './solar-arc.js';
 import type {
+  ProgressedPlanet,
   ProgressionBirthData,
   ProgressionConfig,
   ProgressionTargetDate,
@@ -100,6 +102,24 @@ const POSITION_GETTERS: Record<ProgressedBodyName, PositionGetter> = {
   Pluto: getPlutoPosition,
   Chiron: getChironPosition,
   TrueNode: getTrueNodePosition,
+};
+
+/**
+ * Map body names to CelestialBody enum.
+ */
+const BODY_NAME_TO_ENUM: Record<ProgressedBodyName, CelestialBody> = {
+  Sun: CelestialBody.Sun,
+  Moon: CelestialBody.Moon,
+  Mercury: CelestialBody.Mercury,
+  Venus: CelestialBody.Venus,
+  Mars: CelestialBody.Mars,
+  Jupiter: CelestialBody.Jupiter,
+  Saturn: CelestialBody.Saturn,
+  Uranus: CelestialBody.Uranus,
+  Neptune: CelestialBody.Neptune,
+  Pluto: CelestialBody.Pluto,
+  Chiron: CelestialBody.Chiron,
+  TrueNode: CelestialBody.TrueNorthNode,
 };
 
 // =============================================================================
@@ -179,74 +199,92 @@ export function getNatalPosition(bodyName: ProgressedBodyName, birthJD: number):
 }
 
 /**
+ * Calculate longitudinal speed (degrees/day) for a body at a given JD.
+ */
+function calculateLongitudeSpeed(jd: number, getPosition: PositionGetter): number {
+  const pos1 = getPosition(jd - 0.5);
+  const pos2 = getPosition(jd + 0.5);
+  let diff = pos2.longitude - pos1.longitude;
+  // Handle wraparound
+  if (diff > 180) diff -= 360;
+  if (diff < -180) diff += 360;
+  return diff;
+}
+
+/**
  * Get progressed position for a single body using secondary progression.
  *
  * @param bodyName - Name of the celestial body
  * @param birthJD - Julian Date of birth
  * @param targetJD - Julian Date to progress to
  * @param progressionType - Type of progression (default: secondary)
- * @returns Progressed position information
+ * @returns Progressed position information matching ProgressedPlanet interface
  */
 export function getProgressedPosition(
   bodyName: ProgressedBodyName,
   birthJD: number,
   targetJD: number,
   progressionType: ProgressionType = 'secondary',
-): ProgressedBody {
+): ProgressedPlanet {
   const getPosition = POSITION_GETTERS[bodyName];
   if (!getPosition) {
     throw new Error(`Unknown body: ${bodyName}`);
   }
 
-  // Get natal position
+  // Get natal position and retrograde status
   const natal = getPosition(birthJD);
+  const natalRetrograde = isRetrograde(birthJD, getPosition);
   const natalZodiac = longitudeToZodiac(natal.longitude);
 
-  let progressedLongitude: number;
+  let progressedLong: number;
   let progressedRetrograde: boolean;
+  let progressedSpeed: number;
   let progressedJD: number;
 
   if (progressionType === 'solar-arc') {
     // Solar arc: all bodies directed by the Sun's progressed motion
     const solarArc = calculateSolarArc(birthJD, targetJD);
-    progressedLongitude = applySolarArc(natal.longitude, solarArc);
+    progressedLong = applySolarArc(natal.longitude, solarArc);
     // Solar arc bodies can't be "retrograde" (they move uniformly)
     progressedRetrograde = false;
+    progressedSpeed = 0; // No independent motion
     progressedJD = birthJD; // Reference is natal chart
   } else {
     // Secondary/Minor/Tertiary: calculate position for progressed date
     progressedJD = getProgressedJD(birthJD, targetJD, progressionType);
     const progressed = getPosition(progressedJD);
-    progressedLongitude = progressed.longitude;
+    progressedLong = progressed.longitude;
     progressedRetrograde = isRetrograde(progressedJD, getPosition);
+    progressedSpeed = calculateLongitudeSpeed(progressedJD, getPosition);
   }
 
-  const progressedZodiac = longitudeToZodiac(progressedLongitude);
+  const progressedZodiac = longitudeToZodiac(progressedLong);
 
-  // Calculate arc from natal
-  let arcFromNatal = progressedLongitude - natal.longitude;
-  // Normalize to -180 to 180 for meaningful arc display
+  // Calculate arc from natal (normalized to -180 to 180)
+  let arcFromNatal = progressedLong - natal.longitude;
   while (arcFromNatal > 180) arcFromNatal -= 360;
   while (arcFromNatal < -180) arcFromNatal += 360;
 
   return {
-    name: bodyName,
+    // ProgressedPosition fields
+    longitude: progressedLong,
     natalLongitude: natal.longitude,
-    natalSignIndex: natalZodiac.signIndex,
-    natalSignName: natalZodiac.signName,
-    natalDegree: natalZodiac.degree,
-    natalMinute: natalZodiac.minute,
-    natalFormatted: natalZodiac.formatted,
-    progressedLongitude,
-    progressedSignIndex: progressedZodiac.signIndex,
-    progressedSignName: progressedZodiac.signName,
-    progressedDegree: progressedZodiac.degree,
-    progressedMinute: progressedZodiac.minute,
-    progressedFormatted: progressedZodiac.formatted,
     arcFromNatal: Math.abs(arcFromNatal),
-    arcDirection: arcFromNatal >= 0 ? 'direct' : 'retrograde',
+    signIndex: progressedZodiac.signIndex,
+    signName: progressedZodiac.signName,
+    degree: progressedZodiac.degree,
+    minute: progressedZodiac.minute,
+    second: progressedZodiac.second,
+    formatted: progressedZodiac.formatted,
     hasChangedSign: progressedZodiac.signIndex !== natalZodiac.signIndex,
+
+    // ProgressedPlanet-specific fields
+    name: bodyName,
+    body: BODY_NAME_TO_ENUM[bodyName],
     isRetrograde: progressedRetrograde,
+    longitudeSpeed: progressedSpeed,
+    retrogradeChanged: progressedRetrograde !== natalRetrograde,
+    wasRetrograde: natalRetrograde,
   };
 }
 
@@ -264,7 +302,7 @@ export function getProgressedPositions(
   birthJD: number,
   targetJD: number,
   progressionType: ProgressionType = 'secondary',
-): ProgressedBody[] {
+): ProgressedPlanet[] {
   return bodies.map((body) => getProgressedPosition(body, birthJD, targetJD, progressionType));
 }
 
@@ -280,7 +318,7 @@ export function getAllProgressedPositions(
   birthJD: number,
   targetJD: number,
   progressionType: ProgressionType = 'secondary',
-): ProgressedBody[] {
+): ProgressedPlanet[] {
   return getProgressedPositions(
     DEFAULT_PROGRESSION_BODIES as ProgressedBodyName[],
     birthJD,
@@ -305,7 +343,7 @@ export function calculateProgressedPositions(
   birth: ProgressionBirthData,
   target: ProgressionTargetDate,
   config?: Partial<ProgressionConfig>,
-): ProgressedBody[] {
+): ProgressedPlanet[] {
   const birthJD = birthToJD(birth);
   const targetJD = targetToJD(target);
   const progressionType = config?.type ?? 'secondary';
@@ -330,7 +368,7 @@ export function getProgressedBodyFromDates(
   birth: ProgressionBirthData,
   target: ProgressionTargetDate,
   progressionType: ProgressionType = 'secondary',
-): ProgressedBody {
+): ProgressedPlanet {
   const birthJD = birthToJD(birth);
   const targetJD = targetToJD(target);
   return getProgressedPosition(bodyName, birthJD, targetJD, progressionType);
@@ -346,7 +384,7 @@ export function getProgressedBodyFromDates(
  * @param positions - Array of progressed positions
  * @returns Array of bodies that changed sign
  */
-export function getBodiesWithSignChange(positions: ProgressedBody[]): ProgressedBody[] {
+export function getBodiesWithSignChange(positions: ProgressedPlanet[]): ProgressedPlanet[] {
   return positions.filter((p) => p.hasChangedSign);
 }
 
@@ -356,7 +394,7 @@ export function getBodiesWithSignChange(positions: ProgressedBody[]): Progressed
  * @param positions - Array of progressed positions
  * @returns Array of retrograde bodies
  */
-export function getRetrogradeBodies(positions: ProgressedBody[]): ProgressedBody[] {
+export function getRetrogradeBodies(positions: ProgressedPlanet[]): ProgressedPlanet[] {
   return positions.filter((p) => p.isRetrograde);
 }
 
@@ -366,7 +404,7 @@ export function getRetrogradeBodies(positions: ProgressedBody[]): ProgressedBody
  * @param positions - Array of progressed positions
  * @returns Body with largest arc, or undefined if empty
  */
-export function getBodyWithLargestArc(positions: ProgressedBody[]): ProgressedBody | undefined {
+export function getBodyWithLargestArc(positions: ProgressedPlanet[]): ProgressedPlanet | undefined {
   if (positions.length === 0) return undefined;
   return positions.reduce((max, current) =>
     current.arcFromNatal > max.arcFromNatal ? current : max,
@@ -379,8 +417,8 @@ export function getBodyWithLargestArc(positions: ProgressedBody[]): ProgressedBo
  * @param positions - Array of progressed positions
  * @returns Sorted array
  */
-export function sortByLongitude(positions: ProgressedBody[]): ProgressedBody[] {
-  return [...positions].sort((a, b) => a.progressedLongitude - b.progressedLongitude);
+export function sortByLongitude(positions: ProgressedPlanet[]): ProgressedPlanet[] {
+  return [...positions].sort((a, b) => a.longitude - b.longitude);
 }
 
 /**
@@ -389,11 +427,11 @@ export function sortByLongitude(positions: ProgressedBody[]): ProgressedBody[] {
  * @param positions - Array of progressed positions
  * @returns Map of sign name to bodies in that sign
  */
-export function groupBySign(positions: ProgressedBody[]): Map<string, ProgressedBody[]> {
-  const result = new Map<string, ProgressedBody[]>();
+export function groupBySign(positions: ProgressedPlanet[]): Map<string, ProgressedPlanet[]> {
+  const result = new Map<string, ProgressedPlanet[]>();
 
   for (const pos of positions) {
-    const sign = pos.progressedSignName;
+    const sign = pos.signName;
     if (!result.has(sign)) {
       result.set(sign, []);
     }

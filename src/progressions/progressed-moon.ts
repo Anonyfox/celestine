@@ -17,10 +17,16 @@
  */
 
 import { getMoonPosition } from '../ephemeris/moon.js';
+import { CelestialBody } from '../ephemeris/positions.js';
 import { getSunPosition } from '../ephemeris/sun.js';
 import { MOON_MEAN_DAILY_MOTION, SIGN_NAMES } from './constants.js';
 import { birthToJD, calculateAge, getProgressedJD, targetToJD } from './progression-date.js';
-import type { ProgressionBirthData, ProgressionTargetDate, ProgressionType } from './types.js';
+import type {
+  ProgressedPlanet,
+  ProgressionBirthData,
+  ProgressionTargetDate,
+  ProgressionType,
+} from './types.js';
 
 // =============================================================================
 // TYPE DEFINITIONS
@@ -93,6 +99,7 @@ function longitudeToZodiac(longitude: number): {
   signName: string;
   degree: number;
   minute: number;
+  second: number;
   formatted: string;
 } {
   const normalized = normalizeLongitude(longitude);
@@ -101,11 +108,12 @@ function longitudeToZodiac(longitude: number): {
   const degree = Math.floor(positionInSign);
   const minuteDecimal = (positionInSign - degree) * 60;
   const minute = Math.floor(minuteDecimal);
+  const second = Math.round((minuteDecimal - minute) * 60);
 
   const signName = SIGN_NAMES[signIndex];
   const formatted = `${degree}°${minute.toString().padStart(2, '0')}' ${signName}`;
 
-  return { signIndex, signName, degree, minute, formatted };
+  return { signIndex, signName, degree, minute, second, formatted };
 }
 
 /**
@@ -167,12 +175,25 @@ function getLunarPhase(phaseAngle: number): { name: string; description: string 
 // =============================================================================
 
 /**
+ * Calculate longitude speed for Moon at a given JD.
+ */
+function calculateMoonSpeed(jd: number): number {
+  const pos1 = getMoonPosition(jd - 0.5);
+  const pos2 = getMoonPosition(jd + 0.5);
+  let diff = pos2.longitude - pos1.longitude;
+  // Handle wraparound
+  if (diff > 180) diff -= 360;
+  if (diff < -180) diff += 360;
+  return diff;
+}
+
+/**
  * Get progressed Moon position.
  *
  * @param birthJD - Julian Date of birth
  * @param targetJD - Julian Date to progress to
  * @param progressionType - Type of progression
- * @returns Progressed Moon position
+ * @returns Progressed Moon position matching ProgressedPlanet interface
  */
 export function getProgressedMoon(
   birthJD: number,
@@ -191,7 +212,6 @@ export function getProgressedMoon(
   // Calculate arc from natal (account for multiple cycles)
   const yearsElapsed = calculateAge(birthJD, targetJD);
   // Moon moves ~13°/day in secondary progressions = ~13°/year
-  // Total arc = yearsElapsed * 13° approximately
   const estimatedTotalArc = yearsElapsed * MOON_MEAN_DAILY_MOTION;
 
   // Calculate direct arc (may be < 360)
@@ -199,28 +219,32 @@ export function getProgressedMoon(
   while (directArc < 0) directArc += 360;
 
   // Determine how many full cycles (with small epsilon for floating point)
-  // Add 0.001 to handle cases like 359.9999...
   const fullCycles = Math.floor((estimatedTotalArc + 0.001) / 360);
   const actualArc = fullCycles * 360 + directArc;
 
+  // Calculate speed at progressed time
+  const speed = calculateMoonSpeed(progressedJD);
+
   return {
-    name: 'Moon',
+    // ProgressedPosition fields
+    longitude: progressed.longitude,
     natalLongitude: natal.longitude,
-    natalSignIndex: natalZodiac.signIndex,
-    natalSignName: natalZodiac.signName,
-    natalDegree: natalZodiac.degree,
-    natalMinute: natalZodiac.minute,
-    natalFormatted: natalZodiac.formatted,
-    progressedLongitude: progressed.longitude,
-    progressedSignIndex: progressedZodiac.signIndex,
-    progressedSignName: progressedZodiac.signName,
-    progressedDegree: progressedZodiac.degree,
-    progressedMinute: progressedZodiac.minute,
-    progressedFormatted: progressedZodiac.formatted,
     arcFromNatal: actualArc,
-    arcDirection: 'direct', // Moon always moves direct
+    signIndex: progressedZodiac.signIndex,
+    signName: progressedZodiac.signName,
+    degree: progressedZodiac.degree,
+    minute: progressedZodiac.minute,
+    second: progressedZodiac.second,
+    formatted: progressedZodiac.formatted,
     hasChangedSign: progressedZodiac.signIndex !== natalZodiac.signIndex,
+
+    // ProgressedPlanet-specific fields
+    name: 'Moon',
+    body: CelestialBody.Moon,
     isRetrograde: false, // Moon never retrogrades
+    longitudeSpeed: speed,
+    retrogradeChanged: false,
+    wasRetrograde: false,
   };
 }
 
@@ -306,7 +330,6 @@ export function calculateMoonSignTransits(
 
   let currentAge = 0;
   let currentSign = natalSign;
-  const _entryAge = 0;
 
   // Start from natal position within sign
   const natalPositionInSign = natal.longitude % 30;
@@ -456,8 +479,7 @@ export function formatProgressedMoonReport(report: ProgressedMoonReport): string
   const lines: string[] = [
     '=== Progressed Moon Report ===',
     '',
-    `Current Position: ${report.current.progressedFormatted}`,
-    `Natal Position: ${report.current.natalFormatted}`,
+    `Current Position: ${report.current.formatted}`,
     `Arc from Natal: ${report.current.arcFromNatal.toFixed(2)}°`,
     `Zodiac Cycles Completed: ${report.zodiacCyclesCompleted}`,
     '',

@@ -6,7 +6,7 @@ import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 import {
   calculateProgression,
-  formatProgressionResult,
+  formatProgressedChart,
   getExactAspects,
   getMoonProgressionReport,
   getSignChanges,
@@ -30,12 +30,12 @@ describe('progressions/progression-summary', () => {
       const target = { year: 2030, month: 1, day: 1 };
       const result = calculateProgression(J2000_BIRTH, target);
 
-      assert.equal(result.type, 'secondary');
-      assert.ok(result.birthJD > 0);
-      assert.ok(result.targetJD > result.birthJD);
-      assert.ok(result.ageAtTarget > 0);
+      assert.equal(result.config.type, 'secondary');
+      assert.ok(result.dates.natalJD > 0);
+      assert.ok(result.dates.targetJD > result.dates.natalJD);
+      assert.ok(result.dates.ageInYears > 0);
       assert.ok(result.solarArc > 0);
-      assert.ok(result.bodies.length > 0);
+      assert.ok(result.planets.length > 0);
       assert.ok(result.angles.ascendant);
       assert.ok(result.angles.midheaven);
       assert.ok(result.summary);
@@ -47,18 +47,17 @@ describe('progressions/progression-summary', () => {
       const secondary = calculateProgression(J2000_BIRTH, target, { type: 'secondary' });
       const solarArc = calculateProgression(J2000_BIRTH, target, { type: 'solar-arc' });
 
-      assert.equal(secondary.type, 'secondary');
-      assert.equal(solarArc.type, 'solar-arc');
+      assert.equal(secondary.config.type, 'secondary');
+      assert.equal(solarArc.config.type, 'solar-arc');
     });
 
     it('should include summary statistics', () => {
       const target = { year: 2030, month: 1, day: 1 };
       const result = calculateProgression(J2000_BIRTH, target);
 
-      assert.ok(typeof result.summary.totalAspects === 'number');
-      assert.ok(typeof result.summary.exactAspects === 'number');
-      assert.ok(Array.isArray(result.summary.bodiesChangedSign));
-      assert.ok(typeof result.summary.ascChangedSign === 'boolean');
+      assert.ok(Array.isArray(result.summary.exactAspects));
+      assert.ok(Array.isArray(result.summary.signChanges));
+      assert.ok(typeof result.summary.solarArc === 'number');
     });
   });
 
@@ -79,7 +78,7 @@ describe('progressions/progression-summary', () => {
       const exact = getExactAspects(J2000_BIRTH, target);
 
       for (const aspect of exact) {
-        assert.ok(aspect.isExact);
+        assert.ok(aspect.phase === 'exact');
       }
     });
   });
@@ -95,11 +94,11 @@ describe('progressions/progression-summary', () => {
     });
   });
 
-  describe('formatProgressionResult', () => {
+  describe('formatProgressedChart', () => {
     it('should format result nicely', () => {
       const target = { year: 2030, month: 1, day: 1 };
       const result = calculateProgression(J2000_BIRTH, target);
-      const formatted = formatProgressionResult(result);
+      const formatted = formatProgressedChart(result);
 
       assert.ok(formatted.includes('PROGRESSED CHART'));
       assert.ok(formatted.includes('SECONDARY'));
