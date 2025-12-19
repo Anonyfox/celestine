@@ -7,12 +7,11 @@
 
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-import { birthToJD, targetToJD } from './progression-date.js';
 import {
   calculateProgressionAspects,
-  detectProgressionAspects,
   detectProgressedToNatalAspects,
   detectProgressedToProgressedAspects,
+  detectProgressionAspects,
   formatAspect,
   formatAspects,
   getAspectsByType,
@@ -21,7 +20,8 @@ import {
   getStrongestAspect,
   sortByStrength,
 } from './progressed-aspects.js';
-import { getProgressedPosition, getNatalPosition } from './progressed-positions.js';
+import { getNatalPosition, getProgressedPosition } from './progressed-positions.js';
+import { birthToJD } from './progression-date.js';
 
 // =============================================================================
 // REFERENCE DATA
@@ -345,4 +345,3 @@ describe('progressions/progressed-aspects', () => {
     });
   });
 });
-

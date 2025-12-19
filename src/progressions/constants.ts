@@ -409,4 +409,3 @@ export const MIN_BIRTH_YEAR = 1800;
  * Far future calculations have decreasing accuracy.
  */
 export const MAX_TARGET_YEAR = 2200;
-

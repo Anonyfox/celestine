@@ -109,4 +109,3 @@ describe('progressions/progression-summary', () => {
     });
   });
 });
-

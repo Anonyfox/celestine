@@ -36,9 +36,10 @@ export type ProgressionType = 'secondary' | 'solar-arc' | 'minor' | 'tertiary';
  *
  * @remarks
  * - 'solar-arc': ASC/MC advance by the solar arc (simpler, more common)
- * - 'true-angles': Astronomically recalculate for progressed time
+ * - 'time-based': Astronomically recalculate for progressed time
+ * - 'true-angles': Alias for 'time-based' (legacy)
  */
-export type AngleProgressionMethod = 'solar-arc' | 'true-angles';
+export type AngleProgressionMethod = 'solar-arc' | 'time-based' | 'true-angles';
 
 /**
  * Phase of a progressed aspect.
@@ -597,4 +598,3 @@ export interface ProgressionSearchResult {
   /** Events grouped by body */
   byBody: Record<string, ProgressionEvent[]>;
 }
-

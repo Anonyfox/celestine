@@ -28,17 +28,24 @@
 
 export type {
   AngleProgressionMethod,
-  ProgressedAngle,
-  ProgressedBody,
-  ProgressionAspect,
+  ProgressedAngles,
+  ProgressedAspect,
+  ProgressedAspectPhase,
+  ProgressedChart,
+  ProgressedDate,
+  ProgressedMoonInfo,
+  ProgressedPlanet,
+  ProgressedPosition,
+  ProgressedRetrogradeChange,
+  ProgressedSignChange,
   ProgressionBirthData,
   ProgressionConfig,
-  ProgressionError,
-  ProgressionResult,
   ProgressionSummary,
   ProgressionTargetDate,
   ProgressionType,
 } from './types.js';
+
+export { ProgressionCalculationError, ProgressionValidationError } from './types.js';
 
 // =============================================================================
 // CONSTANTS
@@ -47,33 +54,27 @@ export type {
 export {
   // Astronomical constants
   DAYS_PER_YEAR,
-  MOON_MEAN_DAILY_MOTION,
-  SUN_MEAN_DAILY_MOTION,
-  SYNODIC_MONTH_DAYS,
-  TROPICAL_MONTH_DAYS,
-
-  // Progression rates
-  MINOR_PROGRESSION_RATE,
-  PROGRESSION_RATES,
-  SECONDARY_PROGRESSION_RATE,
-  TERTIARY_PROGRESSION_RATE,
-
-  // Orbs
-  EXACT_THRESHOLD,
-  PROGRESSION_ORBS,
-
   // Body lists
   DEFAULT_PROGRESSION_BODIES,
-  RETROGRADE_CAPABLE_BODIES,
-
-  // Aspect lists
-  MAJOR_PROGRESSION_ASPECTS,
-
   // Default config
   DEFAULT_PROGRESSION_CONFIG,
-
+  // Orbs
+  EXACT_THRESHOLD,
+  // Aspect lists
+  MAJOR_PROGRESSION_ASPECTS,
+  // Progression rates
+  MINOR_PROGRESSION_RATE,
+  MOON_MEAN_DAILY_MOTION,
+  PROGRESSION_ORBS,
+  PROGRESSION_RATES,
+  RETROGRADE_CAPABLE_BODIES,
+  SECONDARY_PROGRESSION_RATE,
   // Zodiac
   SIGN_NAMES,
+  SUN_MEAN_DAILY_MOTION,
+  SYNODIC_MONTH_DAYS,
+  TERTIARY_PROGRESSION_RATE,
+  TROPICAL_MONTH_DAYS,
 } from './constants.js';
 
 // =============================================================================
@@ -82,88 +83,86 @@ export {
 
 // Date calculations
 export {
+  ageToTargetJD,
   birthToJD,
-  targetToJD,
   calculateAge,
   calculateAgeInDays,
-  ageToTargetJD,
-  getProgressedJD,
   calculateProgressedJD,
+  getProgressedJD,
   getProgressionDates,
+  targetToJD,
   validateProgressionDates,
 } from './progression-date.js';
 
 // Solar arc
 export {
-  calculateSolarArc,
-  calculateSolarArcFromDates,
-  estimateSolarArc,
   applySolarArc,
   applySolarArcToMany,
-  getNatalSunLongitude,
-  getProgressedSunLongitude,
-  estimateAgeForSolarArc,
+  calculateSolarArc,
+  calculateSolarArcFromDates,
   estimateAgeForDirectedPosition,
-  solarArcForAspect,
+  estimateAgeForSolarArc,
+  estimateSolarArc,
   formatSolarArc,
   formatSolarArcDMS,
+  getNatalSunLongitude,
+  getProgressedSunLongitude,
+  solarArcForAspect,
 } from './solar-arc.js';
 
 // =============================================================================
 // POSITION CALCULATIONS
 // =============================================================================
 
-// Progressed positions
-export {
-  getNatalPosition,
-  getProgressedPosition,
-  getProgressedPositions,
-  getAllProgressedPositions,
-  calculateProgressedPositions,
-  getProgressedBodyFromDates,
-  getBodiesWithSignChange,
-  getRetrogradeBodies,
-  getBodyWithLargestArc,
-  sortByLongitude,
-  groupBySign,
-  type ProgressedBodyName,
-} from './progressed-positions.js';
-
 // Progressed angles
 export {
+  calculateProgressedAngles,
+  estimateAgeForASCSign,
+  estimateAgeForMCSign,
+  formatProgressedAngles,
   getNatalAngles,
   getNatalAnglesFromBirth,
   getProgressedAngles,
   getProgressedAnglesSolarArc,
   getProgressedAnglesTimeBased,
-  calculateProgressedAngles,
   getProgressedASC,
   getProgressedMC,
   hasASCChangedSign,
   hasMCChangedSign,
-  estimateAgeForASCSign,
-  estimateAgeForMCSign,
-  formatProgressedAngles,
-  type ProgressedAngles,
 } from './progressed-angles.js';
+// Progressed positions
+export {
+  calculateProgressedPositions,
+  getAllProgressedPositions,
+  getBodiesWithSignChange,
+  getBodyWithLargestArc,
+  getNatalPosition,
+  getProgressedBodyFromDates,
+  getProgressedPosition,
+  getProgressedPositions,
+  getRetrogradeBodies,
+  groupBySign,
+  type ProgressedBodyName,
+  sortByLongitude,
+} from './progressed-positions.js';
 
 // =============================================================================
 // MOON SPECIALIZATIONS
 // =============================================================================
 
 export {
-  getProgressedMoon,
-  getProgressedMoonFromDates,
-  getProgressedLunarPhase,
   calculateMoonSignTransits,
-  getAgeAtNextMoonSignChange,
-  getMoonZodiacCycles,
-  getMoonReturnAges,
-  getProgressedMoonReport,
   formatMoonTransit,
   formatProgressedMoonReport,
-  type ProgressedLunarPhase,
+  getAgeAtNextMoonSignChange,
+  getMoonReturnAges,
+  getMoonZodiacCycles,
+  getProgressedLunarPhase,
+  getProgressedMoon,
+  getProgressedMoonFromDates,
+  getProgressedMoonReport,
   type MoonSignTransit,
+  type ProgressedLunarPhase,
   type ProgressedMoonReport,
 } from './progressed-moon.js';
 
@@ -172,19 +171,19 @@ export {
 // =============================================================================
 
 export {
-  detectProgressedToNatalAspects,
-  detectProgressedToProgressedAspects,
-  detectProgressionAspects,
-  calculateProgressionAspects,
-  getAspectsToNatalBody,
-  getAspectsFromProgressedBody,
-  getStrongestAspect,
-  getAspectsByType,
-  sortByStrength,
-  formatAspect,
-  formatAspects,
   type AspectConfig,
   type AspectDetectionResult,
+  calculateProgressedAspects,
+  detectProgressedToNatalAspects,
+  detectProgressedToProgressedAspects,
+  detectProgressedAspects,
+  formatAspect,
+  formatAspects,
+  getAspectsByType,
+  getAspectsFromProgressedBody,
+  getAspectsToNatalBody,
+  getStrongestAspect,
+  sortByStrength,
 } from './progressed-aspects.js';
 
 // =============================================================================
@@ -193,9 +192,8 @@ export {
 
 export {
   calculateProgression,
-  getMoonProgressionReport,
+  formatProgressedChart,
   getExactAspects,
+  getMoonProgressionReport,
   getSignChanges,
-  formatProgressionResult,
 } from './progression-summary.js';
-

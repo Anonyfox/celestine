@@ -20,14 +20,14 @@
 import { calculateAngles } from '../houses/angles.js';
 import { meanObliquity } from '../houses/obliquity.js';
 import type { HouseSystem } from '../houses/types.js';
-import { localSiderealTime } from '../time/local-sidereal-time.js';
 import { toJulianCenturies } from '../time/julian-centuries.js';
+import { localSiderealTime } from '../time/local-sidereal-time.js';
 import { SIGN_NAMES } from './constants.js';
 import { birthToJD, getProgressedJD, targetToJD } from './progression-date.js';
-import { calculateSolarArc, applySolarArc } from './solar-arc.js';
+import { applySolarArc, calculateSolarArc } from './solar-arc.js';
 import type {
   AngleProgressionMethod,
-  ProgressedAngle,
+  ProgressedPosition,
   ProgressionBirthData,
   ProgressionTargetDate,
   ProgressionType,
@@ -41,10 +41,10 @@ import type {
  * Complete progressed angles result.
  */
 export interface ProgressedAngles {
-  ascendant: ProgressedAngle;
-  midheaven: ProgressedAngle;
-  descendant: ProgressedAngle;
-  imumCoeli: ProgressedAngle;
+  ascendant: ProgressedPosition;
+  midheaven: ProgressedPosition;
+  descendant: ProgressedPosition;
+  imumCoeli: ProgressedPosition;
   solarArc: number;
   method: AngleProgressionMethod;
 }
@@ -94,7 +94,7 @@ function createProgressedAngle(
   name: 'ASC' | 'MC' | 'DSC' | 'IC',
   natalLongitude: number,
   progressedLongitude: number,
-): ProgressedAngle {
+): ProgressedPosition {
   const natalZodiac = longitudeToZodiac(natalLongitude);
   const progressedZodiac = longitudeToZodiac(progressedLongitude);
 
@@ -104,20 +104,15 @@ function createProgressedAngle(
   while (arcFromNatal < -180) arcFromNatal += 360;
 
   return {
-    name,
+    longitude: progressedLongitude,
     natalLongitude,
-    natalSignIndex: natalZodiac.signIndex,
-    natalSignName: natalZodiac.signName,
-    natalDegree: natalZodiac.degree,
-    natalMinute: natalZodiac.minute,
-    natalFormatted: natalZodiac.formatted,
-    progressedLongitude,
-    progressedSignIndex: progressedZodiac.signIndex,
-    progressedSignName: progressedZodiac.signName,
-    progressedDegree: progressedZodiac.degree,
-    progressedMinute: progressedZodiac.minute,
-    progressedFormatted: progressedZodiac.formatted,
     arcFromNatal: Math.abs(arcFromNatal),
+    signIndex: progressedZodiac.signIndex,
+    signName: progressedZodiac.signName,
+    degree: progressedZodiac.degree,
+    minute: progressedZodiac.minute,
+    second: progressedZodiac.second,
+    formatted: progressedZodiac.formatted,
     hasChangedSign: progressedZodiac.signIndex !== natalZodiac.signIndex,
   };
 }
@@ -209,7 +204,11 @@ export function getProgressedAnglesSolarArc(
   return {
     ascendant: createProgressedAngle('ASC', natal.ascendant, progressedASC),
     midheaven: createProgressedAngle('MC', natal.midheaven, progressedMC),
-    descendant: createProgressedAngle('DSC', normalizeLongitude(natal.ascendant + 180), progressedDSC),
+    descendant: createProgressedAngle(
+      'DSC',
+      normalizeLongitude(natal.ascendant + 180),
+      progressedDSC,
+    ),
     imumCoeli: createProgressedAngle('IC', normalizeLongitude(natal.midheaven + 180), progressedIC),
     solarArc,
     method: 'solar-arc',
@@ -464,4 +463,3 @@ export function formatProgressedAngles(angles: ProgressedAngles): string {
 
   return lines.join('\n');
 }
-

@@ -18,14 +18,9 @@
 
 import { getMoonPosition } from '../ephemeris/moon.js';
 import { getSunPosition } from '../ephemeris/sun.js';
-import { SIGN_NAMES, MOON_MEAN_DAILY_MOTION } from './constants.js';
-import { birthToJD, getProgressedJD, targetToJD, calculateAge } from './progression-date.js';
-import type {
-  ProgressedBody,
-  ProgressionBirthData,
-  ProgressionTargetDate,
-  ProgressionType,
-} from './types.js';
+import { MOON_MEAN_DAILY_MOTION, SIGN_NAMES } from './constants.js';
+import { birthToJD, calculateAge, getProgressedJD, targetToJD } from './progression-date.js';
+import type { ProgressionBirthData, ProgressionTargetDate, ProgressionType } from './types.js';
 
 // =============================================================================
 // TYPE DEFINITIONS
@@ -66,7 +61,7 @@ export interface MoonSignTransit {
  */
 export interface ProgressedMoonReport {
   /** Current progressed Moon position */
-  current: ProgressedBody;
+  current: ProgressedPlanet;
   /** Lunar phase relative to progressed Sun */
   phase: ProgressedLunarPhase;
   /** Timeline of sign transits */
@@ -183,7 +178,7 @@ export function getProgressedMoon(
   birthJD: number,
   targetJD: number,
   progressionType: ProgressionType = 'secondary',
-): ProgressedBody {
+): ProgressedPlanet {
   // Get natal Moon
   const natal = getMoonPosition(birthJD);
   const natalZodiac = longitudeToZodiac(natal.longitude);
@@ -236,7 +231,7 @@ export function getProgressedMoonFromDates(
   birth: ProgressionBirthData,
   target: ProgressionTargetDate,
   progressionType: ProgressionType = 'secondary',
-): ProgressedBody {
+): ProgressedPlanet {
   const birthJD = birthToJD(birth);
   const targetJD = targetToJD(target);
   return getProgressedMoon(birthJD, targetJD, progressionType);
@@ -311,7 +306,7 @@ export function calculateMoonSignTransits(
 
   let currentAge = 0;
   let currentSign = natalSign;
-  let entryAge = 0;
+  const _entryAge = 0;
 
   // Start from natal position within sign
   const natalPositionInSign = natal.longitude % 30;
@@ -389,7 +384,7 @@ export function getMoonZodiacCycles(
   const totalDegrees = yearsElapsed * MOON_MEAN_DAILY_MOTION;
   // Add epsilon for floating point precision
   const complete = Math.floor((totalDegrees + 0.001) / 360);
-  const fractional = ((totalDegrees % 360) + 360) % 360 / 360;
+  const fractional = (((totalDegrees % 360) + 360) % 360) / 360;
 
   return { complete, fractional, totalDegrees };
 }
@@ -481,4 +476,3 @@ export function formatProgressedMoonReport(report: ProgressedMoonReport): string
 
   return lines.join('\n');
 }
-

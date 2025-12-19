@@ -11,7 +11,6 @@
 
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-import { birthToJD, targetToJD } from './progression-date.js';
 import {
   calculateProgressedPositions,
   getAllProgressedPositions,
@@ -23,9 +22,10 @@ import {
   getProgressedPositions,
   getRetrogradeBodies,
   groupBySign,
-  sortByLongitude,
   type ProgressedBodyName,
+  sortByLongitude,
 } from './progressed-positions.js';
+import { birthToJD } from './progression-date.js';
 
 // =============================================================================
 // REFERENCE DATA
@@ -103,10 +103,7 @@ describe('progressions/progressed-positions', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       for (const body of ALL_BODIES) {
         const pos = getNatalPosition(body, birthJD);
-        assert.ok(
-          pos.longitude >= 0 && pos.longitude < 360,
-          `${body}: ${pos.longitude}`,
-        );
+        assert.ok(pos.longitude >= 0 && pos.longitude < 360, `${body}: ${pos.longitude}`);
       }
     });
 
@@ -495,10 +492,7 @@ describe('progressions/progressed-positions', () => {
       // Moon moves ~13° per day in secondary progressions
       // After 30 days (30 years), Moon should have moved ~390° (full circle+)
       // This means Moon arc should be much larger than Sun arc (wrapped)
-      assert.ok(
-        moon.arcFromNatal !== sun.arcFromNatal,
-        'Moon should have different arc than Sun',
-      );
+      assert.ok(moon.arcFromNatal !== sun.arcFromNatal, 'Moon should have different arc than Sun');
     });
 
     it('should produce consistent results across progression types', () => {
@@ -516,4 +510,3 @@ describe('progressions/progressed-positions', () => {
     });
   });
 });
-

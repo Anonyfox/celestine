@@ -15,23 +15,22 @@
  * @see IMPL.md Section 2 for calculation methodology
  */
 
-import { getSunPosition } from '../ephemeris/sun.js';
+import { getChironPosition } from '../ephemeris/chiron.js';
 import { getMoonPosition } from '../ephemeris/moon.js';
-import { getMercuryPosition } from '../ephemeris/planets/mercury.js';
-import { getVenusPosition } from '../ephemeris/planets/venus.js';
-import { getMarsPosition } from '../ephemeris/planets/mars.js';
+import { getTrueNode } from '../ephemeris/nodes.js';
 import { getJupiterPosition } from '../ephemeris/planets/jupiter.js';
-import { getSaturnPosition } from '../ephemeris/planets/saturn.js';
-import { getUranusPosition } from '../ephemeris/planets/uranus.js';
+import { getMarsPosition } from '../ephemeris/planets/mars.js';
+import { getMercuryPosition } from '../ephemeris/planets/mercury.js';
 import { getNeptunePosition } from '../ephemeris/planets/neptune.js';
 import { getPlutoPosition } from '../ephemeris/planets/pluto.js';
-import { getChironPosition } from '../ephemeris/chiron.js';
-import { getTrueNode } from '../ephemeris/nodes.js';
+import { getSaturnPosition } from '../ephemeris/planets/saturn.js';
+import { getUranusPosition } from '../ephemeris/planets/uranus.js';
+import { getVenusPosition } from '../ephemeris/planets/venus.js';
+import { getSunPosition } from '../ephemeris/sun.js';
 import { DEFAULT_PROGRESSION_BODIES, SIGN_NAMES } from './constants.js';
 import { birthToJD, getProgressedJD, targetToJD } from './progression-date.js';
 import { applySolarArc, calculateSolarArc } from './solar-arc.js';
 import type {
-  ProgressedBody,
   ProgressionBirthData,
   ProgressionConfig,
   ProgressionTargetDate,
@@ -310,7 +309,9 @@ export function calculateProgressedPositions(
   const birthJD = birthToJD(birth);
   const targetJD = targetToJD(target);
   const progressionType = config?.type ?? 'secondary';
-  const bodies = (config?.bodies as ProgressedBodyName[]) ?? (DEFAULT_PROGRESSION_BODIES as ProgressedBodyName[]);
+  const bodies =
+    (config?.bodies as ProgressedBodyName[]) ??
+    (DEFAULT_PROGRESSION_BODIES as ProgressedBodyName[]);
 
   return getProgressedPositions(bodies, birthJD, targetJD, progressionType);
 }
@@ -401,4 +402,3 @@ export function groupBySign(positions: ProgressedBody[]): Map<string, Progressed
 
   return result;
 }
-

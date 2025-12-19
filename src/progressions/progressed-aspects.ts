@@ -18,24 +18,18 @@
 
 import type { AspectType } from '../aspects/types.js';
 import {
-  PROGRESSION_ORBS,
-  MAJOR_PROGRESSION_ASPECTS,
   DEFAULT_PROGRESSION_BODIES,
   EXACT_THRESHOLD,
+  MAJOR_PROGRESSION_ASPECTS,
+  PROGRESSION_ORBS,
 } from './constants.js';
-import { birthToJD, targetToJD } from './progression-date.js';
 import {
-  getProgressedPosition,
   getNatalPosition,
+  getProgressedPosition,
   type ProgressedBodyName,
 } from './progressed-positions.js';
-import type {
-  ProgressedBody,
-  ProgressionAspect,
-  ProgressionBirthData,
-  ProgressionTargetDate,
-  ProgressionType,
-} from './types.js';
+import { birthToJD, targetToJD } from './progression-date.js';
+import type { ProgressionBirthData, ProgressionTargetDate, ProgressionType } from './types.js';
 
 // =============================================================================
 // TYPE DEFINITIONS
@@ -62,13 +56,13 @@ export interface AspectConfig {
  */
 export interface AspectDetectionResult {
   /** All detected aspects */
-  aspects: ProgressionAspect[];
+  aspects: ProgressedAspect[];
   /** Exact or near-exact aspects */
-  exactAspects: ProgressionAspect[];
+  exactAspects: ProgressedAspect[];
   /** Applying aspects (getting closer) */
-  applyingAspects: ProgressionAspect[];
+  applyingAspects: ProgressedAspect[];
   /** Separating aspects (getting further) */
-  separatingAspects: ProgressionAspect[];
+  separatingAspects: ProgressedAspect[];
   /** Summary statistics */
   summary: {
     total: number;
@@ -102,10 +96,7 @@ function angularSeparation(long1: number, long2: number): number {
  * @param orbs - Optional orb overrides
  * @returns Orb in degrees
  */
-function getOrb(
-  aspectType: AspectType,
-  orbs?: Partial<Record<AspectType, number>>,
-): number {
+function getOrb(aspectType: AspectType, orbs?: Partial<Record<AspectType, number>>): number {
   if (orbs?.[aspectType] !== undefined) {
     return orbs[aspectType]!;
   }
@@ -120,11 +111,7 @@ function getOrb(
  * @param orb - Maximum orb
  * @returns Strength (0-100), 100 = exact
  */
-function calculateStrength(
-  separation: number,
-  exactAngle: number,
-  orb: number,
-): number {
+function calculateStrength(separation: number, exactAngle: number, orb: number): number {
   const deviation = Math.abs(separation - exactAngle);
   if (deviation > orb) return 0;
   return Math.round((1 - deviation / orb) * 100);
@@ -169,11 +156,11 @@ function determineAspectPhase(
  * @returns Array of detected aspects
  */
 export function detectProgressedToNatalAspects(
-  progressedBody: ProgressedBody,
+  progressedBody: ProgressedPlanet,
   natalPositions: Array<{ name: string; longitude: number }>,
   config: AspectConfig = {},
-): ProgressionAspect[] {
-  const aspects: ProgressionAspect[] = [];
+): ProgressedAspect[] {
+  const aspects: ProgressedAspect[] = [];
   const aspectTypes = config.aspectTypes ?? [...MAJOR_PROGRESSION_ASPECTS];
   const exactThreshold = config.exactThreshold ?? EXACT_THRESHOLD;
   const minimumStrength = config.minimumStrength ?? 0;
@@ -182,10 +169,7 @@ export function detectProgressedToNatalAspects(
     // Skip self-aspects
     if (natal.name === progressedBody.name) continue;
 
-    const separation = angularSeparation(
-      progressedBody.progressedLongitude,
-      natal.longitude,
-    );
+    const separation = angularSeparation(progressedBody.progressedLongitude, natal.longitude);
 
     for (const aspectType of aspectTypes) {
       const exactAngle = getAspectAngle(aspectType);
@@ -233,10 +217,10 @@ export function detectProgressedToNatalAspects(
  * @returns Array of detected progressed-to-progressed aspects
  */
 export function detectProgressedToProgressedAspects(
-  positions: ProgressedBody[],
+  positions: ProgressedPlanet[],
   config: AspectConfig = {},
-): ProgressionAspect[] {
-  const aspects: ProgressionAspect[] = [];
+): ProgressedAspect[] {
+  const aspects: ProgressedAspect[] = [];
   const aspectTypes = config.aspectTypes ?? [...MAJOR_PROGRESSION_ASPECTS];
   const exactThreshold = config.exactThreshold ?? EXACT_THRESHOLD;
   const minimumStrength = config.minimumStrength ?? 0;
@@ -246,10 +230,7 @@ export function detectProgressedToProgressedAspects(
       const body1 = positions[i];
       const body2 = positions[j];
 
-      const separation = angularSeparation(
-        body1.progressedLongitude,
-        body2.progressedLongitude,
-      );
+      const separation = angularSeparation(body1.progressedLongitude, body2.progressedLongitude);
 
       for (const aspectType of aspectTypes) {
         const exactAngle = getAspectAngle(aspectType);
@@ -291,11 +272,14 @@ function getAspectAngle(aspectType: AspectType): number {
     square: 90,
     sextile: 60,
     quincunx: 150,
-    semisextile: 30,
-    semisquare: 45,
+    'semi-sextile': 30,
+    'semi-square': 45,
     sesquiquadrate: 135,
     quintile: 72,
     biquintile: 144,
+    septile: 51.43,
+    novile: 40,
+    decile: 36,
   };
   return angles[aspectType] ?? 0;
 }
@@ -313,13 +297,13 @@ function getAspectAngle(aspectType: AspectType): number {
  * @param config - Aspect detection configuration
  * @returns Complete aspect detection result
  */
-export function detectProgressionAspects(
+export function detectProgressedAspects(
   birthJD: number,
   targetJD: number,
   progressionType: ProgressionType = 'secondary',
   config: AspectConfig = {},
 ): AspectDetectionResult {
-  const bodies = (DEFAULT_PROGRESSION_BODIES as unknown as ProgressedBodyName[]);
+  const bodies = DEFAULT_PROGRESSION_BODIES as unknown as ProgressedBodyName[];
 
   // Get natal positions
   const natalPositions = bodies.map((name) => ({
@@ -333,14 +317,14 @@ export function detectProgressionAspects(
   );
 
   // Detect progressed-to-natal aspects
-  const pToNAspects: ProgressionAspect[] = [];
+  const pToNAspects: ProgressedAspect[] = [];
   for (const progressed of progressedPositions) {
     const aspectsForBody = detectProgressedToNatalAspects(progressed, natalPositions, config);
     pToNAspects.push(...aspectsForBody);
   }
 
   // Optionally detect progressed-to-progressed aspects
-  let pToPAspects: ProgressionAspect[] = [];
+  let pToPAspects: ProgressedAspect[] = [];
   if (config.includeProgressedToProgressed) {
     pToPAspects = detectProgressedToProgressedAspects(progressedPositions, config);
   }
@@ -369,7 +353,7 @@ export function detectProgressionAspects(
 /**
  * Detect aspects from birth data and target date.
  */
-export function calculateProgressionAspects(
+export function calculateProgressedAspects(
   birth: ProgressionBirthData,
   target: ProgressionTargetDate,
   progressionType: ProgressionType = 'secondary',
@@ -377,7 +361,7 @@ export function calculateProgressionAspects(
 ): AspectDetectionResult {
   const birthJD = birthToJD(birth);
   const targetJD = targetToJD(target);
-  return detectProgressionAspects(birthJD, targetJD, progressionType, config);
+  return detectProgressedAspects(birthJD, targetJD, progressionType, config);
 }
 
 // =============================================================================
@@ -392,9 +376,9 @@ export function calculateProgressionAspects(
  * @returns Aspects involving that natal body
  */
 export function getAspectsToNatalBody(
-  aspects: ProgressionAspect[],
+  aspects: ProgressedAspect[],
   bodyName: string,
-): ProgressionAspect[] {
+): ProgressedAspect[] {
   return aspects.filter((a) => a.natalBody === bodyName);
 }
 
@@ -406,36 +390,34 @@ export function getAspectsToNatalBody(
  * @returns Aspects from that progressed body
  */
 export function getAspectsFromProgressedBody(
-  aspects: ProgressionAspect[],
+  aspects: ProgressedAspect[],
   bodyName: string,
-): ProgressionAspect[] {
+): ProgressedAspect[] {
   return aspects.filter((a) => a.progressedBody === bodyName);
 }
 
 /**
  * Get the strongest aspect.
  */
-export function getStrongestAspect(aspects: ProgressionAspect[]): ProgressionAspect | undefined {
+export function getStrongestAspect(aspects: ProgressedAspect[]): ProgressedAspect | undefined {
   if (aspects.length === 0) return undefined;
-  return aspects.reduce((max, current) =>
-    current.strength > max.strength ? current : max,
-  );
+  return aspects.reduce((max, current) => (current.strength > max.strength ? current : max));
 }
 
 /**
  * Get aspects by type.
  */
 export function getAspectsByType(
-  aspects: ProgressionAspect[],
+  aspects: ProgressedAspect[],
   aspectType: AspectType,
-): ProgressionAspect[] {
+): ProgressedAspect[] {
   return aspects.filter((a) => a.aspectType === aspectType);
 }
 
 /**
  * Sort aspects by strength (strongest first).
  */
-export function sortByStrength(aspects: ProgressionAspect[]): ProgressionAspect[] {
+export function sortByStrength(aspects: ProgressedAspect[]): ProgressedAspect[] {
   return [...aspects].sort((a, b) => b.strength - a.strength);
 }
 
@@ -446,11 +428,13 @@ export function sortByStrength(aspects: ProgressionAspect[]): ProgressionAspect[
 /**
  * Format aspect for display.
  */
-export function formatAspect(aspect: ProgressionAspect): string {
+export function formatAspect(aspect: ProgressedAspect): string {
   const exactMarker = aspect.isExact ? '★' : '';
   const phase = aspect.isApplying ? 'applying' : 'separating';
-  return `${aspect.progressedBody} ${aspect.aspectType} ${aspect.natalBody} ` +
-    `(${aspect.orb.toFixed(2)}° orb, ${aspect.strength}% strength, ${phase})${exactMarker}`;
+  return (
+    `${aspect.progressedBody} ${aspect.aspectType} ${aspect.natalBody} ` +
+    `(${aspect.orb.toFixed(2)}° orb, ${aspect.strength}% strength, ${phase})${exactMarker}`
+  );
 }
 
 /**
@@ -485,4 +469,3 @@ export function formatAspects(result: AspectDetectionResult): string {
 
   return lines.join('\n');
 }
-

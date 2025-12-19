@@ -592,7 +592,7 @@ Calculate how the natal chart evolves over time using secondary progressions, so
 import {
   progressions,
   calculateProgression,
-  formatProgressionResult,
+  formatProgressedChart,
 } from "celestine";
 
 // Define birth data
@@ -656,7 +656,7 @@ const solarArc = progressions.calculateSolarArc(
 console.log(`Solar Arc: ${progressions.formatSolarArc(solarArc)}`);
 
 // Format complete result
-console.log(formatProgressionResult(result));
+console.log(formatProgressedChart(result));
 ```
 
 **Progression Types:**

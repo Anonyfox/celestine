@@ -11,7 +11,6 @@
 
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-import { birthToJD, targetToJD } from './progression-date.js';
 import {
   calculateProgressedAngles,
   estimateAgeForASCSign,
@@ -27,6 +26,7 @@ import {
   hasASCChangedSign,
   hasMCChangedSign,
 } from './progressed-angles.js';
+import { birthToJD } from './progression-date.js';
 
 // =============================================================================
 // REFERENCE DATA
@@ -65,7 +65,7 @@ const EINSTEIN_BIRTH = {
 /**
  * New York birth location
  */
-const NYC_BIRTH = {
+const _NYC_BIRTH = {
   year: 2000,
   month: 6,
   day: 21,
@@ -106,7 +106,12 @@ describe('progressions/progressed-angles', () => {
 
     it('should work with different house systems', () => {
       const birthJD = birthToJD(J2000_BIRTH);
-      const placidus = getNatalAngles(birthJD, J2000_BIRTH.latitude, J2000_BIRTH.longitude, 'placidus');
+      const placidus = getNatalAngles(
+        birthJD,
+        J2000_BIRTH.latitude,
+        J2000_BIRTH.longitude,
+        'placidus',
+      );
       const koch = getNatalAngles(birthJD, J2000_BIRTH.latitude, J2000_BIRTH.longitude, 'koch');
 
       // ASC should be the same regardless of house system
@@ -209,7 +214,9 @@ describe('progressions/progressed-angles', () => {
         J2000_BIRTH.longitude,
       );
 
-      let diff = Math.abs(angles.descendant.progressedLongitude - angles.ascendant.progressedLongitude);
+      let diff = Math.abs(
+        angles.descendant.progressedLongitude - angles.ascendant.progressedLongitude,
+      );
       if (diff > 180) diff = 360 - diff;
       assert.ok(Math.abs(diff - 180) < 0.1, `DSC should be 180° from ASC, diff: ${diff}`);
     });
@@ -224,7 +231,9 @@ describe('progressions/progressed-angles', () => {
         J2000_BIRTH.longitude,
       );
 
-      let diff = Math.abs(angles.imumCoeli.progressedLongitude - angles.midheaven.progressedLongitude);
+      let diff = Math.abs(
+        angles.imumCoeli.progressedLongitude - angles.midheaven.progressedLongitude,
+      );
       if (diff > 180) diff = 360 - diff;
       assert.ok(Math.abs(diff - 180) < 0.1, `IC should be 180° from MC, diff: ${diff}`);
     });
@@ -330,12 +339,7 @@ describe('progressions/progressed-angles', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
 
-      const asc = getProgressedASC(
-        birthJD,
-        targetJD,
-        J2000_BIRTH.latitude,
-        J2000_BIRTH.longitude,
-      );
+      const asc = getProgressedASC(birthJD, targetJD, J2000_BIRTH.latitude, J2000_BIRTH.longitude);
 
       assert.equal(asc.name, 'ASC');
       assert.ok(asc.progressedLongitude >= 0);
@@ -347,12 +351,7 @@ describe('progressions/progressed-angles', () => {
       const birthJD = birthToJD(J2000_BIRTH);
       const targetJD = birthJD + 30 * 365.25;
 
-      const mc = getProgressedMC(
-        birthJD,
-        targetJD,
-        J2000_BIRTH.latitude,
-        J2000_BIRTH.longitude,
-      );
+      const mc = getProgressedMC(birthJD, targetJD, J2000_BIRTH.latitude, J2000_BIRTH.longitude);
 
       assert.equal(mc.name, 'MC');
       assert.ok(mc.progressedLongitude >= 0);
@@ -469,10 +468,7 @@ describe('progressions/progressed-angles', () => {
       const angles = calculateProgressedAngles(EINSTEIN_BIRTH, nobelTarget);
 
       // Age at Nobel ≈ 42.74 years → solar arc ≈ 42.74°
-      assert.ok(
-        angles.solarArc > 42 && angles.solarArc < 44,
-        `Solar arc: ${angles.solarArc}`,
-      );
+      assert.ok(angles.solarArc > 42 && angles.solarArc < 44, `Solar arc: ${angles.solarArc}`);
     });
 
     it('should maintain opposite relationship for all progressions', () => {
@@ -488,7 +484,9 @@ describe('progressions/progressed-angles', () => {
         );
 
         // ASC-DSC should be opposite
-        let ascDsc = Math.abs(angles.descendant.progressedLongitude - angles.ascendant.progressedLongitude);
+        let ascDsc = Math.abs(
+          angles.descendant.progressedLongitude - angles.ascendant.progressedLongitude,
+        );
         if (ascDsc > 180) ascDsc = 360 - ascDsc;
         assert.ok(
           Math.abs(ascDsc - 180) < 0.1,
@@ -496,7 +494,9 @@ describe('progressions/progressed-angles', () => {
         );
 
         // MC-IC should be opposite
-        let mcIc = Math.abs(angles.imumCoeli.progressedLongitude - angles.midheaven.progressedLongitude);
+        let mcIc = Math.abs(
+          angles.imumCoeli.progressedLongitude - angles.midheaven.progressedLongitude,
+        );
         if (mcIc > 180) mcIc = 360 - mcIc;
         assert.ok(
           Math.abs(mcIc - 180) < 0.1,
@@ -516,11 +516,15 @@ describe('progressions/progressed-angles', () => {
       );
 
       // All angles should have proper formatting
-      for (const angle of [angles.ascendant, angles.midheaven, angles.descendant, angles.imumCoeli]) {
+      for (const angle of [
+        angles.ascendant,
+        angles.midheaven,
+        angles.descendant,
+        angles.imumCoeli,
+      ]) {
         assert.ok(angle.progressedFormatted.includes(angle.progressedSignName));
         assert.ok(angle.natalFormatted.includes(angle.natalSignName));
       }
     });
   });
 });
-

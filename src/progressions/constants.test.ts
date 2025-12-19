@@ -26,8 +26,8 @@ import {
   DEFAULT_PROGRESSION_CONFIG,
   EXACT_THRESHOLD,
   FUTURE_WARNING_YEARS,
-  LUMINARY_ORB_EXTENSION,
   LUMINARIES,
+  LUMINARY_ORB_EXTENSION,
   MAJOR_PROGRESSION_ASPECTS,
   MAX_PROGRESSION_AGE,
   MAX_TARGET_YEAR,
@@ -119,10 +119,7 @@ describe('progressions/constants', () => {
   describe('PROGRESSION_ORBS', () => {
     it('should have orbs for all aspect types', () => {
       for (const aspectType of Object.values(AspectType)) {
-        assert.ok(
-          PROGRESSION_ORBS[aspectType] !== undefined,
-          `Missing orb for ${aspectType}`,
-        );
+        assert.ok(PROGRESSION_ORBS[aspectType] !== undefined, `Missing orb for ${aspectType}`);
       }
     });
 
@@ -258,10 +255,7 @@ describe('progressions/constants', () => {
   describe('PROGRESSED_ANNUAL_MOTION', () => {
     it('should have motion values for default bodies', () => {
       for (const body of DEFAULT_PROGRESSION_BODIES) {
-        assert.ok(
-          PROGRESSED_ANNUAL_MOTION[body] !== undefined,
-          `Missing motion for ${body}`,
-        );
+        assert.ok(PROGRESSED_ANNUAL_MOTION[body] !== undefined, `Missing motion for ${body}`);
       }
     });
 
@@ -363,10 +357,7 @@ describe('progressions/constants', () => {
   describe('ASPECT_ANGLES', () => {
     it('should have angles for all aspect types', () => {
       for (const aspectType of Object.values(AspectType)) {
-        assert.ok(
-          ASPECT_ANGLES[aspectType] !== undefined,
-          `Missing angle for ${aspectType}`,
-        );
+        assert.ok(ASPECT_ANGLES[aspectType] !== undefined, `Missing angle for ${aspectType}`);
       }
     });
 
@@ -394,10 +385,7 @@ describe('progressions/constants', () => {
   describe('ASPECT_SYMBOLS', () => {
     it('should have symbols for all aspect types', () => {
       for (const aspectType of Object.values(AspectType)) {
-        assert.ok(
-          ASPECT_SYMBOLS[aspectType] !== undefined,
-          `Missing symbol for ${aspectType}`,
-        );
+        assert.ok(ASPECT_SYMBOLS[aspectType] !== undefined, `Missing symbol for ${aspectType}`);
       }
     });
 
@@ -445,9 +433,18 @@ describe('progressions/constants', () => {
 
     it('should have all zodiac signs in correct order', () => {
       const expectedOrder = [
-        'Aries', 'Taurus', 'Gemini', 'Cancer',
-        'Leo', 'Virgo', 'Libra', 'Scorpio',
-        'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
+        'Aries',
+        'Taurus',
+        'Gemini',
+        'Cancer',
+        'Leo',
+        'Virgo',
+        'Libra',
+        'Scorpio',
+        'Sagittarius',
+        'Capricorn',
+        'Aquarius',
+        'Pisces',
       ];
       assert.deepEqual([...SIGN_NAMES], expectedOrder);
     });
@@ -463,10 +460,7 @@ describe('progressions/constants', () => {
     });
 
     it('should have bodies matching DEFAULT_PROGRESSION_BODIES', () => {
-      assert.deepEqual(
-        [...DEFAULT_PROGRESSION_CONFIG.bodies],
-        [...DEFAULT_PROGRESSION_BODIES],
-      );
+      assert.deepEqual([...DEFAULT_PROGRESSION_CONFIG.bodies], [...DEFAULT_PROGRESSION_BODIES]);
     });
 
     it('should not include progressed-to-progressed aspects by default', () => {
@@ -478,10 +472,7 @@ describe('progressions/constants', () => {
     });
 
     it('should use major aspects by default', () => {
-      assert.deepEqual(
-        [...DEFAULT_PROGRESSION_CONFIG.aspectTypes],
-        [...MAJOR_PROGRESSION_ASPECTS],
-      );
+      assert.deepEqual([...DEFAULT_PROGRESSION_CONFIG.aspectTypes], [...MAJOR_PROGRESSION_ASPECTS]);
     });
 
     it('should include solar arc positions by default', () => {
@@ -514,4 +505,3 @@ describe('progressions/constants', () => {
     });
   });
 });
-

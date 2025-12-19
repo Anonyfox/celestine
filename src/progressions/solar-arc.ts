@@ -365,4 +365,3 @@ export function formatSolarArcDMS(solarArc: number): string {
 
   return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toString().padStart(2, '0')}"`;
 }
-

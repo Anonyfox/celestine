@@ -6,24 +6,21 @@
  * @module progressions/progression-summary
  */
 
-import { birthToJD, targetToJD, calculateAge } from './progression-date.js';
-import { calculateSolarArc } from './solar-arc.js';
-import { getAllProgressedPositions, getBodiesWithSignChange } from './progressed-positions.js';
+import { DEFAULT_PROGRESSION_CONFIG } from './constants.js';
 import { calculateProgressedAngles } from './progressed-angles.js';
+import { type AspectDetectionResult, detectProgressedAspects } from './progressed-aspects.js';
 import { getProgressedMoonReport, type ProgressedMoonReport } from './progressed-moon.js';
-import { detectProgressionAspects, type AspectDetectionResult } from './progressed-aspects.js';
+import { getAllProgressedPositions, getBodiesWithSignChange } from './progressed-positions.js';
+import { birthToJD, calculateAge, targetToJD } from './progression-date.js';
+import { calculateSolarArc } from './solar-arc.js';
 import type {
-  ProgressedAngle,
-  ProgressedBody,
+  ProgressedAngles,
   ProgressionBirthData,
   ProgressionConfig,
-  ProgressionResult,
   ProgressionSummary,
   ProgressionTargetDate,
   ProgressionType,
 } from './types.js';
-import { DEFAULT_PROGRESSION_CONFIG } from './constants.js';
-import type { ProgressedAngles } from './progressed-angles.js';
 
 // =============================================================================
 // MAIN SUMMARY FUNCTION
@@ -41,7 +38,7 @@ export function calculateProgression(
   birth: ProgressionBirthData,
   target: ProgressionTargetDate,
   config?: Partial<ProgressionConfig>,
-): ProgressionResult {
+): ProgressedChart {
   const mergedConfig = { ...DEFAULT_PROGRESSION_CONFIG, ...config };
   const birthJD = birthToJD(birth);
   const targetJD = targetToJD(target);
@@ -61,7 +58,7 @@ export function calculateProgression(
   );
 
   // Detect aspects
-  const aspectResult = detectProgressionAspects(birthJD, targetJD, mergedConfig.type, {
+  const aspectResult = detectProgressedAspects(birthJD, targetJD, mergedConfig.type, {
     aspectTypes: mergedConfig.aspectTypes,
     orbs: mergedConfig.orbs,
     includeProgressedToProgressed: mergedConfig.includeProgressedAspects,
@@ -94,8 +91,8 @@ export function calculateProgression(
  * Generate summary statistics.
  */
 function generateSummary(
-  birthJD: number,
-  targetJD: number,
+  _birthJD: number,
+  _targetJD: number,
   bodies: ProgressedBody[],
   angles: ProgressedAngles,
   aspectResult: AspectDetectionResult,
@@ -139,7 +136,7 @@ export function getExactAspects(
 ): AspectDetectionResult['exactAspects'] {
   const birthJD = birthToJD(birth);
   const targetJD = targetToJD(target);
-  const result = detectProgressionAspects(birthJD, targetJD, progressionType);
+  const result = detectProgressedAspects(birthJD, targetJD, progressionType);
   return result.exactAspects;
 }
 
@@ -164,7 +161,7 @@ export function getSignChanges(
 /**
  * Format a complete progression result.
  */
-export function formatProgressionResult(result: ProgressionResult): string {
+export function formatProgressedChart(result: ProgressedChart): string {
   const lines: string[] = [
     '════════════════════════════════════════════════════════════════',
     `  PROGRESSED CHART (${result.type.toUpperCase()})`,
@@ -218,4 +215,3 @@ export function formatProgressionResult(result: ProgressionResult): string {
 
   return lines.join('\n');
 }
-

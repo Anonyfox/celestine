@@ -472,10 +472,7 @@ describe('progressions/progression-date', () => {
     it('should reject birth year before MIN_BIRTH_YEAR', () => {
       const oldBirth = { ...J2000_EPOCH, year: 1600 };
       const target = { year: 2030, month: 1, day: 1 };
-      assert.throws(
-        () => validateProgressionDates(oldBirth, target),
-        ProgressionValidationError,
-      );
+      assert.throws(() => validateProgressionDates(oldBirth, target), ProgressionValidationError);
     });
 
     it('should reject target year after MAX_TARGET_YEAR', () => {
@@ -497,28 +494,19 @@ describe('progressions/progression-date', () => {
     it('should reject invalid month', () => {
       const badBirth = { ...J2000_EPOCH, month: 13 };
       const target = { year: 2030, month: 1, day: 1 };
-      assert.throws(
-        () => validateProgressionDates(badBirth, target),
-        ProgressionValidationError,
-      );
+      assert.throws(() => validateProgressionDates(badBirth, target), ProgressionValidationError);
     });
 
     it('should reject invalid day', () => {
       const badBirth = { ...J2000_EPOCH, day: 32 };
       const target = { year: 2030, month: 1, day: 1 };
-      assert.throws(
-        () => validateProgressionDates(badBirth, target),
-        ProgressionValidationError,
-      );
+      assert.throws(() => validateProgressionDates(badBirth, target), ProgressionValidationError);
     });
 
     it('should reject Feb 29 in non-leap year', () => {
       const badBirth = { ...J2000_EPOCH, year: 2023, month: 2, day: 29 };
       const target = { year: 2030, month: 1, day: 1 };
-      assert.throws(
-        () => validateProgressionDates(badBirth, target),
-        ProgressionValidationError,
-      );
+      assert.throws(() => validateProgressionDates(badBirth, target), ProgressionValidationError);
     });
 
     it('should accept Feb 29 in leap year', () => {
@@ -530,19 +518,13 @@ describe('progressions/progression-date', () => {
     it('should reject invalid latitude', () => {
       const badBirth = { ...J2000_EPOCH, latitude: 100 };
       const target = { year: 2030, month: 1, day: 1 };
-      assert.throws(
-        () => validateProgressionDates(badBirth, target),
-        ProgressionValidationError,
-      );
+      assert.throws(() => validateProgressionDates(badBirth, target), ProgressionValidationError);
     });
 
     it('should reject invalid longitude', () => {
       const badBirth = { ...J2000_EPOCH, longitude: -200 };
       const target = { year: 2030, month: 1, day: 1 };
-      assert.throws(
-        () => validateProgressionDates(badBirth, target),
-        ProgressionValidationError,
-      );
+      assert.throws(() => validateProgressionDates(badBirth, target), ProgressionValidationError);
     });
   });
 
@@ -717,4 +699,3 @@ describe('progressions/progression-date', () => {
     });
   });
 });
-

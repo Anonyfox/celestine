@@ -431,10 +431,7 @@ describe('progressions/solar-arc', () => {
       const nobelDate = { year: 1921, month: 12, day: 10 };
       const nobelJD = targetToJD(nobelDate);
       const arcAtNobel = calculateSolarArc(birthJD, nobelJD);
-      assert.ok(
-        arcAtNobel > 42 && arcAtNobel < 44,
-        `Arc at Nobel: ${arcAtNobel}, expected ~42.7°`,
-      );
+      assert.ok(arcAtNobel > 42 && arcAtNobel < 44, `Arc at Nobel: ${arcAtNobel}, expected ~42.7°`);
     });
 
     it('should maintain proportionality with age', () => {
@@ -455,4 +452,3 @@ describe('progressions/solar-arc', () => {
     });
   });
 });
-

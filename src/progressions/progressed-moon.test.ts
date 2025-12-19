@@ -12,7 +12,6 @@
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 import { MOON_MEAN_DAILY_MOTION } from './constants.js';
-import { birthToJD, targetToJD } from './progression-date.js';
 import {
   calculateMoonSignTransits,
   formatMoonTransit,
@@ -25,6 +24,7 @@ import {
   getProgressedMoonFromDates,
   getProgressedMoonReport,
 } from './progressed-moon.js';
+import { birthToJD } from './progression-date.js';
 
 // =============================================================================
 // REFERENCE DATA
@@ -411,11 +411,7 @@ describe('progressions/progressed-moon', () => {
 
       // Total arc from moon.arcFromNatal should roughly equal cycles.totalDegrees
       const arcDiff = Math.abs(moon.arcFromNatal - cycles.totalDegrees);
-      assert.ok(
-        arcDiff < 5,
-        `Arc mismatch: ${moon.arcFromNatal} vs ${cycles.totalDegrees}`,
-      );
+      assert.ok(arcDiff < 5, `Arc mismatch: ${moon.arcFromNatal} vs ${cycles.totalDegrees}`);
     });
   });
 });
-

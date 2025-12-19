@@ -26,7 +26,12 @@ import {
   MIN_BIRTH_YEAR,
   PROGRESSION_RATES,
 } from './constants.js';
-import type { ProgressedDate, ProgressionBirthData, ProgressionTargetDate, ProgressionType } from './types.js';
+import type {
+  ProgressedDate,
+  ProgressionBirthData,
+  ProgressionTargetDate,
+  ProgressionType,
+} from './types.js';
 import { ProgressionValidationError } from './types.js';
 
 // =============================================================================
@@ -386,11 +391,7 @@ export function validateProgressionDates(
   const targetJD = targetToJD(target);
 
   if (targetJD < birthJD) {
-    throw new ProgressionValidationError(
-      'Target date is before birth date',
-      'target',
-      target,
-    );
+    throw new ProgressionValidationError('Target date is before birth date', 'target', target);
   }
 
   const age = calculateAge(birthJD, targetJD);
@@ -455,8 +456,18 @@ export function validateProgressionDatesSafe(
  */
 export function formatProgressedDate(date: ProgressedDate, includeTime = false): string {
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   const datePart = `${months[date.month - 1]} ${date.day}, ${date.year}`;
@@ -481,7 +492,7 @@ export function formatProgressedDate(date: ProgressedDate, includeTime = false):
  * @returns Days in progressed chart until milestone
  */
 export function daysUntilMilestone(
-  birthJD: number,
+  _birthJD: number,
   currentAge: number,
   milestoneAge: number,
   type: ProgressionType = 'secondary',
@@ -491,4 +502,3 @@ export function daysUntilMilestone(
 
   return yearsUntil * rate;
 }
-
