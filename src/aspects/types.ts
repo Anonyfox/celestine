@@ -55,6 +55,18 @@ export enum AspectType {
 
   /** Quincunx: 150° - adjustment needed, inconjunct, "blind spot" */
   Quincunx = 'quincunx',
+
+  // Kepler Aspects (Harmonic)
+  // Named after Johannes Kepler who introduced them in "Harmonices Mundi" (1619)
+
+  /** Septile: 360°/7 ≈ 51.43° - fate, karma, spiritual connection */
+  Septile = 'septile',
+
+  /** Novile: 360°/9 = 40° - spiritual completion, divine order */
+  Novile = 'novile',
+
+  /** Decile: 360°/10 = 36° - growth, skill development */
+  Decile = 'decile',
 }
 
 /**

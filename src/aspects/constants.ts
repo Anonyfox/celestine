@@ -40,6 +40,10 @@ export const ASPECT_SYMBOLS: Record<AspectType, string> = {
   [AspectType.Sesquiquadrate]: '⚼',
   [AspectType.Biquintile]: 'bQ',
   [AspectType.Quincunx]: '⚻',
+  // Kepler aspects (using abbreviations as no standard Unicode exists)
+  [AspectType.Septile]: 'S',
+  [AspectType.Novile]: 'N',
+  [AspectType.Decile]: 'D',
 } as const;
 
 // =============================================================================
@@ -65,6 +69,11 @@ export const ASPECT_SYMBOLS: Record<AspectType, string> = {
  * - Sesquiquadrate: 3 × 45° = 135°
  * - Quintile: 360°/5 = 72°
  * - Biquintile: 2 × 72° = 144°
+ *
+ * Kepler aspects (from "Harmonices Mundi", 1619):
+ * - Septile: 360°/7 = 51.42857142857143°
+ * - Novile: 360°/9 = 40°
+ * - Decile: 360°/10 = 36°
  */
 export const ASPECT_ANGLES: Record<AspectType, number> = {
   [AspectType.Conjunction]: 0,
@@ -78,6 +87,10 @@ export const ASPECT_ANGLES: Record<AspectType, number> = {
   [AspectType.Sesquiquadrate]: 135,
   [AspectType.Biquintile]: 144,
   [AspectType.Quincunx]: 150,
+  // Kepler aspects - mathematically exact values
+  [AspectType.Septile]: 360 / 7, // 51.42857142857143°
+  [AspectType.Novile]: 40, // 360/9 = 40° exactly
+  [AspectType.Decile]: 36, // 360/10 = 36° exactly
 } as const;
 
 // =============================================================================
@@ -115,6 +128,11 @@ export const DEFAULT_ORBS: Record<AspectType, number> = {
   [AspectType.Sesquiquadrate]: 2,
   [AspectType.Biquintile]: 2,
   [AspectType.Quincunx]: 3,
+
+  // Kepler aspects - very tight orbs (1-2°)
+  [AspectType.Septile]: 1,
+  [AspectType.Novile]: 1,
+  [AspectType.Decile]: 1,
 } as const;
 
 // =============================================================================
@@ -136,6 +154,9 @@ export const ASPECT_NAMES: Record<AspectType, string> = {
   [AspectType.Sesquiquadrate]: 'Sesquiquadrate',
   [AspectType.Biquintile]: 'Biquintile',
   [AspectType.Quincunx]: 'Quincunx',
+  [AspectType.Septile]: 'Septile',
+  [AspectType.Novile]: 'Novile',
+  [AspectType.Decile]: 'Decile',
 } as const;
 
 // =============================================================================
@@ -166,9 +187,31 @@ export const MINOR_ASPECTS: AspectType[] = [
 ] as const;
 
 /**
+ * Kepler aspects - harmonic aspects from Johannes Kepler's "Harmonices Mundi" (1619).
+ *
+ * @remarks
+ * These aspects are derived from dividing the circle by 7, 9, and 10.
+ * They have very tight orbs (1°) and are considered subtle influences.
+ *
+ * Mathematical derivation:
+ * - Septile: 360°/7 = 51.42857142857143°
+ * - Novile: 360°/9 = 40° exactly
+ * - Decile: 360°/10 = 36° exactly
+ */
+export const KEPLER_ASPECTS: AspectType[] = [
+  AspectType.Septile,
+  AspectType.Novile,
+  AspectType.Decile,
+] as const;
+
+/**
  * All supported aspect types.
  */
-export const ALL_ASPECTS: AspectType[] = [...MAJOR_ASPECTS, ...MINOR_ASPECTS] as const;
+export const ALL_ASPECTS: AspectType[] = [
+  ...MAJOR_ASPECTS,
+  ...MINOR_ASPECTS,
+  ...KEPLER_ASPECTS,
+] as const;
 
 /**
  * Harmonious/soft aspects - easy energy flow.
@@ -315,6 +358,37 @@ export const ASPECT_DEFINITIONS: Record<AspectType, AspectDefinition> = {
     name: 'Quincunx',
     harmonic: 12, // 5th harmonic of semi-sextile
   },
+  // Kepler aspects
+  [AspectType.Septile]: {
+    type: AspectType.Septile,
+    angle: 360 / 7, // 51.42857142857143°
+    symbol: 'S',
+    defaultOrb: 1,
+    classification: 'minor',
+    nature: 'neutral', // Spiritual/karmic
+    name: 'Septile',
+    harmonic: 7,
+  },
+  [AspectType.Novile]: {
+    type: AspectType.Novile,
+    angle: 40, // 360/9 = 40° exactly
+    symbol: 'N',
+    defaultOrb: 1,
+    classification: 'minor',
+    nature: 'harmonious', // Spiritual completion
+    name: 'Novile',
+    harmonic: 9,
+  },
+  [AspectType.Decile]: {
+    type: AspectType.Decile,
+    angle: 36, // 360/10 = 36° exactly
+    symbol: 'D',
+    defaultOrb: 1,
+    classification: 'minor',
+    nature: 'harmonious', // Growth, skill
+    name: 'Decile',
+    harmonic: 10,
+  },
 } as const;
 
 // =============================================================================
@@ -347,6 +421,10 @@ export const ASPECT_SIGN_SEPARATIONS: Record<AspectType, number[]> = {
   [AspectType.Sesquiquadrate]: [4, 5, 7, 8], // 4.5 signs
   [AspectType.Biquintile]: [4, 5, 7, 8], // ~4.8 signs
   [AspectType.Quincunx]: [5, 7],
+  // Kepler aspects - sign separations based on angle/30°
+  [AspectType.Septile]: [1, 2, 10, 11], // 51.43°/30 ≈ 1.7 signs
+  [AspectType.Novile]: [1, 2, 10, 11], // 40°/30 ≈ 1.3 signs
+  [AspectType.Decile]: [1, 2, 10, 11], // 36°/30 = 1.2 signs
 } as const;
 
 // =============================================================================

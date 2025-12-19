@@ -21,7 +21,7 @@
 - ✅ **Zodiac System** - Tropical zodiac with signs, dignities, and complete metadata
 - ✅ **Traditional Astrology** - Planetary rulerships and essential dignities (Ptolemy, Lilly)
 - ✅ **Retrograde Detection** - Automatic retrograde motion detection for all bodies
-- 📐 **Aspects** - Angular relationships between celestial bodies (coming soon)
+- ✅ **Aspects** - 14 aspect types (major, minor, Kepler), patterns, orbs, applying/separating
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
 - 🧪 **Well-tested** - 100% test coverage
 - 🚀 **Zero runtime dependencies** - Lightweight and fast
@@ -285,6 +285,76 @@ const formatted = zodiac.formatZodiacPosition(venus, {
 - Algorithm verified against Swiss Ephemeris
 - All data verified against Ptolemy's "Tetrabiblos" and Lilly's "Christian Astrology"
 
+### Aspects (Angular Relationships)
+
+Calculate aspects between celestial bodies with configurable orbs, patterns detection, and applying/separating indicators.
+
+```typescript
+import { aspects, ephemeris, time } from "celestine";
+
+// Get planetary positions
+const jd = time.toJulianDate({ year: 2000, month: 1, day: 1, hour: 12 });
+const sun = ephemeris.getSunPosition(jd);
+const moon = ephemeris.getMoonPosition(jd);
+const mars = ephemeris.getMarsPosition(jd);
+
+// Create bodies array for aspect detection
+const bodies = [
+  { name: 'Sun', longitude: sun.longitude, longitudeSpeed: sun.longitudeSpeed },
+  { name: 'Moon', longitude: moon.longitude, longitudeSpeed: moon.longitudeSpeed },
+  { name: 'Mars', longitude: mars.longitude, longitudeSpeed: mars.longitudeSpeed },
+];
+
+// Find all aspects between bodies
+const result = aspects.calculateAspects(bodies);
+
+for (const aspect of result.aspects) {
+  console.log(aspects.formatAspect(aspect));
+  // "Sun ⚹ Moon (2°57', 51%, separating)"
+}
+
+// Detect aspect patterns (T-Square, Grand Trine, Yod, etc.)
+const patterns = aspects.findPatterns(result.aspects);
+for (const pattern of patterns) {
+  console.log(`${pattern.type}: ${pattern.bodies.join(', ')}`);
+}
+
+// Calculate angular separation
+const separation = aspects.angularSeparation(sun.longitude, moon.longitude);
+console.log(separation); // 57.05°
+
+// Check if within orb of an aspect
+const match = aspects.findMatchingAspect(separation);
+if (match) {
+  console.log(`${match.aspect.name} with ${match.deviation}° orb`);
+}
+```
+
+**Available Aspects (14 types):**
+
+- **Major (Ptolemaic)**: Conjunction ☌, Sextile ⚹, Square □, Trine △, Opposition ☍
+- **Minor**: Semi-sextile ⚺, Semi-square ∠, Quintile Q, Sesquiquadrate ⚼, Biquintile bQ, Quincunx ⚻
+- **Kepler**: Septile S (360°/7), Novile N (360°/9), Decile D (360°/10)
+
+**Aspect Patterns:**
+
+- T-Square (Opposition + 2 Squares)
+- Grand Trine (3 Trines)
+- Grand Cross (4 Squares + 2 Oppositions)
+- Yod / Finger of God (2 Quincunxes + Sextile)
+- Kite (Grand Trine + Opposition)
+- Mystic Rectangle (2 Oppositions + 2 Trines + 2 Sextiles)
+- Stellium (3+ Conjunctions)
+
+**Features:**
+
+- Configurable orbs per aspect type
+- Strength calculation (100% = exact, decreasing to orb edge)
+- Applying vs separating aspect detection
+- Out-of-sign (dissociate) aspect detection
+- Pattern detection for complex configurations
+- Kepler aspects with mathematically exact angles (from "Harmonices Mundi", 1619)
+
 ## API Documentation
 
 Full API documentation is available at [https://anonyfox.github.io/celestine](https://anonyfox.github.io/celestine)
@@ -310,8 +380,8 @@ Celestine is in active development. Planned features include:
 - [x] Retrograde detection
 - [x] House system implementations (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
 - [x] Zodiac system with tropical signs and essential dignities
+- [x] Aspect calculations with orbs, patterns, and applying/separating detection
 - [ ] Birth chart calculation (combining all modules)
-- [ ] Aspect calculations with orbs
 - [ ] Transit calculations
 - [ ] Progression calculations
 

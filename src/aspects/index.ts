@@ -62,6 +62,7 @@ export {
   ASPECT_DEFINITIONS,
   ASPECT_SIGN_SEPARATIONS,
   DEFAULT_ORBS,
+  KEPLER_ASPECTS,
   MAJOR_ASPECTS,
   MINOR_ASPECTS,
 } from './constants.js';
@@ -76,6 +77,19 @@ export {
   getOrb,
   isWithinOrb,
 } from './orbs.js';
+// Pattern detection
+export {
+  detectGrandCross,
+  detectGrandTrine,
+  detectKite,
+  detectMysticRectangle,
+  detectStellium,
+  detectTSquare,
+  detectYod,
+  findPatterns,
+  formatPattern,
+  getPatternSummary,
+} from './patterns.js';
 // Types
 export {
   type Aspect,
@@ -83,5 +97,7 @@ export {
   type AspectCalculationResult,
   type AspectConfig,
   type AspectDefinition,
+  type AspectPattern,
   AspectType,
+  PatternType,
 } from './types.js';

@@ -24,6 +24,7 @@ import {
   DEFAULT_ORBS,
   DYNAMIC_ASPECTS,
   HARMONIOUS_ASPECTS,
+  KEPLER_ASPECTS,
   MAJOR_ASPECTS,
   MAX_SEPARATION,
   MINOR_ASPECTS,
@@ -53,6 +54,10 @@ const REFERENCE_ANGLES = {
   sesquiquadrate: 135, // 360/8 * 3
   biquintile: 144, // 360/5 * 2
   quincunx: 150, // 360/12 * 5
+  // Kepler aspects (Harmonices Mundi, 1619) - mathematical values
+  septile: 360 / 7, // 51.42857142857143°
+  novile: 40, // 360/9 = 40° exactly
+  decile: 36, // 360/10 = 36° exactly
 } as const;
 
 /**
@@ -68,13 +73,18 @@ const REFERENCE_SYMBOLS = {
   'semi-sextile': '⚺', // U+26BA
   quincunx: '⚻', // U+26BB
   sesquiquadrate: '⚼', // U+26BC
+  // Kepler aspects use letter abbreviations (no standard Unicode symbols)
+  septile: 'S',
+  novile: 'N',
+  decile: 'D',
 } as const;
 
 describe('aspects/constants', () => {
   describe('ASPECT_ANGLES', () => {
-    it('should have all 11 aspect types defined', () => {
+    it('should have all 14 aspect types defined (5 major + 6 minor + 3 kepler)', () => {
       const aspectTypes = Object.values(AspectType);
       assert.equal(Object.keys(ASPECT_ANGLES).length, aspectTypes.length);
+      assert.equal(aspectTypes.length, 14);
 
       for (const type of aspectTypes) {
         assert.ok(type in ASPECT_ANGLES, `Missing angle definition for ${type}`);
@@ -136,6 +146,44 @@ describe('aspects/constants', () => {
       it('Quincunx should be exactly 150° (5 × 30)', () => {
         assert.equal(ASPECT_ANGLES[AspectType.Quincunx], 150);
         assert.equal(5 * 30, 150);
+      });
+    });
+
+    describe('Kepler aspect angles (Harmonices Mundi, 1619)', () => {
+      /**
+       * Kepler aspects are mathematically derived from dividing the circle.
+       * These values are MATHEMATICAL FACTS, not empirical data.
+       *
+       * Source: Johannes Kepler, "Harmonices Mundi" (The Harmony of the World), 1619
+       */
+
+      it('Septile should be exactly 360°/7 = 51.42857142857143°', () => {
+        const exactAngle = 360 / 7;
+        assert.equal(ASPECT_ANGLES[AspectType.Septile], exactAngle);
+        // Verify to 10 decimal places
+        assert.ok(
+          Math.abs(exactAngle - 51.42857142857143) < 1e-10,
+          `Septile should be 51.42857142857143°, got ${exactAngle}`,
+        );
+      });
+
+      it('Novile should be exactly 360°/9 = 40°', () => {
+        const exactAngle = 360 / 9;
+        assert.equal(ASPECT_ANGLES[AspectType.Novile], 40);
+        assert.equal(exactAngle, 40); // Must be exactly 40
+      });
+
+      it('Decile should be exactly 360°/10 = 36°', () => {
+        const exactAngle = 360 / 10;
+        assert.equal(ASPECT_ANGLES[AspectType.Decile], 36);
+        assert.equal(exactAngle, 36); // Must be exactly 36
+      });
+
+      it('KEPLER_ASPECTS array should contain exactly 3 aspects', () => {
+        assert.equal(KEPLER_ASPECTS.length, 3);
+        assert.ok(KEPLER_ASPECTS.includes(AspectType.Septile));
+        assert.ok(KEPLER_ASPECTS.includes(AspectType.Novile));
+        assert.ok(KEPLER_ASPECTS.includes(AspectType.Decile));
       });
     });
 
@@ -324,9 +372,12 @@ describe('aspects/constants', () => {
       assert.equal(MINOR_ASPECTS.length, 6);
     });
 
-    it('ALL_ASPECTS should contain all 11 aspects', () => {
-      assert.equal(ALL_ASPECTS.length, 11);
-      assert.equal(ALL_ASPECTS.length, MAJOR_ASPECTS.length + MINOR_ASPECTS.length);
+    it('ALL_ASPECTS should contain all 14 aspects (5 major + 6 minor + 3 kepler)', () => {
+      assert.equal(ALL_ASPECTS.length, 14);
+      assert.equal(
+        ALL_ASPECTS.length,
+        MAJOR_ASPECTS.length + MINOR_ASPECTS.length + KEPLER_ASPECTS.length,
+      );
     });
 
     it('MAJOR_ASPECTS should contain the Ptolemaic five', () => {
@@ -434,8 +485,8 @@ describe('aspects/constants', () => {
       }
     });
 
-    it('ALL_ASPECTS should be MAJOR + MINOR', () => {
-      const combined = [...MAJOR_ASPECTS, ...MINOR_ASPECTS].sort();
+    it('ALL_ASPECTS should be MAJOR + MINOR + KEPLER', () => {
+      const combined = [...MAJOR_ASPECTS, ...MINOR_ASPECTS, ...KEPLER_ASPECTS].sort();
       const all = [...ALL_ASPECTS].sort();
       assert.deepEqual(all, combined);
     });
