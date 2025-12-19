@@ -254,4 +254,3 @@ describe('Placidus Houses', () => {
     });
   });
 });
-

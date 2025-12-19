@@ -78,4 +78,3 @@ export function wholeSignHouses(ascendant: number): HouseCusps {
     ],
   };
 }
-

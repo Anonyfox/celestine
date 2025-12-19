@@ -19,8 +19,8 @@
  */
 
 import { normalizeAngle, oppositePoint } from '../house-utils.js';
-import { asc1, atand, cosd, mcToArmc, sind, tand } from './shared.js';
 import type { HouseCusps } from '../types.js';
+import { asc1, atand, cosd, mcToArmc, sind, tand } from './shared.js';
 
 /**
  * Calculate Regiomontanus house cusps
@@ -86,6 +86,20 @@ export function regiomontanusHouses(
   cusps[7] = oppositePoint(cusps[1]); // House 8 (opposite 2)
   cusps[8] = oppositePoint(cusps[2]); // House 9 (opposite 3)
 
-  return { cusps: cusps as [number, number, number, number, number, number, number, number, number, number, number, number] };
+  return {
+    cusps: cusps as [
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+    ],
+  };
 }
-

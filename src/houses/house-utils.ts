@@ -264,4 +264,3 @@ export function formatZodiacPosition(longitude: number): string {
 
   return `${degrees}°${minutes.toString().padStart(2, '0')}' ${sign}`;
 }
-

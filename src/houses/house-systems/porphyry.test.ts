@@ -180,4 +180,3 @@ describe('Porphyry Houses', () => {
     }
   });
 });
-

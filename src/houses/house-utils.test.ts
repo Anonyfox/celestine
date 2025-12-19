@@ -295,7 +295,7 @@ describe('House Utils', () => {
 
     it('should pad minutes with leading zero', () => {
       const result = formatZodiacPosition(15.083333); // 15°05'
-      assert.ok(result.includes('05\''), `Expected '05' in ${result}`);
+      assert.ok(result.includes("05'"), `Expected '05' in ${result}`);
     });
 
     it('should handle end of Pisces', () => {
@@ -360,4 +360,3 @@ describe('House Utils', () => {
     });
   });
 });
-

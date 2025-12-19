@@ -58,4 +58,3 @@ export function equalHouses(ascendant: number): HouseCusps {
     ],
   };
 }
-

@@ -240,11 +240,7 @@ describe('Houses Module - Integration Tests', () => {
     });
 
     it('should handle comparison of different house systems', () => {
-      const comparison = calculateMultipleSystems(london, lst, T, [
-        'placidus',
-        'koch',
-        'equal',
-      ]);
+      const comparison = calculateMultipleSystems(london, lst, T, ['placidus', 'koch', 'equal']);
 
       // All should have same ASC (House 1)
       const ascPlacidus = comparison.placidus.cusps.cusps[0];
@@ -320,4 +316,3 @@ describe('Houses Module - Integration Tests', () => {
     });
   });
 });
-

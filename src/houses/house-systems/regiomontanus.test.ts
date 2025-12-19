@@ -135,4 +135,3 @@ describe('Regiomontanus Houses', () => {
     });
   });
 });
-

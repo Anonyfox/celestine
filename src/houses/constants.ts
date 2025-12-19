@@ -114,4 +114,3 @@ export const OBLIQUITY_COEFFICIENTS = {
   // Cubic term in degrees per century³
   C3: 5.0361111e-7,
 };
-

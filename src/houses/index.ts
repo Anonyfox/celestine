@@ -7,19 +7,19 @@
  * @module houses
  */
 
-// Main API
-export {
-  calculateAnglesOnly,
-  calculateHouses,
-  calculateMultipleSystems,
-  getHouseSystemName,
-  getSupportedHouseSystems,
-  systemRequiresLatitude,
-  systemWorksAtPolarCircle,
-} from './houses.js';
-
 // Angles calculations
 export { calculateAngles, calculateAscendant, calculateMidheaven } from './angles.js';
+// Constants
+export {
+  CONVERGENCE_TOLERANCE,
+  EPSILON,
+  HOUSE_SYSTEM_NAMES,
+  MAX_ABSOLUTE_LATITUDE,
+  MAX_ABSOLUTE_LONGITUDE,
+  MAX_ITERATIONS,
+  MAX_LATITUDE_PLACIDUS,
+  OBLIQUITY_COEFFICIENTS,
+} from './constants.js';
 
 // Individual house systems (for advanced use)
 export { campanusHouses } from './house-systems/campanus.js';
@@ -42,16 +42,16 @@ export {
   oppositePoint,
   signedAngularSeparation,
 } from './house-utils.js';
-
-// Validation
+// Main API
 export {
-  getFallbackHouseSystem,
-  getAvailableHouseSystems,
-  isHouseSystemAvailable,
-  normalizeLatitude,
-  normalizeLongitude,
-  validateLocation,
-} from './validation.js';
+  calculateAnglesOnly,
+  calculateHouses,
+  calculateMultipleSystems,
+  getHouseSystemName,
+  getSupportedHouseSystems,
+  systemRequiresLatitude,
+  systemWorksAtPolarCircle,
+} from './houses.js';
 
 // Obliquity
 export { meanObliquity, obliquityOfEcliptic } from './obliquity.js';
@@ -65,16 +65,12 @@ export type {
   HouseSystem,
   LocationValidationResult,
 } from './types.js';
-
-// Constants
+// Validation
 export {
-  CONVERGENCE_TOLERANCE,
-  EPSILON,
-  HOUSE_SYSTEM_NAMES,
-  MAX_ABSOLUTE_LATITUDE,
-  MAX_ABSOLUTE_LONGITUDE,
-  MAX_ITERATIONS,
-  MAX_LATITUDE_PLACIDUS,
-  OBLIQUITY_COEFFICIENTS,
-} from './constants.js';
-
+  getAvailableHouseSystems,
+  getFallbackHouseSystem,
+  isHouseSystemAvailable,
+  normalizeLatitude,
+  normalizeLongitude,
+  validateLocation,
+} from './validation.js';

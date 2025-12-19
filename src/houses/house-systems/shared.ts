@@ -92,7 +92,7 @@ export function asc2(x: number, f: number, sine: number, cose: number): number {
  * @returns Ecliptic longitude
  */
 export function asc1(x1: number, f: number, sine: number, cose: number): number {
-  let x = normalizeAngle(x1);
+  const x = normalizeAngle(x1);
   const quadrant = Math.floor(x / 90) + 1; // 1..4
 
   // Handle poles
@@ -160,4 +160,3 @@ export function mcToArmc(mc: number, obliquity: number): number {
 
   return normalizeAngle(armc);
 }
-

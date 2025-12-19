@@ -104,4 +104,3 @@ describe('Equal Houses', () => {
     assert.equal(cusps.cusps[1], 35);
   });
 });
-

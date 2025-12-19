@@ -98,11 +98,7 @@ export function calculateMidheaven(lst: number, obliquity: number): number {
  * console.log(asc);  // Ecliptic degree rising at this moment
  * ```
  */
-export function calculateAscendant(
-  lst: number,
-  obliquity: number,
-  latitude: number,
-): number {
+export function calculateAscendant(lst: number, obliquity: number, latitude: number): number {
   // Check for poles where Ascendant is undefined
   if (Math.abs(latitude) >= 90) {
     throw new Error(
@@ -150,11 +146,7 @@ export function calculateAscendant(
  * // }
  * ```
  */
-export function calculateAngles(
-  lst: number,
-  obliquity: number,
-  latitude: number,
-): Angles {
+export function calculateAngles(lst: number, obliquity: number, latitude: number): Angles {
   const ascendant = calculateAscendant(lst, obliquity, latitude);
   const midheaven = calculateMidheaven(lst, obliquity);
   const descendant = oppositePoint(ascendant);
@@ -167,4 +159,3 @@ export function calculateAngles(
     imumCoeli,
   };
 }
-

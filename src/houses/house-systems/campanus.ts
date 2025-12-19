@@ -23,8 +23,8 @@
  */
 
 import { normalizeAngle, oppositePoint } from '../house-utils.js';
-import { asc1, asind, atand, cosd, mcToArmc, sind } from './shared.js';
 import type { HouseCusps } from '../types.js';
+import { asc1, asind, atand, cosd, mcToArmc, sind } from './shared.js';
 
 /**
  * Calculate Campanus house cusps
@@ -112,6 +112,20 @@ export function campanusHouses(
   cusps[7] = oppositePoint(cusps[1]); // House 8 (opposite 2)
   cusps[8] = oppositePoint(cusps[2]); // House 9 (opposite 3)
 
-  return { cusps: cusps as [number, number, number, number, number, number, number, number, number, number, number, number] };
+  return {
+    cusps: cusps as [
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+    ],
+  };
 }
-

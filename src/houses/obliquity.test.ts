@@ -284,4 +284,3 @@ describe('Obliquity of the Ecliptic', () => {
     });
   });
 });
-

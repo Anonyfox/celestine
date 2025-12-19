@@ -133,4 +133,3 @@ describe('Whole Sign Houses', () => {
     assert.deepEqual(cusps1, cusps3);
   });
 });
-

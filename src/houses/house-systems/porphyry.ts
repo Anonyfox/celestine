@@ -79,4 +79,3 @@ export function porphyryHouses(ascendant: number, midheaven: number): HouseCusps
     ],
   };
 }
-

@@ -39,7 +39,7 @@ describe('Validation', () => {
 
     it('should handle decimal values', () => {
       assert.ok(Math.abs(normalizeLatitude(91.5) - 88.5) < 0.0001);
-      assert.ok(Math.abs(normalizeLatitude(-91.5) - (-88.5)) < 0.0001);
+      assert.ok(Math.abs(normalizeLatitude(-91.5) - -88.5) < 0.0001);
     });
   });
 
@@ -73,8 +73,8 @@ describe('Validation', () => {
     });
 
     it('should handle decimal values', () => {
-      assert.ok(Math.abs(normalizeLongitude(180.5) - (-179.5)) < 0.0001);
-      assert.ok(Math.abs(normalizeLongitude(270.25) - (-89.75)) < 0.0001);
+      assert.ok(Math.abs(normalizeLongitude(180.5) - -179.5) < 0.0001);
+      assert.ok(Math.abs(normalizeLongitude(270.25) - -89.75) < 0.0001);
     });
   });
 
@@ -418,4 +418,3 @@ describe('Validation', () => {
     });
   });
 });
-

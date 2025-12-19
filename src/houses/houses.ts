@@ -16,13 +16,7 @@ import { porphyryHouses } from './house-systems/porphyry.js';
 import { regiomontanusHouses } from './house-systems/regiomontanus.js';
 import { wholeSignHouses } from './house-systems/whole-sign.js';
 import { meanObliquity } from './obliquity.js';
-import type {
-  Angles,
-  GeographicLocation,
-  HouseCusps,
-  HouseData,
-  HouseSystem,
-} from './types.js';
+import type { Angles, GeographicLocation, HouseCusps, HouseData, HouseSystem } from './types.js';
 import { validateLocation } from './validation.js';
 
 /**

@@ -131,4 +131,3 @@ describe('Koch Houses', () => {
     });
   });
 });
-

@@ -21,9 +21,9 @@
 
 import { MAX_ITERATIONS } from '../constants.js';
 import { normalizeAngle, oppositePoint } from '../house-utils.js';
+import type { HouseCusps } from '../types.js';
 import { porphyryHouses } from './porphyry.js';
 import { asc1, asind, atand, cosd, mcToArmc, sind, tand } from './shared.js';
-import type { HouseCusps } from '../types.js';
 
 const VERY_SMALL = 1.0 / 360000.0; // Convergence tolerance
 
@@ -154,6 +154,19 @@ export function placidusHouses(
   cusps[8] = oppositePoint(cusps[2]); // House 9 (opposite 3)
 
   return {
-    cusps: cusps as [number, number, number, number, number, number, number, number, number, number, number, number],
+    cusps: cusps as [
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+    ],
   };
 }

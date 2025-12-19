@@ -5,10 +5,7 @@
  * at a given latitude.
  */
 
-import {
-  MAX_ABSOLUTE_LATITUDE,
-  MAX_LATITUDE_PLACIDUS,
-} from './constants.js';
+import { MAX_ABSOLUTE_LATITUDE, MAX_LATITUDE_PLACIDUS } from './constants.js';
 import type { GeographicLocation, HouseSystem, LocationValidationResult } from './types.js';
 
 /**
@@ -115,14 +112,9 @@ export function validateLocation(location: GeographicLocation): LocationValidati
   // Validate longitude
   if (typeof location.longitude !== 'number' || !Number.isFinite(location.longitude)) {
     errors.push('Longitude must be a finite number');
-  } else if (
-    location.longitude < -360 ||
-    location.longitude > 360
-  ) {
+  } else if (location.longitude < -360 || location.longitude > 360) {
     // Allow both -180/+180 and 0/360 formats, but nothing beyond that
-    errors.push(
-      `Longitude must be between -360 and +360, got ${location.longitude}`,
-    );
+    errors.push(`Longitude must be between -360 and +360, got ${location.longitude}`);
   }
 
   // Validate elevation if present
@@ -260,4 +252,3 @@ export function getFallbackHouseSystem(
   // If we get here, we're at the exact poles - return equal houses
   return 'equal';
 }
-

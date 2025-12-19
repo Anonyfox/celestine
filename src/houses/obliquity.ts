@@ -102,4 +102,3 @@ export function obliquityOfEcliptic(jd: number): number {
 
   return meanObliquity(T);
 }
-

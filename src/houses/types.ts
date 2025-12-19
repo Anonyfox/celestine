@@ -227,4 +227,3 @@ export interface LocationValidationResult {
   valid: boolean;
   errors: string[];
 }
-
