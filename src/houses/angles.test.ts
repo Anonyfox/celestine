@@ -3,10 +3,112 @@ import { describe, it } from 'node:test';
 import { J2000_EPOCH } from '../time/constants.js';
 import { toJulianDate } from '../time/julian-date.js';
 import { localSiderealTime } from '../time/local-sidereal-time.js';
+import { greenwichMeanSiderealTime } from '../time/sidereal-time.js';
 import { calculateAngles, calculateAscendant, calculateMidheaven } from './angles.js';
 import { obliquityOfEcliptic } from './obliquity.js';
 
+/**
+ * Helper to calculate LST from Julian Date and longitude
+ */
+function lstFromJD(jd: number, longitude: number): number {
+  const gmst = greenwichMeanSiderealTime(jd);
+  return localSiderealTime(gmst, longitude);
+}
+
+// =============================================================================
+// CALCULATED REFERENCE DATA
+// These values are calculated using our own formulas from Meeus Chapter 13.
+// The formulas are mathematically correct based on spherical trigonometry.
+//
+// Formula: MC = atan2(sin(LST), cos(LST) * cos(obliquity))
+// Formula: ASC = atan2(cos(LST), -(sin(obl)*tan(lat) + cos(obl)*sin(LST)))
+//
+// Cross-validated by:
+// 1. Mathematical derivation from Meeus "Astronomical Algorithms"
+// 2. Consistency checks (DSC = ASC + 180°, IC = MC + 180°)
+// 3. Astronomical sanity (MC on meridian, ASC on horizon)
+// =============================================================================
+const ANGLE_REFERENCE = [
+  {
+    // J2000.0 at Greenwich (0°E), equator (0°N)
+    description: 'J2000.0 Greenwich Equator (2000-Jan-01 12:00 TT)',
+    jd: 2451545.0,
+    latitude: 0,
+    longitude: 0,
+    expected: {
+      // GMST = LST = 280.46° at J2000.0
+      // tan(MC) = tan(280.46°) / cos(23.44°)
+      mc: 279.6, // ~9° Capricorn
+      // At equator: tan(ASC) = cos(LST) / (-cos(ε)*sin(LST))
+      asc: 11.4, // ~11° Aries
+    },
+    tolerance: 0.5,
+  },
+  {
+    // J2000.0 at London (51.5°N)
+    description: 'J2000.0 London (2000-Jan-01 12:00 TT)',
+    jd: 2451545.0,
+    latitude: 51.5074,
+    longitude: -0.1278,
+    expected: {
+      // LST = 280.46 - 0.1278 = 280.33°
+      mc: 279.5, // ~9° Capricorn
+      asc: 24.0, // ~24° Aries
+    },
+    tolerance: 1.0,
+  },
+] as const;
+
 describe('Angles', () => {
+  describe('Reference Validation (Meeus Chapter 13)', () => {
+    /**
+     * Validates our implementation against calculated reference values
+     * using the formulas from Meeus "Astronomical Algorithms" Chapter 13.
+     */
+
+    it('should match calculated reference for J2000.0 at equator', () => {
+      const ref = ANGLE_REFERENCE[0];
+      const lst = lstFromJD(ref.jd, ref.longitude);
+      const obliquity = obliquityOfEcliptic(ref.jd);
+
+      const mc = calculateMidheaven(lst, obliquity);
+      const asc = calculateAscendant(lst, obliquity, ref.latitude);
+
+      assert.ok(
+        Math.abs(mc - ref.expected.mc) < ref.tolerance,
+        `MC: expected ${ref.expected.mc}°, got ${mc.toFixed(2)}° (diff: ${Math.abs(mc - ref.expected.mc).toFixed(2)}°)`,
+      );
+
+      let ascDiff = Math.abs(asc - ref.expected.asc);
+      if (ascDiff > 180) ascDiff = 360 - ascDiff;
+      assert.ok(
+        ascDiff < ref.tolerance,
+        `ASC: expected ${ref.expected.asc}°, got ${asc.toFixed(2)}° (diff: ${ascDiff.toFixed(2)}°)`,
+      );
+    });
+
+    it('should match calculated reference for J2000.0 at London', () => {
+      const ref = ANGLE_REFERENCE[1];
+      const lst = lstFromJD(ref.jd, ref.longitude);
+      const obliquity = obliquityOfEcliptic(ref.jd);
+
+      const mc = calculateMidheaven(lst, obliquity);
+      const asc = calculateAscendant(lst, obliquity, ref.latitude);
+
+      assert.ok(
+        Math.abs(mc - ref.expected.mc) < ref.tolerance,
+        `MC: expected ${ref.expected.mc}°, got ${mc.toFixed(2)}°`,
+      );
+
+      let ascDiff = Math.abs(asc - ref.expected.asc);
+      if (ascDiff > 180) ascDiff = 360 - ascDiff;
+      assert.ok(
+        ascDiff < ref.tolerance,
+        `ASC: expected ${ref.expected.asc}°, got ${asc.toFixed(2)}°`,
+      );
+    });
+  });
+
   describe('calculateMidheaven', () => {
     it('should calculate MC for LST = 0° (0h sidereal)', () => {
       const obliquity = 23.44;
@@ -275,7 +377,7 @@ describe('Angles', () => {
       const longitude = -0.1278; // London longitude
       const latitude = 51.5074; // London latitude
 
-      const lst = localSiderealTime(jd, longitude);
+      const lst = lstFromJD(jd, longitude);
       const obliquity = obliquityOfEcliptic(jd);
 
       const angles = calculateAngles(lst, obliquity, latitude);
@@ -295,7 +397,7 @@ describe('Angles', () => {
       const longitude = -74.006; // New York longitude
       const latitude = 40.7128; // New York latitude
 
-      const lst = localSiderealTime(jd, longitude);
+      const lst = lstFromJD(jd, longitude);
       const obliquity = obliquityOfEcliptic(jd);
 
       const angles = calculateAngles(lst, obliquity, latitude);
@@ -316,7 +418,7 @@ describe('Angles', () => {
 
       for (const date of dates) {
         const jd = toJulianDate(date);
-        const lst = localSiderealTime(jd, location.longitude);
+        const lst = lstFromJD(jd, location.longitude);
         const obliquity = obliquityOfEcliptic(jd);
 
         const angles = calculateAngles(lst, obliquity, location.latitude);
@@ -334,7 +436,7 @@ describe('Angles', () => {
       const longitudes = [-120, -60, 0, 60, 120, 180]; // Various longitudes
 
       const allAngles = longitudes.map((lon) => {
-        const lst = localSiderealTime(jd, lon);
+        const lst = lstFromJD(jd, lon);
         return calculateAngles(lst, obliquity, latitude);
       });
 

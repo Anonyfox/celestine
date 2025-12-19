@@ -359,8 +359,65 @@ describe('Julian Date Conversion', () => {
     });
   });
 
+  describe('toJulianDate - Meeus Table 7.a Reference Values', () => {
+    /**
+     * AUTHORITATIVE SOURCE: Jean Meeus, "Astronomical Algorithms" (2nd ed.)
+     * Table 7.a - Example Julian Day Numbers
+     * These are exact reference values and MUST match precisely.
+     */
+
+    it('1999 Jan 1.0 = JD 2451179.5 (Meeus Table 7.a)', () => {
+      // Source: Meeus Table 7.a
+      const jd = toJulianDate({ year: 1999, month: 1, day: 1, hour: 0, minute: 0, second: 0 });
+      assert.equal(jd, 2451179.5);
+    });
+
+    it('1987 Jan 27.0 = JD 2446822.5 (Meeus Table 7.a)', () => {
+      // Source: Meeus Table 7.a
+      const jd = toJulianDate({ year: 1987, month: 1, day: 27, hour: 0, minute: 0, second: 0 });
+      assert.equal(jd, 2446822.5);
+    });
+
+    it('1987 Jun 19.5 = JD 2446966.0 (Meeus Table 7.a)', () => {
+      // Source: Meeus Table 7.a
+      const jd = toJulianDate({ year: 1987, month: 6, day: 19, hour: 12, minute: 0, second: 0 });
+      assert.equal(jd, 2446966.0);
+    });
+
+    it('1988 Jan 27.0 = JD 2447187.5 (Meeus Table 7.a)', () => {
+      // Source: Meeus Table 7.a
+      const jd = toJulianDate({ year: 1988, month: 1, day: 27, hour: 0, minute: 0, second: 0 });
+      assert.equal(jd, 2447187.5);
+    });
+
+    it('1988 Jun 19.5 = JD 2447332.0 (Meeus Table 7.a)', () => {
+      // Source: Meeus Table 7.a
+      const jd = toJulianDate({ year: 1988, month: 6, day: 19, hour: 12, minute: 0, second: 0 });
+      assert.equal(jd, 2447332.0);
+    });
+
+    it('1900 Jan 0.5 = JD 2415020.0 (Meeus Table 7.a)', () => {
+      // Source: Meeus Table 7.a
+      // Note: Jan 0.5 = Dec 31.5 of previous year
+      const jd = toJulianDate({ year: 1899, month: 12, day: 31, hour: 12, minute: 0, second: 0 });
+      assert.equal(jd, 2415020.0);
+    });
+
+    it('1600 Jan 1.0 = JD 2305447.5 (Meeus Table 7.a)', () => {
+      // Source: Meeus Table 7.a
+      const jd = toJulianDate({ year: 1600, month: 1, day: 1, hour: 0, minute: 0, second: 0 });
+      assert.equal(jd, 2305447.5);
+    });
+
+    it('1600 Dec 31.0 = JD 2305812.5 (Meeus Table 7.a)', () => {
+      // Source: Meeus Table 7.a
+      const jd = toJulianDate({ year: 1600, month: 12, day: 31, hour: 0, minute: 0, second: 0 });
+      assert.equal(jd, 2305812.5);
+    });
+  });
+
   describe('toJulianDate - Historical Dates', () => {
-    it('should handle dates before 2000', () => {
+    it('January 1, 1900 12:00 = JD 2415021.0', () => {
       const date: CalendarDateTime = {
         year: 1900,
         month: 1,
@@ -370,9 +427,7 @@ describe('Julian Date Conversion', () => {
         second: 0,
       };
       const jd = toJulianDate(date);
-      assert.ok(jd < J2000_EPOCH);
-      // January 1, 1900, 12:00 = JD 2415021.0
-      assert.ok(Math.abs(jd - 2415021.0) < 1);
+      assert.equal(jd, 2415021.0);
     });
 
     it('should handle dates in 19th century', () => {

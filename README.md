@@ -12,6 +12,7 @@
 
 ## Features
 
+- ✅ **Birth Charts** - Complete chart calculation combining all modules into a cohesive API
 - ✅ **Ephemeris** - Sun, Moon, all planets, Chiron, 4 major asteroids, lunar nodes, Lilith, lots
 - ✅ **JPL/Swiss Ephemeris Verified** - Positions validated against authoritative astronomical data
 - ✅ **Time Calculations** - Julian dates, Julian centuries, sidereal time, ΔT corrections
@@ -23,7 +24,7 @@
 - ✅ **Retrograde Detection** - Automatic retrograde motion detection for all bodies
 - ✅ **Aspects** - 14 aspect types (major, minor, Kepler), patterns, orbs, applying/separating
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
-- 🧪 **Well-tested** - 100% test coverage
+- 🧪 **Well-tested** - 1800+ unit tests
 - 🚀 **Zero runtime dependencies** - Lightweight and fast
 
 ## Installation
@@ -35,29 +36,37 @@ npm install celestine
 ## Quick Start
 
 ```typescript
-import { ephemeris, time, zodiac } from "celestine";
+import { calculateChart, ephemeris, time, zodiac } from "celestine";
 
-// Calculate Julian Date for J2000.0 epoch
+// Calculate a complete birth chart
+const chart = calculateChart({
+  year: 2000,
+  month: 1,
+  day: 1,
+  hour: 12,
+  minute: 0,
+  second: 0,
+  timezone: 0,
+  latitude: 51.5074, // London
+  longitude: -0.1278,
+});
+
+console.log(`Rising: ${chart.angles.ascendant.formatted}`);
+console.log(`Sun: ${chart.planets[0].formatted}`);
+console.log(`Aspects: ${chart.aspects.all.length}`);
+
+// Or use individual modules for more control
 const jd = time.toJulianDate({ year: 2000, month: 1, day: 1, hour: 12 });
-console.log(jd); // 2451545.0
-
-// Get planetary positions
 const sun = ephemeris.getSunPosition(jd);
-console.log(sun.longitude); // 280.46° (Capricorn)
-
-const moon = ephemeris.getMoonPosition(jd);
-console.log(moon.longitude); // 223.32° (Scorpio)
-
-// Convert ecliptic longitude to zodiac position
 const position = zodiac.eclipticToZodiac(sun.longitude);
-console.log(position.formatted); // "10°27'53" Capricorn"
+console.log(position.formatted); // "10°27' Capricorn"
 
 // Check planetary dignity
 const marsAries = zodiac.getPlanetaryDignity(
   zodiac.Planet.Mars,
   zodiac.Sign.Aries
 );
-console.log(marsAries.state); // "Domicile" (Mars rules Aries, +5 strength)
+console.log(marsAries.state); // "Domicile" (Mars rules Aries)
 ```
 
 ## Usage
@@ -74,13 +83,13 @@ const jd = time.toJulianDate({ year: 2000, month: 1, day: 1, hour: 12 });
 
 // Get individual body positions
 const sun = ephemeris.getSunPosition(jd);
-console.log(sun.longitude);    // 280.46° (Capricorn)
-console.log(sun.distance);     // 0.983 AU
+console.log(sun.longitude); // 280.46° (Capricorn)
+console.log(sun.distance); // 0.983 AU
 console.log(sun.isRetrograde); // false
 
 const moon = ephemeris.getMoonPosition(jd);
-console.log(moon.longitude);   // 223.32° (Scorpio)
-console.log(moon.latitude);    // 5.17°
+console.log(moon.longitude); // 223.32° (Scorpio)
+console.log(moon.latitude); // 5.17°
 
 // Get all positions at once using the unified API
 const positions = ephemeris.getAllPositions(jd);
@@ -300,9 +309,17 @@ const mars = ephemeris.getMarsPosition(jd);
 
 // Create bodies array for aspect detection
 const bodies = [
-  { name: 'Sun', longitude: sun.longitude, longitudeSpeed: sun.longitudeSpeed },
-  { name: 'Moon', longitude: moon.longitude, longitudeSpeed: moon.longitudeSpeed },
-  { name: 'Mars', longitude: mars.longitude, longitudeSpeed: mars.longitudeSpeed },
+  { name: "Sun", longitude: sun.longitude, longitudeSpeed: sun.longitudeSpeed },
+  {
+    name: "Moon",
+    longitude: moon.longitude,
+    longitudeSpeed: moon.longitudeSpeed,
+  },
+  {
+    name: "Mars",
+    longitude: mars.longitude,
+    longitudeSpeed: mars.longitudeSpeed,
+  },
 ];
 
 // Find all aspects between bodies
@@ -316,7 +333,7 @@ for (const aspect of result.aspects) {
 // Detect aspect patterns (T-Square, Grand Trine, Yod, etc.)
 const patterns = aspects.findPatterns(result.aspects);
 for (const pattern of patterns) {
-  console.log(`${pattern.type}: ${pattern.bodies.join(', ')}`);
+  console.log(`${pattern.type}: ${pattern.bodies.join(", ")}`);
 }
 
 // Calculate angular separation
@@ -355,6 +372,118 @@ if (match) {
 - Pattern detection for complex configurations
 - Kepler aspects with mathematically exact angles (from "Harmonices Mundi", 1619)
 
+### Birth Charts
+
+Calculate complete astrological birth charts by combining all modules into a cohesive API. All calculations verified against Swiss Ephemeris.
+
+```typescript
+import { calculateChart, CelestialBody } from "celestine";
+
+// Calculate a complete birth chart
+const chart = calculateChart({
+  year: 1879,
+  month: 3,
+  day: 14,
+  hour: 11,
+  minute: 30,
+  second: 0,
+  timezone: 0.667, // LMT offset (or use standard timezone)
+  latitude: 48.4,
+  longitude: 10.0,
+});
+
+// Access planetary positions
+for (const planet of chart.planets) {
+  console.log(`${planet.name}: ${planet.formatted} in House ${planet.house}`);
+}
+// "Sun: 23°30' Pisces in House 9"
+// "Moon: 14°31' Sagittarius in House 6"
+
+// Access chart angles
+console.log(`Rising: ${chart.angles.ascendant.formatted}`);
+// "Rising: 11°38' Cancer"
+console.log(`Midheaven: ${chart.angles.midheaven.formatted}`);
+// "Midheaven: 12°50' Pisces"
+
+// Access house cusps
+for (const [num, cusp] of Object.entries(chart.houses.cusps)) {
+  console.log(`House ${num}: ${cusp.formatted}`);
+}
+
+// Access aspects
+for (const aspect of chart.aspects.all) {
+  console.log(`${aspect.body1Name} ${aspect.symbol} ${aspect.body2Name}`);
+}
+
+// Access chart summary
+console.log(chart.summary.elements);
+// { fire: 3, earth: 1, air: 2, water: 4 }
+console.log(chart.summary.modalities);
+// { cardinal: 2, fixed: 3, mutable: 5 }
+console.log(chart.summary.retrograde);
+// ['Uranus']
+console.log(chart.summary.patterns);
+// [{ type: 'TSquare', bodies: ['Sun', 'Moon', 'Saturn'] }]
+```
+
+**Chart Options:**
+
+```typescript
+const chart = calculateChart(birthData, {
+  houseSystem: "placidus", // 'koch', 'equal', 'whole-sign', etc.
+  includeAsteroids: true, // Ceres, Pallas, Juno, Vesta
+  includeChiron: true, // Chiron
+  includeLilith: true, // Black Moon Lilith
+  includeNodes: true, // Lunar Nodes
+  includeLots: true, // Part of Fortune, Part of Spirit
+  aspectTypes: "major", // 'all', 'major', or custom array
+  zodiacType: "tropical", // Currently only tropical supported
+});
+```
+
+**Also Available:**
+
+```typescript
+import {
+  calculateChart,
+  calculatePlanets,
+  calculateHouseCusps,
+  validateBirth,
+  formatChart,
+  getAvailableHouseSystems,
+} from "celestine";
+
+// Calculate only planetary positions
+const planets = calculatePlanets(birthData);
+
+// Calculate only house cusps and angles
+const houses = calculateHouseCusps(birthData, { houseSystem: "koch" });
+
+// Validate birth data before calculation
+const validation = validateBirth(birthData);
+if (!validation.valid) {
+  console.log(validation.errors);
+}
+
+// Format chart for display
+console.log(formatChart(chart, "text"));
+
+// Get available house systems
+const systems = getAvailableHouseSystems(); // ['placidus', 'koch', ...]
+```
+
+**Features:**
+
+- Complete birth chart with planets, houses, aspects, and summary
+- All 7 house systems supported
+- Automatic dignity calculation for each planet
+- Aspect patterns detection (T-Square, Grand Trine, Yod, etc.)
+- Element/modality/polarity distribution analysis
+- Hemisphere and quadrant emphasis
+- Retrograde planet tracking
+- Validated against Swiss Ephemeris reference data
+- Einstein's chart verified against Swiss Ephemeris 2.10.03
+
 ## API Documentation
 
 Full API documentation is available at [https://anonyfox.github.io/celestine](https://anonyfox.github.io/celestine)
@@ -381,7 +510,7 @@ Celestine is in active development. Planned features include:
 - [x] House system implementations (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
 - [x] Zodiac system with tropical signs and essential dignities
 - [x] Aspect calculations with orbs, patterns, and applying/separating detection
-- [ ] Birth chart calculation (combining all modules)
+- [x] Birth chart calculation (combining all modules)
 - [ ] Transit calculations
 - [ ] Progression calculations
 
