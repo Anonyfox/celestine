@@ -8,7 +8,13 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-green?style=flat-square&logo=node.js)](https://nodejs.org/)
 
-**A TypeScript library for astronomical and astrological calculations.** Celestine provides precise calculations for planetary positions, birth charts, aspects, houses, and more — all based on solid astronomical principles.
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Anonyfox/celestine/main/assets/celestine-logo.png" alt="Celestine Logo" width="400" />
+</div>
+
+**No bullshit astrology calculations.** Celestine is a TypeScript library for birth charts, transits, progressions, and everything else you need for serious astrological software. Every single calculation is validated against NASA data, JPL Horizons, and Swiss Ephemeris — not "inspired by" or "based on", but byte-for-byte verified against the actual sources astronomers use.
+
+Built for practitioners who actually care about precision. 2400+ unit tests. Zero runtime dependencies. If the math is wrong, your tests will catch it. If NASA says Mars is at 127.4532°, Celestine gives you 127.4532°. Not 127.45° or "close enough" — the real number, every time.
 
 ## Features
 

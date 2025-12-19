@@ -2,7 +2,7 @@
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["src/index.ts"],
   "out": "docs",
-  "name": "Celestine",
+  "name": "Celestine API Documentation",
   "includeVersion": true,
   "readme": "README.md",
   "githubPages": true,
@@ -32,5 +32,10 @@
     "notDocumented": false
   },
   "customCss": "./typedoc-custom.css",
-  "customFooterHtml": "<footer class=\"tsd-page-footer\"><div class=\"container\"><p>Made with <span style=\"color: #7c3aed\">♥</span> by <a href=\"https://anonyfox.com\" target=\"_blank\" rel=\"noopener\">Anonyfox</a></p></div></footer>"
+  "customFooterHtml": "<footer class=\"tsd-page-footer\"><div class=\"container\"><p>Celestine — No-BS astrological calculations validated against NASA, JPL Horizons & Swiss Ephemeris</p><p>Made with <span style=\"color: #7c3aed\">♥</span> by <a href=\"https://anonyfox.com\" target=\"_blank\" rel=\"noopener\">Anonyfox</a> • <a href=\"https://github.com/Anonyfox/celestine\" target=\"_blank\" rel=\"noopener\">GitHub</a> • <a href=\"https://www.npmjs.com/package/celestine\" target=\"_blank\" rel=\"noopener\">npm</a></p></div></footer>",
+  "titleLink": "https://github.com/Anonyfox/celestine",
+  "navigationLinks": {
+    "GitHub": "https://github.com/Anonyfox/celestine",
+    "npm": "https://www.npmjs.com/package/celestine"
+  }
 }
