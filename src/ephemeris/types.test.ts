@@ -41,9 +41,9 @@ describe('ephemeris/types', () => {
       assert.equal(Planet.Chiron, 'Chiron');
     });
 
-    it('should have exactly 14 bodies', () => {
+    it('should have exactly 18 bodies (including asteroids)', () => {
       const planetValues = Object.values(Planet);
-      assert.equal(planetValues.length, 14);
+      assert.equal(planetValues.length, 18);
     });
 
     it('should allow iteration over all planets', () => {

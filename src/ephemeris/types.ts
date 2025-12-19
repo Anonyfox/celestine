@@ -88,6 +88,42 @@ export enum Planet {
    * Highly elliptical orbit makes calculation more complex.
    */
   Chiron = 'Chiron',
+
+  /**
+   * Ceres - dwarf planet in the asteroid belt
+   *
+   * @remarks
+   * Largest object in asteroid belt. Orbital period ~4.6 years.
+   * Represents nurturing and motherhood in astrology.
+   */
+  Ceres = 'Ceres',
+
+  /**
+   * Pallas - second largest asteroid
+   *
+   * @remarks
+   * Highest inclination (34.8°) of major asteroids.
+   * Represents wisdom and creative intelligence.
+   */
+  Pallas = 'Pallas',
+
+  /**
+   * Juno - asteroid representing partnerships
+   *
+   * @remarks
+   * Orbital period ~4.4 years.
+   * Represents committed relationships and equality.
+   */
+  Juno = 'Juno',
+
+  /**
+   * Vesta - brightest asteroid
+   *
+   * @remarks
+   * Second largest asteroid. Shortest period ~3.6 years.
+   * Represents devotion and sacred service.
+   */
+  Vesta = 'Vesta',
 }
 
 /**

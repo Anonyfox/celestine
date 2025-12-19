@@ -33,33 +33,35 @@ import type { EphemerisOptions, PlanetPosition } from './types.js';
 
 /**
  * Chiron's orbital elements at J2000.0 epoch.
- * Source: JPL Small-Body Database
+ * Source: JPL Horizons EPHEM_TYPE='ELEMENTS' at 2000-01-01 12:00 TT
+ * Retrieved: 2025-Dec-19
+ * These are AUTHORITATIVE values - do not modify without verification!
  */
 export const CHIRON_ORBITAL_ELEMENTS = {
-  /** Semi-major axis in AU */
-  semiMajorAxis: 13.648,
+  /** Semi-major axis in AU (from A = 2.035289944812818E+09 km / 149597870.7) */
+  semiMajorAxis: 13.607,
   /** Orbital eccentricity */
-  eccentricity: 0.3791,
+  eccentricity: 0.3793438805668402,
   /** Orbital inclination in degrees */
-  inclination: 6.93,
+  inclination: 6.941566489467262,
   /** Longitude of ascending node at J2000.0 (degrees) */
-  longitudeOfAscendingNode: 209.36,
+  longitudeOfAscendingNode: 209.39667025637,
   /** Argument of perihelion at J2000.0 (degrees) */
-  argumentOfPerihelion: 339.67,
+  argumentOfPerihelion: 339.1420138434362,
   /** Mean anomaly at J2000.0 (degrees) */
-  meanAnomalyAtEpoch: 78.42,
-  /** Mean daily motion (degrees/day) */
-  meanDailyMotion: 0.01958,
+  meanAnomalyAtEpoch: 27.99722096634838,
+  /** Mean daily motion (degrees/day) - from N = 2.273207179302781E-07 deg/s */
+  meanDailyMotion: 2.273207179302781e-7 * 86400, // ~0.01964 deg/day
   /** Orbital period in days */
-  orbitalPeriod: 18385,
+  orbitalPeriod: 18400,
   /** Orbital period in years */
   orbitalPeriodYears: 50.4,
   /** Synodic period in days */
   synodicPeriod: 377,
   /** Perihelion distance in AU */
-  perihelion: 8.46,
+  perihelion: 8.44,
   /** Aphelion distance in AU */
-  aphelion: 18.83,
+  aphelion: 18.77,
 } as const;
 
 // Rates of change per century (approximate)

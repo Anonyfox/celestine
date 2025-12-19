@@ -22,7 +22,35 @@ import {
 } from './chiron.js';
 import { J2000_EPOCH } from './constants.js';
 
+// =============================================================================
+// JPL HORIZONS REFERENCE DATA
+// Source: NASA JPL Horizons System (https://ssd.jpl.nasa.gov/horizons/)
+// Query: COMMAND='2060;', EPHEM_TYPE='OBSERVER', CENTER='500@399', QUANTITIES='31'
+// Retrieved: 2025-Dec-19
+// These values are AUTHORITATIVE - do not modify!
+// =============================================================================
+const JPL_CHIRON_REFERENCE = [
+  { jd: 2451545.0, description: 'J2000.0', longitude: 251.617609, latitude: 4.0717061 },
+  { jd: 2458850.0, description: '2020-Jan-01 12:00', longitude: 1.6050359, latitude: 2.9200879 },
+  { jd: 2448058.0, description: '1990-Jun-15 12:00', longitude: 106.0605042, latitude: -6.2666059 },
+] as const;
+
 describe('ephemeris/chiron', () => {
+  describe('JPL Horizons reference validation', () => {
+    // Chiron uses Keplerian elements - expect larger tolerance for dates far from epoch
+    for (const ref of JPL_CHIRON_REFERENCE) {
+      it(`should match JPL Horizons at ${ref.description}`, () => {
+        const chiron = getChironPosition(ref.jd);
+        let lonDiff = Math.abs(chiron.longitude - ref.longitude);
+        if (lonDiff > 180) lonDiff = 360 - lonDiff;
+        const tolerance = ref.jd === 2451545.0 ? 1.0 : 3.0; // Tighter for J2000.0
+        assert.ok(
+          lonDiff < tolerance,
+          `Longitude: expected ${ref.longitude}° (JPL), got ${chiron.longitude.toFixed(4)}° (diff: ${lonDiff.toFixed(2)}°)`,
+        );
+      });
+    }
+  });
   describe('Heliocentric coordinates', () => {
     describe('chironHeliocentricLongitude', () => {
       it('should return value in range [0, 360)', () => {
@@ -31,7 +59,7 @@ describe('ephemeris/chiron', () => {
         assert.ok(lon >= 0 && lon < 360, `Expected 0-360°, got ${lon}`);
       });
 
-      it('should advance ~7° per year on average', () => {
+      it('should advance according to Keplerian motion', () => {
         const jd0 = J2000_EPOCH;
         const jd1 = J2000_EPOCH + 365.25;
         const lon0 = chironHeliocentricLongitude(jd0);
@@ -41,8 +69,10 @@ describe('ephemeris/chiron', () => {
         if (deltaLon < -180) deltaLon += 360;
         if (deltaLon > 180) deltaLon -= 360;
 
-        // ~7.14° per year (360° / 50.4 years)
-        assert.ok(deltaLon > 5 && deltaLon < 10, `Expected 5-10°/year, got ${deltaLon}°`);
+        // Mean motion is ~7.14°/year (360° / 50.4 years)
+        // But Chiron was near perihelion at J2000.0 (MA=28°), so faster motion
+        // At perihelion, speed can be ~1.6x mean (due to e=0.379)
+        assert.ok(deltaLon > 5 && deltaLon < 15, `Expected 5-15°/year, got ${deltaLon}°`);
       });
 
       it('should complete orbit in ~50.4 years', () => {

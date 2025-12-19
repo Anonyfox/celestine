@@ -15,6 +15,19 @@ import { describe, it } from 'node:test';
 import { J2000_EPOCH } from '../constants.js';
 
 // =============================================================================
+// JPL HORIZONS REFERENCE DATA
+// Source: NASA JPL Horizons System (https://ssd.jpl.nasa.gov/horizons/)
+// Query: COMMAND='599', EPHEM_TYPE='OBSERVER', CENTER='500@399', QUANTITIES='31'
+// Retrieved: 2025-Dec-19
+// These values are AUTHORITATIVE - do not modify!
+// =============================================================================
+const JPL_JUPITER_REFERENCE = [
+  { jd: 2451545.0, description: 'J2000.0', longitude: 25.2530685, latitude: -1.2621868 },
+  { jd: 2458850.0, description: '2020-Jan-01 12:00', longitude: 276.785542, latitude: 0.0878157 },
+  { jd: 2448058.0, description: '1990-Jun-15 12:00', longitude: 105.8894762, latitude: 0.1856219 },
+] as const;
+
+// =============================================================================
 // SWISS EPHEMERIS REFERENCE DATA
 // Generated from pyswisseph (Swiss Ephemeris 2.10.03)
 // These values are AUTHORITATIVE - do not modify!
@@ -151,6 +164,19 @@ describe('ephemeris/planets/jupiter', () => {
   });
 
   describe('getJupiterPosition', () => {
+    describe('JPL Horizons reference validation', () => {
+      for (const ref of JPL_JUPITER_REFERENCE) {
+        it(`should match JPL Horizons at ${ref.description}`, () => {
+          const jupiter = getJupiterPosition(ref.jd);
+          const lonDiff = Math.abs(jupiter.longitude - ref.longitude);
+          assert.ok(
+            lonDiff < LONGITUDE_TOLERANCE,
+            `Longitude: expected ${ref.longitude}° (JPL), got ${jupiter.longitude.toFixed(4)}° (diff: ${(lonDiff * 60).toFixed(1)} arcmin)`,
+          );
+        });
+      }
+    });
+
     describe('Swiss Ephemeris reference validation', () => {
       /**
        * Validates against Swiss Ephemeris (pyswisseph 2.10.03)

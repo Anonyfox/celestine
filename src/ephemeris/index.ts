@@ -228,6 +228,55 @@ export {
 } from './chiron.js';
 
 // =============================================================================
+// Asteroids (Ceres, Pallas, Juno, Vesta)
+// =============================================================================
+
+export {
+  CERES_ORBITAL_ELEMENTS,
+  ceresHeliocentricDistance,
+  ceresHeliocentricLatitude,
+  ceresHeliocentricLongitude,
+  getCeresPosition,
+} from './asteroids/ceres.js';
+export {
+  getJunoPosition,
+  JUNO_ORBITAL_ELEMENTS,
+  junoHeliocentricDistance,
+  junoHeliocentricLatitude,
+  junoHeliocentricLongitude,
+} from './asteroids/juno.js';
+export {
+  getPallasPosition,
+  PALLAS_ORBITAL_ELEMENTS,
+  pallasHeliocentricDistance,
+  pallasHeliocentricLatitude,
+  pallasHeliocentricLongitude,
+} from './asteroids/pallas.js';
+
+export {
+  getVestaPosition,
+  VESTA_ORBITAL_ELEMENTS,
+  vestaHeliocentricDistance,
+  vestaHeliocentricLatitude,
+  vestaHeliocentricLongitude,
+} from './asteroids/vesta.js';
+
+// =============================================================================
+// Unified Position API
+// =============================================================================
+
+export {
+  CelestialBody,
+  DEFAULT_BODIES,
+  getAllPositions,
+  getAllPositionsObject,
+  getDegreeInSign,
+  getPosition,
+  getSign,
+  isRetrograde,
+} from './positions.js';
+
+// =============================================================================
 // Utilities
 // =============================================================================
 

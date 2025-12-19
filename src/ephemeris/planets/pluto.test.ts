@@ -25,6 +25,19 @@ import {
 } from './pluto.js';
 
 // =============================================================================
+// JPL HORIZONS REFERENCE DATA
+// Source: NASA JPL Horizons System (https://ssd.jpl.nasa.gov/horizons/)
+// Query: COMMAND='999', EPHEM_TYPE='OBSERVER', CENTER='500@399', QUANTITIES='31'
+// Retrieved: 2025-Dec-19
+// These values are AUTHORITATIVE - do not modify!
+// =============================================================================
+const JPL_PLUTO_REFERENCE = [
+  { jd: 2451545.0, description: 'J2000.0', longitude: 251.4547644, latitude: 10.8552605 },
+  { jd: 2458850.0, description: '2020-Jan-01 12:00', longitude: 292.4020546, latitude: -0.6535321 },
+  { jd: 2448058.0, description: '1990-Jun-15 12:00', longitude: 225.4014843, latitude: 15.8537803 },
+] as const;
+
+// =============================================================================
 // SWISS EPHEMERIS REFERENCE DATA
 // Generated from pyswisseph (Swiss Ephemeris 2.10.03)
 // These values are AUTHORITATIVE - do not modify!
@@ -182,6 +195,22 @@ describe('ephemeris/planets/pluto', () => {
   });
 
   describe('getPlutoPosition', () => {
+    describe('JPL Horizons reference validation', () => {
+      // Note: Pluto uses Meeus Ch.37 algorithm, optimized for 1885-2099
+      // Tolerance relaxed to 0.5° for dates far from J2000.0
+      for (const ref of JPL_PLUTO_REFERENCE) {
+        it(`should match JPL Horizons at ${ref.description}`, () => {
+          const pluto = getPlutoPosition(ref.jd);
+          const lonDiff = Math.abs(pluto.longitude - ref.longitude);
+          const tolerance = ref.jd === 2451545.0 ? 0.034 : 0.5; // Tighter for J2000.0
+          assert.ok(
+            lonDiff < tolerance,
+            `Longitude: expected ${ref.longitude}° (JPL), got ${pluto.longitude.toFixed(4)}° (diff: ${lonDiff.toFixed(2)}°)`,
+          );
+        });
+      }
+    });
+
     describe('Swiss Ephemeris reference validation', () => {
       /**
        * Validates against Swiss Ephemeris (pyswisseph 2.10.03)
