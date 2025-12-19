@@ -9,6 +9,7 @@
  */
 
 // Export modules
+export * as aspects from './aspects/index.js';
 export * as ephemeris from './ephemeris/index.js';
 export * as houses from './houses/index.js';
 export * as time from './time/index.js';
