@@ -82,9 +82,10 @@ export interface ChartOptions {
    * - 'mean': Mean Node (smooth motion)
    * - 'true': True Node (includes oscillations)
    * - 'both': Include both
+   * - false: Don't include nodes
    * Default: 'true'
    */
-  includeNodes?: 'mean' | 'true' | 'both';
+  includeNodes?: 'mean' | 'true' | 'both' | false;
 
   /** Include Part of Fortune and Part of Spirit (default: true) */
   includeLots?: boolean;

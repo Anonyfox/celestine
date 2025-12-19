@@ -309,8 +309,7 @@ describe('ephemeris/utils/kepler', () => {
     });
 
     it('should show Mars has larger eccentricity effects', () => {
-      // Mars: a ≈ 1.524 AU, e ≈ 0.0934
-      const _a = 1.524; // Semi-major axis (not used in this test, kept for documentation)
+      // Mars: a ≈ 1.524 AU, e ≈ 0.0934 (semi-major axis not used in this test)
       const e = 0.0934;
 
       const M = 90;

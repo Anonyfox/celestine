@@ -37,22 +37,6 @@ const J2000_GREENWICH: BirthData = {
   longitude: 0.0005,
 };
 
-/**
- * Example birth data for testing
- * London, UK - Noon on Summer Solstice 2024
- */
-const _SUMMER_SOLSTICE_2024: BirthData = {
-  year: 2024,
-  month: 6,
-  day: 20,
-  hour: 12,
-  minute: 0,
-  second: 0,
-  timezone: 1, // BST
-  latitude: 51.5074,
-  longitude: -0.1278,
-};
-
 // Tolerance: 30 arcminutes (0.5°) for planetary positions
 const POSITION_TOLERANCE = 0.5;
 

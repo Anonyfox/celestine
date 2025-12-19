@@ -7,6 +7,7 @@
 
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
+import { AspectType } from '../aspects/types.js';
 import { CelestialBody } from '../ephemeris/positions.js';
 import {
   ALL_ASPECTS,
@@ -86,23 +87,23 @@ describe('chart/constants', () => {
     });
 
     it('should include conjunction', () => {
-      assert.ok(MAJOR_ASPECTS.includes('conjunction'));
+      assert.ok(MAJOR_ASPECTS.includes(AspectType.Conjunction));
     });
 
     it('should include opposition', () => {
-      assert.ok(MAJOR_ASPECTS.includes('opposition'));
+      assert.ok(MAJOR_ASPECTS.includes(AspectType.Opposition));
     });
 
     it('should include trine', () => {
-      assert.ok(MAJOR_ASPECTS.includes('trine'));
+      assert.ok(MAJOR_ASPECTS.includes(AspectType.Trine));
     });
 
     it('should include square', () => {
-      assert.ok(MAJOR_ASPECTS.includes('square'));
+      assert.ok(MAJOR_ASPECTS.includes(AspectType.Square));
     });
 
     it('should include sextile', () => {
-      assert.ok(MAJOR_ASPECTS.includes('sextile'));
+      assert.ok(MAJOR_ASPECTS.includes(AspectType.Sextile));
     });
   });
 

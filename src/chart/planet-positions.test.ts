@@ -52,13 +52,15 @@ const LONGITUDE_TOLERANCE = 0.034;
 describe('chart/planet-positions', () => {
   describe('calculatePlanetPositions', () => {
     it('should return all 10 main planets', () => {
-      const positions = calculatePlanetPositions(J2000_JD, {
+      const minimalOptions = {
         ...DEFAULT_OPTIONS,
         includeAsteroids: false,
         includeChiron: false,
-        includeLilith: false,
-        includeNodes: false,
-      } as Required<typeof DEFAULT_OPTIONS>);
+        includeLilith: false as const,
+        includeNodes: false as const,
+        includeLots: false,
+      };
+      const positions = calculatePlanetPositions(J2000_JD, minimalOptions);
 
       assert.equal(positions.planets.size, 10);
       assert.ok(positions.planets.has(CelestialBody.Sun));

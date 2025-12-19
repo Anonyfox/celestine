@@ -9,6 +9,7 @@ import {
   systemRequiresLatitude,
   systemWorksAtPolarCircle,
 } from './houses.js';
+import type { HouseSystem } from './types.js';
 
 describe('Houses Module - Integration Tests', () => {
   // Test location: London
@@ -170,18 +171,15 @@ describe('Houses Module - Integration Tests', () => {
       ];
 
       for (const system of expectedSystems) {
-        assert.ok(results[system], `Missing system: ${system}`);
+        assert.ok(results[system as HouseSystem], `Missing system: ${system}`);
       }
     });
 
     it('should show differences between systems', () => {
       const results = calculateMultipleSystems(london, lst, T, ['placidus', 'equal']);
 
-      // House 2 should be different (except by coincidence)
-      const _placidusH2 = results.placidus.cusps.cusps[1];
+      // Equal House 2 should be exactly ASC + 30
       const equalH2 = results.equal.cusps.cusps[1];
-
-      // They should be different values (equal is always ASC + 30)
       const expectedEqualH2 = (results.equal.angles.ascendant + 30) % 360;
       assert.ok(Math.abs(equalH2 - expectedEqualH2) < 0.001);
     });
@@ -275,12 +273,8 @@ describe('Houses Module - Integration Tests', () => {
         'Equal House 10 should be ASC + 270°',
       );
 
-      // But intermediate houses should differ
-      // (unless by coincidence, which is highly unlikely)
-      const _h2Placidus = comparison.placidus.cusps.cusps[1];
-      const h2Equal = comparison.equal.cusps.cusps[1];
-
       // Equal house 2 should be exactly ASC + 30
+      const h2Equal = comparison.equal.cusps.cusps[1];
       const expectedEqualH2 = (ascEqual + 30) % 360;
       assert.ok(Math.abs(h2Equal - expectedEqualH2) < 0.001);
     });

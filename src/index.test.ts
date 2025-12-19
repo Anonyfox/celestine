@@ -116,7 +116,7 @@ describe('Celestine Public API', () => {
 
     it('should export getAvailableHouseSystems function', () => {
       assert.ok(typeof getAvailableHouseSystems === 'function');
-      const systems = getAvailableHouseSystems();
+      const systems = getAvailableHouseSystems(45); // 45° latitude
       assert.ok(systems.includes('placidus'));
       assert.ok(systems.includes('koch'));
       assert.ok(systems.includes('equal'));
@@ -350,7 +350,7 @@ describe('Celestine Public API', () => {
   describe('Types (compile-time check)', () => {
     it('should export all chart types', () => {
       // These are compile-time checks - if TypeScript compiles, types are exported
-      const _birthData: BirthData = {
+      const birthData: BirthData = {
         year: 2000,
         month: 1,
         day: 1,
@@ -361,20 +361,23 @@ describe('Celestine Public API', () => {
         latitude: 0,
         longitude: 0,
       };
-      const _options: ChartOptions = {};
+      const options: ChartOptions = {};
 
-      // Just verify the types exist (compile-time check)
-      assert.ok(true);
+      // Verify the types exist and are usable
+      assert.ok(birthData.year === 2000);
+      assert.ok(options !== undefined);
     });
 
     it('should export CalendarDateTime type', () => {
-      const _date: CalendarDateTime = {
+      const date: CalendarDateTime = {
         year: 2000,
         month: 1,
         day: 1,
         hour: 12,
+        minute: 0,
+        second: 0,
       };
-      assert.ok(true);
+      assert.ok(date.year === 2000);
     });
   });
 });

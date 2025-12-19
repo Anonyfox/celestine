@@ -267,16 +267,26 @@ describe('chart/chart-summary', () => {
 
   describe('getDominantElement', () => {
     it('should return element with most planets', () => {
-      const elementCounts = { fire: 3, earth: 1, air: 1, water: 0 };
+      const elements = {
+        fire: ['Sun', 'Mars', 'Jupiter'],
+        earth: ['Venus'],
+        air: ['Mercury'],
+        water: [],
+      };
 
-      const dominant = getDominantElement(elementCounts);
+      const dominant = getDominantElement(elements);
       assert.equal(dominant, 'fire');
     });
 
     it('should handle tie by returning first (fire > earth > air > water)', () => {
-      const elementCounts = { fire: 2, earth: 2, air: 0, water: 0 };
+      const elements = {
+        fire: ['Sun', 'Mars'],
+        earth: ['Venus', 'Saturn'],
+        air: [],
+        water: [],
+      };
 
-      const dominant = getDominantElement(elementCounts);
+      const dominant = getDominantElement(elements);
       // Could be either - just verify it returns one of them
       assert.ok(['fire', 'earth'].includes(dominant));
     });
@@ -284,9 +294,13 @@ describe('chart/chart-summary', () => {
 
   describe('getDominantModality', () => {
     it('should return modality with most planets', () => {
-      const modalityCounts = { cardinal: 3, fixed: 1, mutable: 0 };
+      const modalities = {
+        cardinal: ['Sun', 'Mars', 'Jupiter'],
+        fixed: ['Venus'],
+        mutable: [],
+      };
 
-      const dominant = getDominantModality(modalityCounts);
+      const dominant = getDominantModality(modalities);
       assert.equal(dominant, 'cardinal');
     });
   });

@@ -438,16 +438,14 @@ describe('deltaT', () => {
   });
 
   describe('Monotonicity (general trend)', () => {
-    it('should generally increase from 1600 to present', () => {
-      const _dt1600 = deltaT(1600, 1);
-      const _dt1700 = deltaT(1700, 1);
+    it('should generally increase from 1800 to present', () => {
+      // Note: There are periods where ΔT decreased (e.g., 1600-1700)
+      // But overall trend from 1800 onwards is increasing
       const dt1800 = deltaT(1800, 1);
       const dt1900 = deltaT(1900, 1);
       const dt2000 = deltaT(2000, 1);
       const dt2025 = deltaT(2025, 1);
 
-      // Note: There are periods where ΔT decreased (e.g., 1600-1700)
-      // But overall trend from 1800 onwards is increasing
       assert.ok(dt2025 > dt2000);
       assert.ok(dt2000 > dt1900);
       // 1800-1900 period is complex, so we check it stayed in reasonable range
