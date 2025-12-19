@@ -24,8 +24,9 @@
 - ✅ **Retrograde Detection** - Automatic retrograde motion detection for all bodies
 - ✅ **Aspects** - 14 aspect types (major, minor, Kepler), patterns, orbs, applying/separating
 - ✅ **Transits** - Predictive astrology with exact timing, house ingress, retrograde handling
+- ✅ **Progressions** - Secondary progressions, solar arc directions, Moon phases and sign transits
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
-- 🧪 **Well-tested** - 1800+ unit tests
+- 🧪 **Well-tested** - 2400+ unit tests
 - 🚀 **Zero runtime dependencies** - Lightweight and fast
 
 ## Installation
@@ -577,6 +578,101 @@ for (const period of mercuryRx) {
 - Date range search with grouping by month/body/natal point
 - Validated against historical transit events and Swiss Ephemeris
 
+### Progressions (Predictive Astrology)
+
+Calculate how the natal chart evolves over time using secondary progressions, solar arc directions, and other progression techniques.
+
+```typescript
+import {
+  progressions,
+  calculateProgression,
+  formatProgressionResult,
+} from "celestine";
+
+// Define birth data
+const birth = {
+  year: 1990,
+  month: 6,
+  day: 15,
+  hour: 14,
+  minute: 30,
+  second: 0,
+  timezone: -5,
+  latitude: 40.7128, // New York
+  longitude: -74.006,
+};
+
+// Calculate secondary progressions for a target date
+const target = { year: 2024, month: 1, day: 1 };
+const result = calculateProgression(birth, target);
+
+console.log(`Age: ${result.ageAtTarget.toFixed(1)} years`);
+console.log(`Solar Arc: ${result.solarArc.toFixed(2)}°`);
+
+// View progressed positions
+for (const body of result.bodies) {
+  console.log(`${body.name}: ${body.progressedFormatted}`);
+  if (body.hasChangedSign) {
+    console.log(
+      `  ★ Changed from ${body.natalSignName} to ${body.progressedSignName}`
+    );
+  }
+}
+
+// Check progressed angles
+console.log(`Progressed ASC: ${result.angles.ascendant.progressedFormatted}`);
+console.log(`Progressed MC: ${result.angles.midheaven.progressedFormatted}`);
+
+// View aspects between progressed and natal positions
+for (const aspect of result.aspects.slice(0, 5)) {
+  console.log(
+    `${aspect.progressedBody} ${aspect.aspectType} ${aspect.natalBody}`
+  );
+}
+
+// Get detailed progressed Moon report
+const moonReport = progressions.getProgressedMoonReport(birth, target);
+console.log(`Moon Phase: ${moonReport.phase.phaseName}`);
+console.log(`Moon Sign Transits:`);
+for (const transit of moonReport.signTransits.slice(0, 5)) {
+  console.log(
+    `  ${transit.signName}: age ${transit.entryAge.toFixed(
+      1
+    )} - ${transit.exitAge.toFixed(1)}`
+  );
+}
+
+// Use solar arc directions
+const solarArc = progressions.calculateSolarArc(
+  result.birthJD,
+  result.targetJD
+);
+console.log(`Solar Arc: ${progressions.formatSolarArc(solarArc)}`);
+
+// Format complete result
+console.log(formatProgressionResult(result));
+```
+
+**Progression Types:**
+
+- **Secondary Progressions**: 1 day = 1 year (most common technique)
+- **Solar Arc Directions**: All points advance by Sun's progressed motion
+- **Minor Progressions**: 1 sidereal month = 1 year
+- **Tertiary Progressions**: 1 day = 1 month
+
+**Features:**
+
+- Complete progressed chart calculation
+- Solar arc calculations and directions
+- Progressed-to-natal aspect detection
+- Sign change tracking for all bodies
+- Specialized progressed Moon analysis
+- Moon sign transit timeline
+- Progressed lunar phase calculation
+- Multiple progression type support
+- Configurable orbs and aspect types
+- Beautiful formatted output
+
 ## API Documentation
 
 Full API documentation is available at [https://anonyfox.github.io/celestine](https://anonyfox.github.io/celestine)
@@ -605,7 +701,7 @@ Celestine is in active development. Planned features include:
 - [x] Aspect calculations with orbs, patterns, and applying/separating detection
 - [x] Birth chart calculation (combining all modules)
 - [x] Transit calculations (exact timing, house ingress, retrograde handling)
-- [ ] Progression calculations
+- [x] Progression calculations (secondary, solar arc, minor, tertiary)
 
 ## Project Philosophy
 

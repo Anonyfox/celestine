@@ -54,6 +54,9 @@ export * as zodiac from './zodiac/index.js';
 /** Transit calculations (predictive astrology) */
 export * as transits from './transits/index.js';
 
+/** Progressions (secondary, solar arc, etc.) */
+export * as progressions from './progressions/index.js';
+
 // =============================================================================
 // Primary Chart API (most common entry point)
 // =============================================================================
@@ -252,3 +255,36 @@ export {
   /** Get transits to a natal point */
   getTransitsToPoint,
 } from './transits/index.js';
+
+// =============================================================================
+// Progressions (predictive astrology)
+// =============================================================================
+
+export type {
+  /** Progressed body position */
+  ProgressedBody,
+  /** Progressed angle (ASC, MC) */
+  ProgressedAngle,
+  /** Progression aspect data */
+  ProgressionAspect,
+  /** Birth data for progressions */
+  ProgressionBirthData,
+  /** Progression configuration */
+  ProgressionConfig,
+  /** Complete progression result */
+  ProgressionResult,
+  /** Progression type */
+  ProgressionType,
+} from './progressions/index.js';
+export {
+  /** Calculate a complete progression */
+  calculateProgression,
+  /** Calculate progressed positions */
+  calculateProgressedPositions,
+  /** Calculate solar arc */
+  calculateSolarArc,
+  /** Format progression result for display */
+  formatProgressionResult,
+  /** Get progressed Moon report */
+  getProgressedMoonReport,
+} from './progressions/index.js';
