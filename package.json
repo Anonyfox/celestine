@@ -1,6 +1,6 @@
 {
   "name": "celestine",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "No-BS astrological calculations validated against NASA, JPL Horizons & Swiss Ephemeris. Birth charts, transits, progressions that actually work.",
   "type": "module",
   "main": "./dist/index.cjs",
