@@ -157,7 +157,7 @@ export function junoHeliocentricDistance(jd: number): number {
 
 export function getJunoPosition(
   jd: number,
-  options: { calculateSpeed?: boolean } = {},
+  options: { includeSpeed?: boolean } = {},
 ): {
   longitude: number;
   latitude: number;
@@ -165,7 +165,7 @@ export function getJunoPosition(
   longitudeSpeed: number;
   isRetrograde: boolean;
 } {
-  const { calculateSpeed = true } = options;
+  const { includeSpeed = true } = options;
 
   const junoHelio = getHeliocentricPosition(jd);
 
@@ -186,9 +186,9 @@ export function getJunoPosition(
   const latitude = Math.asin(geoZ / distance) * RAD_TO_DEG;
 
   let longitudeSpeed = 0;
-  if (calculateSpeed) {
+  if (includeSpeed) {
     const dt = 1;
-    const pos2 = getJunoPosition(jd + dt, { calculateSpeed: false });
+    const pos2 = getJunoPosition(jd + dt, { includeSpeed: false });
     let dLon = pos2.longitude - longitude;
     if (dLon > 180) dLon -= 360;
     if (dLon < -180) dLon += 360;

@@ -154,7 +154,6 @@ export function getPosition(
         latitude: 0,
         distance: 0,
         longitudeSpeed: node.speed,
-        latitudeSpeed: 0,
         isRetrograde: node.isRetrograde,
       };
     }
@@ -166,7 +165,6 @@ export function getPosition(
         latitude: 0,
         distance: 0,
         longitudeSpeed: node.speed,
-        latitudeSpeed: 0,
         isRetrograde: node.isRetrograde,
       };
     }
@@ -179,7 +177,6 @@ export function getPosition(
         latitude: 0,
         distance: 0,
         longitudeSpeed: node.speed,
-        latitudeSpeed: 0,
         isRetrograde: node.isRetrograde,
       };
     }
@@ -191,7 +188,6 @@ export function getPosition(
         latitude: 0,
         distance: 0,
         longitudeSpeed: node.speed,
-        latitudeSpeed: 0,
         isRetrograde: node.isRetrograde,
       };
     }
@@ -204,7 +200,6 @@ export function getPosition(
         latitude: 0,
         distance: 0,
         longitudeSpeed: lilith.speed,
-        latitudeSpeed: 0,
         isRetrograde: lilith.isRetrograde,
       };
     }
@@ -216,7 +211,6 @@ export function getPosition(
         latitude: 0,
         distance: 0,
         longitudeSpeed: lilith.speed,
-        latitudeSpeed: 0,
         isRetrograde: lilith.isRetrograde,
       };
     }

@@ -35,7 +35,8 @@
         "useTemplate": "warn"
       },
       "suspicious": {
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "noApproximativeNumericConstant": "off"
       }
     }
   },

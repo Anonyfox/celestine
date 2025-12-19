@@ -431,7 +431,6 @@ export function getNeptunePosition(jd: number, options: EphemerisOptions = {}): 
 
   // Calculate speed if requested
   let longitudeSpeed = 0;
-  let latitudeSpeed = 0;
   let isRetrograde = false;
 
   if (includeSpeed) {
@@ -444,7 +443,6 @@ export function getNeptunePosition(jd: number, options: EphemerisOptions = {}): 
     if (lonDiff < -180) lonDiff += 360;
 
     longitudeSpeed = lonDiff / (2 * dt);
-    latitudeSpeed = (pos2.latitude - pos1.latitude) / (2 * dt);
     isRetrograde = longitudeSpeed < 0;
   }
 
@@ -453,7 +451,6 @@ export function getNeptunePosition(jd: number, options: EphemerisOptions = {}): 
     latitude: geoLat,
     distance: geoDist,
     longitudeSpeed,
-    latitudeSpeed,
     isRetrograde,
   };
 }

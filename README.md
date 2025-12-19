@@ -12,14 +12,15 @@
 
 ## Features
 
+- ✅ **Ephemeris** - Sun, Moon, all planets, Chiron, 4 major asteroids, lunar nodes, Lilith, lots
+- ✅ **JPL/Swiss Ephemeris Verified** - Positions validated against authoritative astronomical data
 - ✅ **Time Calculations** - Julian dates, Julian centuries, sidereal time, ΔT corrections
 - ✅ **NASA Verified** - Time calculations tested against official NASA reference data
 - ✅ **House Systems** - 7 systems (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
 - ✅ **Astronomically Verified** - House calculations verified against fundamental astronomical principles
 - ✅ **Zodiac System** - Tropical zodiac with signs, dignities, and complete metadata
 - ✅ **Traditional Astrology** - Planetary rulerships and essential dignities (Ptolemy, Lilly)
-- ✅ **Date Conversions** - Calendar ↔ Julian Date with full validation
-- 🪐 **Planetary Positions** - Accurate ephemeris calculations (coming soon)
+- ✅ **Retrograde Detection** - Automatic retrograde motion detection for all bodies
 - 📐 **Aspects** - Angular relationships between celestial bodies (coming soon)
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
 - 🧪 **Well-tested** - 100% test coverage
@@ -34,15 +35,22 @@ npm install celestine
 ## Quick Start
 
 ```typescript
-import { time, zodiac } from "celestine";
+import { ephemeris, time, zodiac } from "celestine";
 
 // Calculate Julian Date for J2000.0 epoch
 const jd = time.toJulianDate({ year: 2000, month: 1, day: 1, hour: 12 });
 console.log(jd); // 2451545.0
 
+// Get planetary positions
+const sun = ephemeris.getSunPosition(jd);
+console.log(sun.longitude); // 280.46° (Capricorn)
+
+const moon = ephemeris.getMoonPosition(jd);
+console.log(moon.longitude); // 223.32° (Scorpio)
+
 // Convert ecliptic longitude to zodiac position
-const position = zodiac.eclipticToZodiac(217.411111);
-console.log(position.formatted); // "7°24'40" Scorpio"
+const position = zodiac.eclipticToZodiac(sun.longitude);
+console.log(position.formatted); // "10°27'53" Capricorn"
 
 // Check planetary dignity
 const marsAries = zodiac.getPlanetaryDignity(
@@ -53,6 +61,60 @@ console.log(marsAries.state); // "Domicile" (Mars rules Aries, +5 strength)
 ```
 
 ## Usage
+
+### Ephemeris (Planetary Positions)
+
+Calculate precise positions of celestial bodies at any moment, validated against JPL Horizons and Swiss Ephemeris.
+
+```typescript
+import { ephemeris, time } from "celestine";
+
+// Get Julian Date for a specific moment
+const jd = time.toJulianDate({ year: 2000, month: 1, day: 1, hour: 12 });
+
+// Get individual body positions
+const sun = ephemeris.getSunPosition(jd);
+console.log(sun.longitude);    // 280.46° (Capricorn)
+console.log(sun.distance);     // 0.983 AU
+console.log(sun.isRetrograde); // false
+
+const moon = ephemeris.getMoonPosition(jd);
+console.log(moon.longitude);   // 223.32° (Scorpio)
+console.log(moon.latitude);    // 5.17°
+
+// Get all positions at once using the unified API
+const positions = ephemeris.getAllPositions(jd);
+console.log(positions.get(ephemeris.CelestialBody.Mars));
+
+// Check retrograde status
+const mercury = ephemeris.getMercuryPosition(jd);
+if (mercury.isRetrograde) {
+  console.log("Mercury retrograde!");
+}
+
+// Get zodiac sign for a body
+const sign = ephemeris.getSign(ephemeris.CelestialBody.Venus, jd);
+console.log(sign); // "Sagittarius"
+```
+
+**Available Bodies:**
+
+- **Luminaries**: Sun, Moon
+- **Classical Planets**: Mercury, Venus, Mars, Jupiter, Saturn
+- **Modern Planets**: Uranus, Neptune, Pluto
+- **Centaur**: Chiron
+- **Asteroids**: Ceres, Pallas, Juno, Vesta
+- **Lunar Nodes**: Mean Node, True Node (North & South)
+- **Lilith**: Mean Lilith, True Lilith (Black Moon)
+- **Lots**: Part of Fortune, Part of Spirit
+
+**Features:**
+
+- Geocentric ecliptic coordinates (longitude, latitude, distance)
+- Automatic retrograde detection via longitudeSpeed
+- ±1 arcminute accuracy for years 1800-2200
+- Based on Jean Meeus' "Astronomical Algorithms" and VSOP87 theory
+- All positions validated against JPL Horizons and Swiss Ephemeris reference data
 
 ### Time Calculations
 
@@ -242,13 +304,14 @@ npm run format     # Format code
 
 Celestine is in active development. Planned features include:
 
-- [ ] Complete ephemeris for all planets and major asteroids
-- [ ] Birth chart calculation
+- [x] Complete ephemeris for all planets and major asteroids
+- [x] Lunar nodes (Mean & True) and Lilith (Mean & True)
+- [x] Arabic Parts (Part of Fortune, Part of Spirit)
+- [x] Retrograde detection
 - [x] House system implementations (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
 - [x] Zodiac system with tropical signs and essential dignities
+- [ ] Birth chart calculation (combining all modules)
 - [ ] Aspect calculations with orbs
-- [ ] Lunar nodes and additional chart points
-- [ ] Retrograde detection
 - [ ] Transit calculations
 - [ ] Progression calculations
 

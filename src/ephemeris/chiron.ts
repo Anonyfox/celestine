@@ -314,7 +314,6 @@ export function getChironPosition(jd: number, options: EphemerisOptions = {}): P
 
   // Calculate speed if requested
   let longitudeSpeed = 0;
-  let latitudeSpeed = 0;
   let isRetrograde = false;
 
   if (includeSpeed) {
@@ -327,7 +326,6 @@ export function getChironPosition(jd: number, options: EphemerisOptions = {}): P
     if (lonDiff < -180) lonDiff += 360;
 
     longitudeSpeed = lonDiff / (2 * dt);
-    latitudeSpeed = (pos2.latitude - pos1.latitude) / (2 * dt);
     isRetrograde = longitudeSpeed < 0;
   }
 
@@ -336,7 +334,6 @@ export function getChironPosition(jd: number, options: EphemerisOptions = {}): P
     latitude: geoLat,
     distance: geoDist,
     longitudeSpeed,
-    latitudeSpeed,
     isRetrograde,
   };
 }
