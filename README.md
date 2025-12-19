@@ -23,6 +23,7 @@
 - ✅ **Traditional Astrology** - Planetary rulerships and essential dignities (Ptolemy, Lilly)
 - ✅ **Retrograde Detection** - Automatic retrograde motion detection for all bodies
 - ✅ **Aspects** - 14 aspect types (major, minor, Kepler), patterns, orbs, applying/separating
+- ✅ **Transits** - Predictive astrology with exact timing, house ingress, retrograde handling
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
 - 🧪 **Well-tested** - 1800+ unit tests
 - 🚀 **Zero runtime dependencies** - Lightweight and fast
@@ -484,6 +485,98 @@ const systems = getAvailableHouseSystems(); // ['placidus', 'koch', ...]
 - Validated against Swiss Ephemeris reference data
 - Einstein's chart verified against Swiss Ephemeris 2.10.03
 
+### Transits (Predictive Astrology)
+
+Calculate when current planetary positions form aspects to natal chart positions — the foundation of predictive astrology.
+
+```typescript
+import { transits, time, type NatalPoint } from "celestine";
+
+// Define natal points from a birth chart
+const natalPoints: NatalPoint[] = [
+  { name: "Sun", longitude: 280.37, type: "planet" },
+  { name: "Moon", longitude: 223.32, type: "luminary" },
+  { name: "ASC", longitude: 101.65, type: "angle" },
+];
+
+// Calculate transits at a specific moment
+const jd = time.toJulianDate({ year: 2025, month: 12, day: 19, hour: 12 });
+const result = transits.calculateTransits(natalPoints, jd);
+
+for (const transit of result.transits) {
+  console.log(transits.formatTransit(transit));
+  // "Saturn □ Sun (1°23', 85%, applying)"
+}
+
+// Search transits over a date range
+const searchResult = transits.searchTransits({
+  natalPoints,
+  startJD: jd,
+  endJD: jd + 365, // One year
+  transitingBodies: [
+    transits.CelestialBody.Saturn,
+    transits.CelestialBody.Jupiter,
+  ],
+});
+
+// Get timing details for each transit
+for (const timing of searchResult.transits) {
+  console.log(
+    `${timing.transit.transitingBody} ${timing.transit.symbol} ${timing.transit.natalPoint}`
+  );
+  console.log(
+    `  Enters orb: ${timing.enterOrbDate?.month}/${timing.enterOrbDate?.day}`
+  );
+  console.log(
+    `  Exact: ${timing.exactDates[0]?.month}/${timing.exactDates[0]?.day}`
+  );
+  console.log(
+    `  Exits orb: ${timing.exitOrbDate?.month}/${timing.exitOrbDate?.day}`
+  );
+}
+
+// Detect house ingresses
+const houseCusps = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+const ingresses = transits.calculateAllIngresses(
+  transits.CelestialBody.Mars,
+  houseCusps,
+  jd,
+  jd + 365
+);
+
+// Find retrograde periods
+const mercuryRx = transits.findRetrogradePeriods(
+  transits.CelestialBody.Mercury,
+  jd,
+  jd + 365
+);
+
+for (const period of mercuryRx) {
+  console.log(transits.formatRetrogradePeriod(period));
+  // "Mercury Rx: Dec 13 - Jan 2 (21 days), 8°23' Capricorn → 22°10' Sagittarius"
+}
+```
+
+**Transit Types:**
+
+- **Planet-to-Planet**: Transiting Saturn square natal Sun
+- **Planet-to-Angle**: Transiting Jupiter conjunct natal ASC
+- **Planet-to-House**: Mars enters the 7th house
+- **Retrograde Transits**: Multiple passes due to retrograde motion
+
+**Features:**
+
+- Transit detection with applying/separating phase
+- Strength calculation (100% = exact, decreasing to orb edge)
+- Configurable orbs with extensions for luminaries and angles
+- Exact transit time finding via binary search
+- Orb entry/exit timing for full transit duration
+- House ingress detection (planet enters/exits natal houses)
+- Retrograde motion handling with station point detection
+- Multiple transit passes for slow planets
+- Date range search with grouping by month/body/natal point
+- Validated against historical transit events and Swiss Ephemeris
+
 ## API Documentation
 
 Full API documentation is available at [https://anonyfox.github.io/celestine](https://anonyfox.github.io/celestine)
@@ -511,7 +604,7 @@ Celestine is in active development. Planned features include:
 - [x] Zodiac system with tropical signs and essential dignities
 - [x] Aspect calculations with orbs, patterns, and applying/separating detection
 - [x] Birth chart calculation (combining all modules)
-- [ ] Transit calculations
+- [x] Transit calculations (exact timing, house ingress, retrograde handling)
 - [ ] Progression calculations
 
 ## Project Philosophy

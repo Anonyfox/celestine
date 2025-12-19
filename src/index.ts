@@ -51,6 +51,9 @@ export * as time from './time/index.js';
 /** Zodiac sign calculations and dignities */
 export * as zodiac from './zodiac/index.js';
 
+/** Transit calculations (predictive astrology) */
+export * as transits from './transits/index.js';
+
 // =============================================================================
 // Primary Chart API (most common entry point)
 // =============================================================================
@@ -226,3 +229,26 @@ export {
   /** J2000.0 epoch Julian Date */
   J2000_EPOCH,
 } from './time/index.js';
+
+// =============================================================================
+// Transits (predictive astrology)
+// =============================================================================
+
+export type {
+  /** Natal point for transit calculations */
+  NatalPoint,
+  /** Transit data */
+  Transit,
+  /** Transit configuration options */
+  TransitConfig,
+  /** Transit result */
+  TransitResult,
+} from './transits/index.js';
+export {
+  /** Calculate transits at a moment */
+  calculateTransits,
+  /** Format a transit for display */
+  formatTransit,
+  /** Get transits to a natal point */
+  getTransitsToPoint,
+} from './transits/index.js';
