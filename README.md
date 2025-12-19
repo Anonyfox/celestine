@@ -16,9 +16,10 @@
 - ✅ **NASA Verified** - Time calculations tested against official NASA reference data
 - ✅ **House Systems** - 7 systems (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
 - ✅ **Astronomically Verified** - House calculations verified against fundamental astronomical principles
+- ✅ **Zodiac System** - Tropical zodiac with signs, dignities, and complete metadata
+- ✅ **Traditional Astrology** - Planetary rulerships and essential dignities (Ptolemy, Lilly)
 - ✅ **Date Conversions** - Calendar ↔ Julian Date with full validation
 - 🪐 **Planetary Positions** - Accurate ephemeris calculations (coming soon)
-- ♈ **Zodiac System** - Tropical zodiac signs with full metadata (coming soon)
 - 📐 **Aspects** - Angular relationships between celestial bodies (coming soon)
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
 - 🧪 **Well-tested** - 100% test coverage
@@ -33,16 +34,22 @@ npm install celestine
 ## Quick Start
 
 ```typescript
-import { julianDate, eclipticToZodiac } from "celestine";
+import { time, zodiac } from "celestine";
 
 // Calculate Julian Date for J2000.0 epoch
-const jd = julianDate(2000, 1, 1, 12);
+const jd = time.toJulianDate({ year: 2000, month: 1, day: 1, hour: 12 });
 console.log(jd); // 2451545.0
 
 // Convert ecliptic longitude to zodiac position
-const position = eclipticToZodiac(45.5);
-console.log(position);
-// { signIndex: 1, signName: 'Taurus', degree: 15.5, formatted: '15°30' Taurus' }
+const position = zodiac.eclipticToZodiac(217.411111);
+console.log(position.formatted); // "7°24'40" Scorpio"
+
+// Check planetary dignity
+const marsAries = zodiac.getPlanetaryDignity(
+  zodiac.Planet.Mars,
+  zodiac.Sign.Aries
+);
+console.log(marsAries.state); // "Domicile" (Mars rules Aries, +5 strength)
 ```
 
 ## Usage
@@ -126,7 +133,15 @@ console.log(birthChart.cusps);
 // { cusps: [120.5, 145.2, 172.8, ...] } // 12 house cusps
 
 // Supported house systems
-const systems = ["placidus", "koch", "equal", "whole-sign", "porphyry", "regiomontanus", "campanus"];
+const systems = [
+  "placidus",
+  "koch",
+  "equal",
+  "whole-sign",
+  "porphyry",
+  "regiomontanus",
+  "campanus",
+];
 ```
 
 **Available:**
@@ -139,45 +154,78 @@ const systems = ["placidus", "koch", "equal", "whole-sign", "porphyry", "regiomo
 - Direct ports of Swiss Ephemeris algorithms for complex systems
 - Verified against astronomical principles (angle relationships, house spacing, equatorial behavior)
 
-### Zodiac Conversions
+### Zodiac System & Planetary Dignities
+
+Calculate tropical zodiac positions and essential dignities based on traditional astrological doctrine.
 
 ```typescript
-import { eclipticToZodiac } from "celestine";
+import { zodiac } from "celestine";
 
-// Convert any ecliptic longitude to zodiac position
-const sunPosition = eclipticToZodiac(120.5);
-console.log(sunPosition);
-// { signIndex: 4, signName: 'Leo', degree: 0.5, formatted: '0°30' Leo' }
+// Convert ecliptic longitude to zodiac position
+const venus = zodiac.eclipticToZodiac(217.411111);
+console.log(venus);
+// {
+//   sign: Sign.Scorpio,
+//   signName: 'Scorpio',
+//   degree: 7,
+//   minute: 24,
+//   second: 40,
+//   formatted: "7°24'40\" Scorpio"
+// }
+
+// Get sign properties
+const aries = zodiac.getSignInfo(zodiac.Sign.Aries);
+console.log(aries);
+// {
+//   element: Element.Fire,
+//   modality: Modality.Cardinal,
+//   polarity: Polarity.Positive,
+//   ruler: Planet.Mars,
+//   symbol: '♈'
+// }
+
+// Check planetary dignity
+const sunAries = zodiac.getPlanetaryDignity(
+  zodiac.Planet.Sun,
+  zodiac.Sign.Aries
+);
+console.log(sunAries);
+// {
+//   state: DignityState.Exaltation,
+//   strength: 4,  // +4 for exaltation
+//   exaltationDegree: 19,
+//   description: 'Sun exalted in Aries'
+// }
+
+// Check multiple dignities
+zodiac.isRuler(zodiac.Planet.Mars, zodiac.Sign.Aries); // true (Mars rules Aries)
+zodiac.isExalted(zodiac.Planet.Sun, zodiac.Sign.Aries); // true (Sun exalted in Aries)
+zodiac.isDetriment(zodiac.Planet.Mars, zodiac.Sign.Libra); // true (opposite Aries)
+
+// Format with options
+const formatted = zodiac.formatZodiacPosition(venus, {
+  useSymbol: true, // Use ♏ instead of "Scorpio"
+  includeSeconds: false, // Omit seconds
+});
+// "7°24' ♏"
 ```
+
+**Available:**
+
+- Ecliptic longitude → Zodiac sign + DMS (degrees/minutes/seconds)
+- Complete sign properties (element, modality, polarity, rulers, symbols)
+- Essential dignities (domicile, exaltation, detriment, fall, peregrine)
+- Strength scoring (+5, +4, 0, -4, -5) per traditional system
+- Traditional rulers (Ptolemy) + modern rulers (Uranus, Neptune, Pluto)
+- Exact exaltation degrees (19° Aries for Sun, 28° Capricorn for Mars, etc.)
+- Unicode symbols for all signs (♈-♓) and planets (☉☽☿♀♂♃♄♅♆♇)
+- Flexible formatting options (symbols, decimal degrees, DMS)
+- Algorithm verified against Swiss Ephemeris
+- All data verified against Ptolemy's "Tetrabiblos" and Lilly's "Christian Astrology"
 
 ## API Documentation
 
 Full API documentation is available at [https://anonyfox.github.io/celestine](https://anonyfox.github.io/celestine)
-
-### Core Functions
-
-#### `julianDate(year, month, day, hour?)`
-
-Calculates the Julian Date for a given date and time.
-
-**Parameters:**
-
-- `year` - Year (Gregorian calendar)
-- `month` - Month (1-12)
-- `day` - Day (1-31)
-- `hour` - Hour (0-23, decimal, optional)
-
-**Returns:** Julian Date as a continuous day count
-
-#### `eclipticToZodiac(longitude)`
-
-Converts ecliptic longitude to zodiac sign and position.
-
-**Parameters:**
-
-- `longitude` - Ecliptic longitude in degrees (0-360)
-
-**Returns:** Object with sign index, sign name, degree within sign, and formatted string
 
 ## Development
 
@@ -197,8 +245,8 @@ Celestine is in active development. Planned features include:
 - [ ] Complete ephemeris for all planets and major asteroids
 - [ ] Birth chart calculation
 - [x] House system implementations (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
+- [x] Zodiac system with tropical signs and essential dignities
 - [ ] Aspect calculations with orbs
-- [ ] Planetary dignities and essential dignities
 - [ ] Lunar nodes and additional chart points
 - [ ] Retrograde detection
 - [ ] Transit calculations

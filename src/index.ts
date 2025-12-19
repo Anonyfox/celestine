@@ -15,7 +15,6 @@ export * as time from './time/index.js';
 
 // Export zodiac module
 export * as zodiac from './zodiac/index.js';
-
 /**
  * Calculates the Julian Date for a given date and time.
  *

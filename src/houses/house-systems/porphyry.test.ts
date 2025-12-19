@@ -146,7 +146,7 @@ describe('Porphyry Houses', () => {
 
     const cusps = porphyryHouses(asc, mc);
     const ic = 120; // IC opposite MC
-    const dsc = 180; // DSC opposite ASC
+    const _dsc = 180; // DSC opposite ASC
 
     // Quadrant 4 (MC → ASC) is small: 60° / 3 = 20° per house
     assert.equal(cusps.cusps[9], mc); // House 10 = MC

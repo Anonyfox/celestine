@@ -178,7 +178,7 @@ describe('Houses Module - Integration Tests', () => {
       const results = calculateMultipleSystems(london, lst, T, ['placidus', 'equal']);
 
       // House 2 should be different (except by coincidence)
-      const placidusH2 = results.placidus.cusps.cusps[1];
+      const _placidusH2 = results.placidus.cusps.cusps[1];
       const equalH2 = results.equal.cusps.cusps[1];
 
       // They should be different values (equal is always ASC + 30)
@@ -277,7 +277,7 @@ describe('Houses Module - Integration Tests', () => {
 
       // But intermediate houses should differ
       // (unless by coincidence, which is highly unlikely)
-      const h2Placidus = comparison.placidus.cusps.cusps[1];
+      const _h2Placidus = comparison.placidus.cusps.cusps[1];
       const h2Equal = comparison.equal.cusps.cusps[1];
 
       // Equal house 2 should be exactly ASC + 30
