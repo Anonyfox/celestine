@@ -10,6 +10,13 @@ const entries = {
     'import {ephemeris} from "./dist/index.js"; export const getAllPositions = ephemeris.getAllPositions;',
   eclipticToZodiac: 'import {eclipticToZodiac} from "./dist/index.js"; export {eclipticToZodiac};',
 };
+// gzip output differs between Node majors (bundled zlib versions), so gzip budgets are
+// enforced only on the Node major the budgets were recorded on; minified bytes are exact everywhere.
+const gzipComparable = Number(process.versions.node.split('.')[0]) === budgets.perf.nodeMajor;
+if (!updating && !gzipComparable)
+  console.log(
+    `size: Node ${process.versions.node} != recorded major ${budgets.perf.nodeMajor}; gzip budgets skipped, minified bytes enforced.`,
+  );
 const measured = {};
 for (const [name, contents] of Object.entries(entries)) {
   const result = await build({
@@ -25,7 +32,8 @@ for (const [name, contents] of Object.entries(entries)) {
     write: false,
   });
   const bytes = result.outputFiles[0].contents;
-  measured[name] = { minBytes: bytes.length, gzipBytes: gzipSync(bytes, { level: 9 }).length };
+  measured[name] = { minBytes: bytes.length };
+  if (updating || gzipComparable) measured[name].gzipBytes = gzipSync(bytes, { level: 9 }).length;
 }
 if (updating)
   update(
