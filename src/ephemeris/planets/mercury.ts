@@ -9,18 +9,19 @@
  * Mercury is the fastest planet and has the highest eccentricity (0.2056)
  * among the inner planets. It orbits the Sun in ~88 days.
  *
- * Algorithm accuracy: ±1 arcminute for longitude.
+ * Measured accuracy: <7 arcseconds in longitude over 1800–2200 (Horizons fixtures).
  *
  * The calculation involves:
  * 1. Heliocentric position using VSOP87-derived series (Meeus Tables 33.a)
  * 2. Conversion to geocentric coordinates
- * 3. Aberration correction
+ * 3. Light-time and annual aberration (mean equinox of date; nutation omitted)
  *
  * @see Meeus, "Astronomical Algorithms", 2nd Ed., Chapter 33
  */
 
 import { DAYS_PER_JULIAN_MILLENNIUM, J2000_EPOCH, RAD_TO_DEG } from '../constants.js';
 import type { EphemerisOptions, PlanetPosition } from '../types.js';
+import { aberration, earthHeliocentricPosition } from './precision.js';
 
 // =============================================================================
 // VSOP87 SERIES FOR MERCURY
@@ -79,14 +80,14 @@ const L0: readonly (readonly [number, number, number])[] = [
 // L1 terms
 const L1: readonly (readonly [number, number, number])[] = [
   [2608814706223, 0, 0],
-  [44141826, 1.42385544, 26087.90314157],
-  [10094479, 4.47466326, 52175.8062831],
-  [1621224, 1.24388792, 78263.709425],
-  [303471, 4.29561645, 104351.612566],
-  [59820, 1.035, 130439.51571],
-  [12069, 4.0649, 156527.4188],
-  [2535, 0.8062, 182615.322],
-  [534, 3.811, 208703.225],
+  [1126008, 6.21704, 26087.903142],
+  [303471, 3.05565, 52175.80628],
+  [80538, 6.1045, 78263.7094],
+  [21245, 2.8353, 104351.6126],
+  [5592, 5.827, 130439.516],
+  [1472, 2.518, 156527.419],
+  [388, 5.48, 182615.32],
+  [103, 2.15, 208703.23],
 ];
 
 // L2 terms
@@ -95,7 +96,7 @@ const L2: readonly (readonly [number, number, number])[] = [
   [16904, 4.69072, 26087.90314],
   [7397, 1.3474, 52175.8063],
   [3018, 4.4564, 78263.7094],
-  [1107, 1.264, 104351.6126],
+  [1107, 1.262, 104351.6126],
   [378, 4.32, 130439.516],
   [123, 1.069, 156527.419],
   [39, 4.08, 182615.32],
@@ -113,7 +114,7 @@ const L3: readonly (readonly [number, number, number])[] = [
 // L4 terms
 const L4: readonly (readonly [number, number, number])[] = [
   [114, 3.1416, 0],
-  [2, 2.03, 26087.9],
+  [3, 2.03, 26087.9],
   [2, 1.42, 78263.71],
   [2, 4.5, 52175.81],
 ];
@@ -203,14 +204,14 @@ const R0: readonly (readonly [number, number, number])[] = [
 
 // R1 terms
 const R1: readonly (readonly [number, number, number])[] = [
-  [217348, 4.65617159, 26087.90314157],
-  [44142, 1.42385545, 52175.8062831],
-  [10094, 4.47466323, 78263.709425],
-  [620, 0, 0],
-  [3036, 1.2438, 104351.6126],
-  [596, 4.297, 130439.516],
-  [118, 1.03, 156527.419],
-  [24, 4.07, 182615.32],
+  [217348, 4.65617, 26087.90314],
+  [44142, 1.4239, 52175.8063],
+  [10094, 4.4747, 78263.7094],
+  [1624, 0.0, 0.0],
+  [2433, 1.242, 104351.613],
+  [604, 4.29, 130439.52],
+  [153, 1.06, 156527.42],
+  [39, 4.11, 182615.32],
 ];
 
 // R2 terms
@@ -329,81 +330,6 @@ export function mercuryHeliocentricDistance(tau: number): number {
 // =============================================================================
 
 /**
- * Calculates the Sun's heliocentric position (from Earth's perspective, this is
- * the Earth's heliocentric position with signs flipped).
- *
- * @param tau - Julian millennia from J2000.0
- * @returns Object with longitude (rad), latitude (rad), distance (AU)
- * @internal
- */
-function earthHeliocentricPosition(tau: number): {
-  longitude: number;
-  latitude: number;
-  distance: number;
-} {
-  // Simplified Earth position from VSOP87 (main terms only)
-  // L0 terms for Earth
-  const earthL0: readonly (readonly [number, number, number])[] = [
-    [175347046, 0, 0],
-    [3341656, 4.6692568, 6283.07585],
-    [34894, 4.6261, 12566.1517],
-    [3497, 2.7441, 5753.3849],
-    [3418, 2.8289, 3.5231],
-    [3136, 3.6277, 77713.7715],
-    [2676, 4.4181, 7860.4194],
-    [2343, 6.1352, 3930.2097],
-    [1324, 0.7425, 11506.7698],
-    [1273, 2.0371, 529.691],
-    [1199, 1.1096, 1577.3435],
-  ];
-
-  const earthL1: readonly (readonly [number, number, number])[] = [
-    [628331966747, 0, 0],
-    [206059, 2.678235, 6283.07585],
-    [4303, 2.6351, 12566.1517],
-  ];
-
-  const earthL2: readonly (readonly [number, number, number])[] = [
-    [8722, 1.0725, 6283.0758],
-    [991, 3.1416, 0],
-  ];
-
-  const earthB0: readonly (readonly [number, number, number])[] = [[280, 3.199, 84334.662]];
-
-  const earthR0: readonly (readonly [number, number, number])[] = [
-    [100013989, 0, 0],
-    [1670700, 3.0984635, 6283.07585],
-    [13956, 3.05525, 12566.1517],
-    [3084, 5.1985, 77713.7715],
-    [1628, 1.1739, 5753.3849],
-    [1576, 2.8469, 7860.4194],
-    [925, 5.453, 11506.77],
-    [542, 4.564, 3930.21],
-  ];
-
-  const earthR1: readonly (readonly [number, number, number])[] = [
-    [103019, 1.10749, 6283.07585],
-    [1721, 1.0644, 12566.1517],
-  ];
-
-  const tau2 = tau * tau;
-
-  const L0sum = evaluateSeries(earthL0, tau);
-  const L1sum = evaluateSeries(earthL1, tau);
-  const L2sum = evaluateSeries(earthL2, tau);
-  const L = (L0sum + L1sum * tau + L2sum * tau2) / 100000000;
-
-  const B0sum = evaluateSeries(earthB0, tau);
-  const B = B0sum / 100000000;
-
-  const R0sum = evaluateSeries(earthR0, tau);
-  const R1sum = evaluateSeries(earthR1, tau);
-  const R = (R0sum + R1sum * tau) / 100000000;
-
-  return { longitude: L, latitude: B, distance: R };
-}
-
-/**
  * Converts heliocentric coordinates to geocentric ecliptic coordinates.
  *
  * @param planetLon - Planet's heliocentric longitude (radians)
@@ -467,7 +393,7 @@ function normalizeAngle(degrees: number): number {
  * The calculation provides heliocentric coordinates which are then converted
  * to geocentric ecliptic coordinates.
  *
- * Accuracy: ±1 arcminute for years 1800-2200.
+ * Accuracy: <7 arcseconds in the committed 1800–2200 Horizons sample.
  *
  * @example
  * ```typescript
@@ -485,62 +411,37 @@ export function getMercuryPosition(jd: number, options: EphemerisOptions = {}): 
   // Calculate Julian millennia from J2000.0
   const tau = (jd - J2000_EPOCH) / DAYS_PER_JULIAN_MILLENNIUM;
 
-  // Get Mercury's heliocentric position
-  const mercuryLon = mercuryHeliocentricLongitude(tau);
-  const mercuryLat = mercuryHeliocentricLatitude(tau);
-  const mercuryDist = mercuryHeliocentricDistance(tau);
-
-  // Get Earth's heliocentric position
   const earth = earthHeliocentricPosition(tau);
-
-  // Convert to geocentric
+  // First-order retarded position. The dominant six harmonics supply velocity;
+  // neglected acceleration over <12 minutes contributes <0.1 arcsecond.
+  const velocity = (terms: readonly (readonly [number, number, number])[]) => {
+    let sum = 0;
+    for (let i = 0; i < 6; i++) {
+      const [a, b, c] = terms[i];
+      sum -= a * c * Math.sin(b + c * tau);
+    }
+    return sum / 1e8 / DAYS_PER_JULIAN_MILLENNIUM;
+  };
+  const L = mercuryHeliocentricLongitude(tau);
+  const B = mercuryHeliocentricLatitude(tau);
+  const R = mercuryHeliocentricDistance(tau);
+  const initial = helioToGeo(L, B, R, earth.longitude, earth.latitude, earth.distance);
+  const delay = initial.distance * 0.0057755183;
   const geo = helioToGeo(
-    mercuryLon,
-    mercuryLat,
-    mercuryDist,
+    L - delay * (velocity(L0) + L1[0][0] / 1e8 / DAYS_PER_JULIAN_MILLENNIUM),
+    B - delay * velocity(B0),
+    R - delay * velocity(R0),
     earth.longitude,
     earth.latitude,
     earth.distance,
   );
-
-  // Convert to degrees
-  let longitude = geo.longitude * RAD_TO_DEG;
-  const latitude = geo.latitude * RAD_TO_DEG;
-
-  // Apply aberration correction (~20.5 arcseconds)
-  // κ = 20.49552" (constant of aberration)
-  // Simplified: aberration ≈ -20.5"/distance in arcseconds
-  const aberration = -20.49552 / 3600; // degrees
-  longitude = normalizeAngle(longitude + aberration);
-
-  // Calculate daily motion (speed) if requested
+  const [lon, lat] = aberration(geo.longitude, geo.latitude, earth.longitude, tau * 10);
+  const longitude = normalizeAngle(lon * RAD_TO_DEG);
+  const latitude = lat * RAD_TO_DEG;
   let longitudeSpeed = 0;
   if (options.includeSpeed !== false) {
-    // Calculate position tomorrow
-    const tau1 = (jd + 1 - J2000_EPOCH) / DAYS_PER_JULIAN_MILLENNIUM;
-
-    const mercuryLon1 = mercuryHeliocentricLongitude(tau1);
-    const mercuryLat1 = mercuryHeliocentricLatitude(tau1);
-    const mercuryDist1 = mercuryHeliocentricDistance(tau1);
-
-    const earth1 = earthHeliocentricPosition(tau1);
-    const geo1 = helioToGeo(
-      mercuryLon1,
-      mercuryLat1,
-      mercuryDist1,
-      earth1.longitude,
-      earth1.latitude,
-      earth1.distance,
-    );
-
-    const longitude1 = normalizeAngle(geo1.longitude * RAD_TO_DEG + aberration);
-
-    // Handle wraparound at 360°
-    let diff = longitude1 - longitude;
-    if (diff > 180) diff -= 360;
-    if (diff < -180) diff += 360;
-
-    longitudeSpeed = diff;
+    const next = getMercuryPosition(jd + 1, { includeSpeed: false });
+    longitudeSpeed = ((next.longitude - longitude + 540) % 360) - 180;
   }
 
   return {

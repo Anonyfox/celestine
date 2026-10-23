@@ -19,6 +19,7 @@
 
 import { DAYS_PER_JULIAN_CENTURY, DEG_TO_RAD, J2000_EPOCH, RAD_TO_DEG } from '../constants.js';
 import type { EphemerisOptions, PlanetPosition } from '../types.js';
+import { aberration, earthHeliocentricPosition, precessEcliptic } from './precision.js';
 
 // =============================================================================
 // PLUTO ARGUMENT COEFFICIENTS (Meeus Chapter 37)
@@ -90,7 +91,14 @@ const PLUTO_ARGS: readonly (readonly [
  * @param jd - Julian Date
  * @returns Object with longitude (rad), latitude (rad), and radius (AU)
  */
-function plutoHeliocentric(jd: number): { L: number; B: number; R: number } {
+function plutoHeliocentric(jd: number): {
+  L: number;
+  B: number;
+  R: number;
+  dL: number;
+  dB: number;
+  dR: number;
+} {
   const T = (jd - J2000_EPOCH) / DAYS_PER_JULIAN_CENTURY;
 
   // Mean longitudes and arguments (degrees)
@@ -107,6 +115,9 @@ function plutoHeliocentric(jd: number): { L: number; B: number; R: number } {
   let lonSum = 0;
   let latSum = 0;
   let radSum = 0;
+  let dL = 144.96;
+  let dB = 0;
+  let dR = 0;
 
   for (const [iJ, iS, iP, lonSin, lonCos, latSin, latCos, radSin, radCos] of PLUTO_ARGS) {
     const arg = iJ * Jrad + iS * Srad + iP * Prad;
@@ -116,6 +127,10 @@ function plutoHeliocentric(jd: number): { L: number; B: number; R: number } {
     lonSum += lonSin * sinArg + lonCos * cosArg;
     latSum += latSin * sinArg + latCos * cosArg;
     radSum += radSin * sinArg + radCos * cosArg;
+    const rate = (iJ * 3034.9057 + iS * 1222.1138 + iP * 144.96) * DEG_TO_RAD;
+    dL += ((lonSin * cosArg - lonCos * sinArg) * rate) / 1e6;
+    dB += ((latSin * cosArg - latCos * sinArg) * rate) / 1e6;
+    dR += ((radSin * cosArg - radCos * sinArg) * rate) / 1e7;
   }
 
   // Convert from 10^-6 degrees/AU to degrees/AU
@@ -123,7 +138,7 @@ function plutoHeliocentric(jd: number): { L: number; B: number; R: number } {
   const B = (-3.908239 + latSum / 1e6) * DEG_TO_RAD;
   const R = 40.7241346 + radSum / 1e7;
 
-  return { L, B, R };
+  return { L, B, R, dL: (dL * DEG_TO_RAD) / 36525, dB: (dB * DEG_TO_RAD) / 36525, dR: dR / 36525 };
 }
 
 /**
@@ -145,45 +160,36 @@ function plutoHeliocentric(jd: number): { L: number; B: number; R: number } {
 export function getPlutoPosition(jd: number, options: EphemerisOptions = {}): PlanetPosition {
   const { includeSpeed = true } = options;
 
-  // Get Pluto's heliocentric coordinates
+  const tau = (jd - J2000_EPOCH) / 365250;
+  const earth = earthHeliocentricPosition(tau);
   const pluto = plutoHeliocentric(jd);
-
-  // Get Earth's heliocentric coordinates
-  const tau = (jd - J2000_EPOCH) / 365250; // Julian millennia
-  const earthL = earthHeliocentricLongitude(tau);
-  const earthR = earthHeliocentricDistance(tau);
-
-  // Convert to rectangular coordinates
-  // Pluto
-  const plutoX = pluto.R * Math.cos(pluto.B) * Math.cos(pluto.L);
-  const plutoY = pluto.R * Math.cos(pluto.B) * Math.sin(pluto.L);
-  const plutoZ = pluto.R * Math.sin(pluto.B);
-
-  // Earth (B ≈ 0)
-  const earthX = earthR * Math.cos(earthL);
-  const earthY = earthR * Math.sin(earthL);
-
-  // Geocentric coordinates
-  const geoX = plutoX - earthX;
-  const geoY = plutoY - earthY;
-  const geoZ = plutoZ;
-
-  // Convert to geocentric ecliptic
-  let geoLon = Math.atan2(geoY, geoX) * RAD_TO_DEG;
-  const geoLat = Math.atan2(geoZ, Math.sqrt(geoX * geoX + geoY * geoY)) * RAD_TO_DEG;
-  const geoDist = Math.sqrt(geoX * geoX + geoY * geoY + geoZ * geoZ);
-
-  // Normalize longitude to [0, 360)
-  while (geoLon < 0) geoLon += 360;
-  while (geoLon >= 360) geoLon -= 360;
-
-  // Apply aberration correction
-  const aberration = -0.005694;
-  geoLon += aberration;
-
-  // Normalize again
-  while (geoLon < 0) geoLon += 360;
-  while (geoLon >= 360) geoLon -= 360;
+  // The distance estimate needs only arcminute frame accuracy.
+  const l = pluto.L + (5029.0966 / 3600) * DEG_TO_RAD * tau * 10;
+  const b = pluto.B;
+  const distance = Math.hypot(
+    pluto.R * Math.cos(b) * Math.cos(l) - earth.distance * Math.cos(earth.longitude),
+    pluto.R * Math.cos(b) * Math.sin(l) - earth.distance * Math.sin(earth.longitude),
+    pluto.R * Math.sin(b),
+  );
+  const delay = distance * 0.0057755183;
+  const [L, B] = precessEcliptic(pluto.L - delay * pluto.dL, pluto.B - delay * pluto.dB, tau * 10);
+  pluto.R -= delay * pluto.dR;
+  const x =
+    pluto.R * Math.cos(B) * Math.cos(L) -
+    earth.distance * Math.cos(earth.latitude) * Math.cos(earth.longitude);
+  const y =
+    pluto.R * Math.cos(B) * Math.sin(L) -
+    earth.distance * Math.cos(earth.latitude) * Math.sin(earth.longitude);
+  const z = pluto.R * Math.sin(B) - earth.distance * Math.sin(earth.latitude);
+  const geoDist = Math.hypot(x, y, z);
+  const [lon, lat] = aberration(
+    Math.atan2(y, x),
+    Math.atan2(z, Math.hypot(x, y)),
+    earth.longitude,
+    tau * 10,
+  );
+  const geoLon = (((lon * RAD_TO_DEG) % 360) + 360) % 360;
+  const geoLat = lat * RAD_TO_DEG;
 
   // Calculate speed if requested
   let longitudeSpeed = 0;
@@ -242,92 +248,6 @@ export function plutoHeliocentricLatitude(jd: number): number {
 export function plutoHeliocentricDistance(jd: number): number {
   const { R } = plutoHeliocentric(jd);
   return R;
-}
-
-/**
- * Simplified Earth heliocentric longitude for geocentric conversion.
- * @param tau - Julian millennia from J2000.0
- * @returns Earth's heliocentric longitude in radians
- */
-function earthHeliocentricLongitude(tau: number): number {
-  const tau2 = tau * tau;
-
-  const earthL0: readonly (readonly [number, number, number])[] = [
-    [175347046, 0, 0],
-    [3341656, 4.6692568, 6283.07585],
-    [34894, 4.6261, 12566.1517],
-    [3497, 2.7441, 5753.3849],
-    [3418, 2.8289, 3.5231],
-    [3136, 3.6277, 77713.7715],
-    [2676, 4.4181, 7860.4194],
-    [2343, 6.1352, 3930.2097],
-    [1324, 0.7425, 11506.7698],
-    [1273, 2.0371, 529.691],
-    [1199, 1.1096, 1577.3435],
-  ];
-
-  const earthL1: readonly (readonly [number, number, number])[] = [
-    [628331966747, 0, 0],
-    [206059, 2.678235, 6283.07585],
-    [4303, 2.6351, 12566.1517],
-  ];
-
-  const earthL2: readonly (readonly [number, number, number])[] = [
-    [8722, 1.0725, 6283.0758],
-    [991, 3.1416, 0],
-  ];
-
-  let L0sum = 0;
-  for (const [A, B, C] of earthL0) {
-    L0sum += A * Math.cos(B + C * tau);
-  }
-
-  let L1sum = 0;
-  for (const [A, B, C] of earthL1) {
-    L1sum += A * Math.cos(B + C * tau);
-  }
-
-  let L2sum = 0;
-  for (const [A, B, C] of earthL2) {
-    L2sum += A * Math.cos(B + C * tau);
-  }
-
-  return (L0sum + L1sum * tau + L2sum * tau2) / 1e8;
-}
-
-/**
- * Simplified Earth heliocentric distance for geocentric conversion.
- * @param tau - Julian millennia from J2000.0
- * @returns Earth's heliocentric distance in AU
- */
-function earthHeliocentricDistance(tau: number): number {
-  const earthR0: readonly (readonly [number, number, number])[] = [
-    [100013989, 0, 0],
-    [1670700, 3.0984635, 6283.07585],
-    [13956, 3.05525, 12566.1517],
-    [3084, 5.1985, 77713.7715],
-    [1628, 1.1739, 5753.3849],
-    [1576, 2.8469, 7860.4194],
-    [925, 5.453, 11506.77],
-    [542, 4.564, 3930.21],
-  ];
-
-  const earthR1: readonly (readonly [number, number, number])[] = [
-    [103019, 1.10749, 6283.07585],
-    [1721, 1.0644, 12566.1517],
-  ];
-
-  let R0sum = 0;
-  for (const [A, B, C] of earthR0) {
-    R0sum += A * Math.cos(B + C * tau);
-  }
-
-  let R1sum = 0;
-  for (const [A, B, C] of earthR1) {
-    R1sum += A * Math.cos(B + C * tau);
-  }
-
-  return (R0sum + R1sum * tau) / 1e8;
 }
 
 /**

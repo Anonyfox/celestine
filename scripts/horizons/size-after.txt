@@ -1,0 +1,4 @@
+full ESM min: 200373 B, min+gz: 62880 B
+calculateChart bundle min: 197198 B, min+gz: 62198 B
+mercury.ts bundle min+gz: 3001 B
+pluto.ts bundle min+gz: 2665 B

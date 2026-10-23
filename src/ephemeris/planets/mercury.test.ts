@@ -15,67 +15,58 @@ import { describe, it } from 'node:test';
 import { J2000_EPOCH } from '../constants.js';
 
 // =============================================================================
-// JPL HORIZONS REFERENCE DATA
-// Source: NASA JPL Horizons System (https://ssd.jpl.nasa.gov/horizons/)
-// Query: COMMAND='199', EPHEM_TYPE='OBSERVER', CENTER='500@399', QUANTITIES='31'
-// Retrieved: 2025-Dec-19
-// These values are AUTHORITATIVE - do not modify!
-// =============================================================================
+// Horizons LT+S vectors transformed to mean ecliptic/equinox of date.
+// Retrieved 2026-10-23; see ../__fixtures__/horizons/README.md.
 const JPL_MERCURY_REFERENCE = [
-  { jd: 2451545.0, description: 'J2000.0', longitude: 271.8892699, latitude: -0.994819 },
-  { jd: 2458850.0, description: '2020-Jan-01 12:00', longitude: 275.1713729, latitude: -1.316054 },
-  { jd: 2448058.0, description: '1990-Jun-15 12:00', longitude: 65.6906887, latitude: -1.6629952 },
+  { jd: 2451545.0, description: 'J2000.0', longitude: 271.892, latitude: -0.994746 },
+  { jd: 2458850.0, description: '2020-Jan-01 12:00', longitude: 275.174733, latitude: -1.315984 },
+  { jd: 2448058.0, description: '1990-Jun-15 12:00', longitude: 65.685996, latitude: -1.663114 },
 ] as const;
 
 // =============================================================================
-// SWISS EPHEMERIS REFERENCE DATA
-// Generated from pyswisseph (Swiss Ephemeris 2.10.03)
-// These values are AUTHORITATIVE - do not modify!
-// Our implementation must match these within ±2 arcminutes (0.033°)
-// =============================================================================
-const SWISSEPH_MERCURY_REFERENCE = [
+// Additional epochs from the same reproducible Horizons fixtures.
+const HORIZONS_MERCURY_REFERENCE = [
   {
     jd: 2451545.0,
     description: 'J2000.0 (2000-Jan-01 12:00 TT)',
-    longitude: 271.889275,
-    latitude: -0.994825,
-    distance: 1.415469,
+    longitude: 271.892,
+    latitude: -0.994746,
+    distance: 1.415466,
     speed: 1.556254,
     isRetrograde: false,
   },
   {
     jd: 2448724.5,
     description: 'Meeus Example 47.a (1992-Apr-12 00:00 TT)',
-    longitude: 359.061623,
-    latitude: -0.838636,
-    distance: 0.686766,
+    longitude: 359.05685,
+    latitude: -0.838489,
+    distance: 0.6867578,
     speed: 0.234968,
     isRetrograde: false,
   },
   {
     jd: 2440587.5,
     description: 'Unix Epoch (1970-Jan-01 00:00 TT)',
-    longitude: 299.021474,
-    latitude: -0.508588,
-    distance: 0.889288,
+    longitude: 299.019925,
+    latitude: -0.508678,
+    distance: 0.8893004,
     speed: 0.562173,
     isRetrograde: false,
   },
   {
     jd: 2459580.5,
     description: 'Recent (2022-Jan-01 00:00 TT)',
-    longitude: 298.182797,
-    latitude: -1.82107,
-    distance: 1.141717,
+    longitude: 298.185647,
+    latitude: -1.82113,
+    distance: 1.1417341,
     speed: 1.423461,
     isRetrograde: false,
   },
 ] as const;
 
-// Tolerance: 2 arcminutes = 0.0333 degrees for dates near J2000
-// Mercury has lower accuracy at dates far from J2000 due to simplified VSOP87
-const LONGITUDE_TOLERANCE = 0.034;
-const LONGITUDE_TOLERANCE_EXTENDED = 0.2; // 12 arcmin for dates 20+ years from J2000
+// Same tight tolerance throughout 1800–2200 (7 arcseconds).
+const LONGITUDE_TOLERANCE = 7 / 3600;
+const LONGITUDE_TOLERANCE_EXTENDED = 7 / 3600;
 
 import {
   getMercuryPosition,
@@ -181,17 +172,10 @@ describe('ephemeris/planets/mercury', () => {
       }
     });
 
-    describe('Swiss Ephemeris reference validation', () => {
-      /**
-       * Validates against Swiss Ephemeris (pyswisseph 2.10.03)
-       * These are authoritative reference values - DO NOT MODIFY the expected values.
-       * If tests fail, fix the implementation, not the test data.
-       *
-       * Note: Mercury uses simplified VSOP87 which degrades at dates far from J2000.0.
-       * We use stricter tolerance for dates near J2000, looser for extended dates.
-       */
-      for (const ref of SWISSEPH_MERCURY_REFERENCE) {
-        it(`should match Swiss Ephemeris at ${ref.description}`, () => {
+    describe('Horizons mean-of-date reference validation', () => {
+      // References use the same mean frame as the default calculation.
+      for (const ref of HORIZONS_MERCURY_REFERENCE) {
+        it(`should match Horizons at ${ref.description}`, () => {
           const mercury = getMercuryPosition(ref.jd);
 
           // Use extended tolerance for dates 20+ years from J2000

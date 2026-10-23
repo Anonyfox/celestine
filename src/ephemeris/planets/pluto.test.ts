@@ -25,69 +25,58 @@ import {
 } from './pluto.js';
 
 // =============================================================================
-// JPL HORIZONS REFERENCE DATA
-// Source: NASA JPL Horizons System (https://ssd.jpl.nasa.gov/horizons/)
-// Query: COMMAND='999', EPHEM_TYPE='OBSERVER', CENTER='500@399', QUANTITIES='31'
-// Retrieved: 2025-Dec-19
-// These values are AUTHORITATIVE - do not modify!
-// =============================================================================
+// Horizons LT+S vectors transformed to mean ecliptic/equinox of date.
+// Retrieved 2026-10-23; see ../__fixtures__/horizons/README.md.
 const JPL_PLUTO_REFERENCE = [
-  { jd: 2451545.0, description: 'J2000.0', longitude: 251.4547644, latitude: 10.8552605 },
-  { jd: 2458850.0, description: '2020-Jan-01 12:00', longitude: 292.4020546, latitude: -0.6535321 },
-  { jd: 2448058.0, description: '1990-Jun-15 12:00', longitude: 225.4014843, latitude: 15.8537803 },
+  { jd: 2451545.0, description: 'J2000.0', longitude: 251.458624, latitude: 10.855258 },
+  { jd: 2458850.0, description: '2020-Jan-01 12:00', longitude: 292.406633, latitude: -0.65353 },
+  { jd: 2448058.0, description: '1990-Jun-15 12:00', longitude: 225.397939, latitude: 15.853785 },
 ] as const;
 
 // =============================================================================
-// SWISS EPHEMERIS REFERENCE DATA
-// Generated from pyswisseph (Swiss Ephemeris 2.10.03)
-// These values are AUTHORITATIVE - do not modify!
-// Our implementation must match these within ±2 arcminutes (0.033°)
-// =============================================================================
-const SWISSEPH_PLUTO_REFERENCE = [
+// Additional epochs from the same reproducible Horizons fixtures.
+const HORIZONS_PLUTO_REFERENCE = [
   {
     jd: 2451545.0,
     description: 'J2000.0 (2000-Jan-01 12:00 TT)',
-    longitude: 251.454709,
-    latitude: 10.855202,
-    distance: 31.06439,
+    longitude: 251.458624,
+    latitude: 10.855258,
+    distance: 31.0643587,
     speed: 0.035153,
     isRetrograde: false,
   },
   {
     jd: 2448724.5,
     description: 'Meeus Example 47.a (1992-Apr-12 00:00 TT)',
-    longitude: 232.36201,
-    latitude: 15.225036,
-    distance: 28.852151,
+    longitude: 232.357366,
+    latitude: 15.224957,
+    distance: 28.8521107,
     speed: -0.023029,
     isRetrograde: true,
   },
   {
     jd: 2440587.5,
     description: 'Unix Epoch (1970-Jan-01 00:00 TT)',
-    longitude: 177.39227,
-    latitude: 15.810679,
-    distance: 31.454269,
+    longitude: 177.390907,
+    latitude: 15.810587,
+    distance: 31.454265,
     speed: -0.000944,
     isRetrograde: true,
   },
   {
     jd: 2459580.5,
     description: 'Recent (2022-Jan-01 00:00 TT)',
-    longitude: 295.934448,
-    latitude: -1.727989,
-    distance: 35.380316,
+    longitude: 295.938473,
+    latitude: -1.727898,
+    distance: 35.3803257,
     speed: 0.032134,
     isRetrograde: false,
   },
 ] as const;
 
-// Tolerance: Pluto algorithm (Meeus Ch.37) is optimized for dates near J2000.0
-// Accuracy degrades for dates further away. This is documented and expected.
-// - Near J2000.0: ±2 arcminutes
-// - 8-30 years from J2000: ±30 arcminutes (0.5°)
-const LONGITUDE_TOLERANCE_NEAR_J2000 = 0.034; // 2 arcmin for J2000.0
-const LONGITUDE_TOLERANCE_EXTENDED = 0.5; // 30 arcmin for dates further from J2000
+// Same tight tolerance throughout 1885–2099 (5 arcseconds).
+const LONGITUDE_TOLERANCE_NEAR_J2000 = 5 / 3600;
+const LONGITUDE_TOLERANCE_EXTENDED = 5 / 3600;
 
 /**
  * Helper to convert calendar date to Julian Date.
@@ -197,12 +186,11 @@ describe('ephemeris/planets/pluto', () => {
   describe('getPlutoPosition', () => {
     describe('JPL Horizons reference validation', () => {
       // Note: Pluto uses Meeus Ch.37 algorithm, optimized for 1885-2099
-      // Tolerance relaxed to 0.5° for dates far from J2000.0
       for (const ref of JPL_PLUTO_REFERENCE) {
         it(`should match JPL Horizons at ${ref.description}`, () => {
           const pluto = getPlutoPosition(ref.jd);
           const lonDiff = Math.abs(pluto.longitude - ref.longitude);
-          const tolerance = ref.jd === 2451545.0 ? 0.034 : 0.5; // Tighter for J2000.0
+          const tolerance = LONGITUDE_TOLERANCE_EXTENDED;
           assert.ok(
             lonDiff < tolerance,
             `Longitude: expected ${ref.longitude}° (JPL), got ${pluto.longitude.toFixed(4)}° (diff: ${lonDiff.toFixed(2)}°)`,
@@ -211,17 +199,10 @@ describe('ephemeris/planets/pluto', () => {
       }
     });
 
-    describe('Swiss Ephemeris reference validation', () => {
-      /**
-       * Validates against Swiss Ephemeris (pyswisseph 2.10.03)
-       * These are authoritative reference values - DO NOT MODIFY the expected values.
-       *
-       * Note: Pluto's algorithm (Meeus Ch.37) is optimized for dates near J2000.0.
-       * Accuracy degrades for dates further away - this is a known limitation.
-       * For astrological purposes, even 0.5° error is acceptable (aspects use 5-10° orbs).
-       */
-      it('should match Swiss Ephemeris at J2000.0 (2000-Jan-01 12:00 TT)', () => {
-        const ref = SWISSEPH_PLUTO_REFERENCE[0];
+    describe('Horizons mean-of-date reference validation', () => {
+      // References use the same mean frame as the default calculation.
+      it('should match Horizons at J2000.0 (2000-Jan-01 12:00 TT)', () => {
+        const ref = HORIZONS_PLUTO_REFERENCE[0];
         const pluto = getPlutoPosition(ref.jd);
         const lonDiff = Math.abs(pluto.longitude - ref.longitude);
         assert.ok(
@@ -230,33 +211,30 @@ describe('ephemeris/planets/pluto', () => {
         );
       });
 
-      it('should match Swiss Ephemeris at Meeus Example 47.a (1992-Apr-12)', () => {
-        const ref = SWISSEPH_PLUTO_REFERENCE[1];
+      it('should match Horizons at Meeus Example 47.a (1992-Apr-12)', () => {
+        const ref = HORIZONS_PLUTO_REFERENCE[1];
         const pluto = getPlutoPosition(ref.jd);
         const lonDiff = Math.abs(pluto.longitude - ref.longitude);
-        // 8 years from J2000, expect ~6 arcmin accuracy
         assert.ok(
           lonDiff < LONGITUDE_TOLERANCE_EXTENDED,
           `Longitude: expected ${ref.longitude}°, got ${pluto.longitude}° (diff: ${(lonDiff * 60).toFixed(1)} arcmin)`,
         );
       });
 
-      it('should match Swiss Ephemeris at Unix Epoch (1970-Jan-01)', () => {
-        const ref = SWISSEPH_PLUTO_REFERENCE[2];
+      it('should match Horizons at Unix Epoch (1970-Jan-01)', () => {
+        const ref = HORIZONS_PLUTO_REFERENCE[2];
         const pluto = getPlutoPosition(ref.jd);
         const lonDiff = Math.abs(pluto.longitude - ref.longitude);
-        // 30 years from J2000, expect degraded accuracy (~25 arcmin)
         assert.ok(
           lonDiff < LONGITUDE_TOLERANCE_EXTENDED,
           `Longitude: expected ${ref.longitude}°, got ${pluto.longitude}° (diff: ${(lonDiff * 60).toFixed(1)} arcmin)`,
         );
       });
 
-      it('should match Swiss Ephemeris at Recent (2022-Jan-01)', () => {
-        const ref = SWISSEPH_PLUTO_REFERENCE[3];
+      it('should match Horizons at Recent (2022-Jan-01)', () => {
+        const ref = HORIZONS_PLUTO_REFERENCE[3];
         const pluto = getPlutoPosition(ref.jd);
         const lonDiff = Math.abs(pluto.longitude - ref.longitude);
-        // 22 years from J2000, expect degraded accuracy (~18 arcmin)
         assert.ok(
           lonDiff < LONGITUDE_TOLERANCE_EXTENDED,
           `Longitude: expected ${ref.longitude}°, got ${pluto.longitude}° (diff: ${(lonDiff * 60).toFixed(1)} arcmin)`,

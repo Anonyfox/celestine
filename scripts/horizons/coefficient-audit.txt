@@ -1,0 +1,15 @@
+L0: 38 retained terms; rounding bound 0.4490 arcsec
+L1: 9 retained terms; rounding bound 0.0050 arcsec
+L2: 8 retained terms; rounding bound 0.0002 arcsec
+L3: 5 retained terms; rounding bound 0.0000 arcsec
+L4: 4 retained terms; rounding bound 0.0000 arcsec
+L5: 1 retained terms; rounding bound 0.0000 arcsec
+B0: 12 retained terms; rounding bound 0.0070 arcsec
+B1: 9 retained terms; rounding bound 0.0019 arcsec
+B2: 8 retained terms; rounding bound 0.0002 arcsec
+B3: 4 retained terms; rounding bound 0.0000 arcsec
+B4: 2 retained terms; rounding bound 0.0000 arcsec
+R0: 13 retained terms; rounding bound 0.0074 arcsec
+R1: 8 retained terms; rounding bound 0.0034 arcsec
+R2: 6 retained terms; rounding bound 0.0001 arcsec
+R3: 3 retained terms; rounding bound 0.0000 arcsec
