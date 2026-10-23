@@ -178,6 +178,5 @@ export function getVestaPosition(
     },
     jd,
     options,
-    1,
   );
 }

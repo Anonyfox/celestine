@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { getCeresPosition } from '../asteroids/ceres.js';
+import { getJunoPosition } from '../asteroids/juno.js';
+import { getPallasPosition } from '../asteroids/pallas.js';
+import { getVestaPosition } from '../asteroids/vesta.js';
 import { getChironPosition } from '../chiron.js';
 import { getSunPosition, nutationInLongitude } from '../sun.js';
 import { getJupiterPosition } from './jupiter.js';
@@ -51,25 +55,49 @@ describe('shared apparent ephemeris pipeline', () => {
         const stopped = get(jd, { includeSpeed: false, includeNutation: true });
         assert.equal(stopped.longitudeSpeed, 0);
         assert.equal(stopped.isRetrograde, false);
-        assert.equal(stopped.longitude, apparent.longitude);
+        // With speed, the position is the midpoint of the ±0.001 d evaluations (< 0.001″ apart).
+        assert.ok(Math.abs(delta(stopped.longitude, apparent.longitude)) < 3e-7);
       }
     }
   });
 
-  it('preserves forward and centered speed conventions, including wraparound', () => {
-    for (const [get, step] of [
-      [getMercuryPosition, 1],
-      [getMarsPosition, 1],
-      [getSaturnPosition, 0.01],
-      [getPlutoPosition, 0.01],
-    ] as const) {
+  it('matches independent centered speeds, including wraparound', () => {
+    const step = 0.001;
+    for (const get of [getMercuryPosition, getMarsPosition, getSaturnPosition, getPlutoPosition]) {
       for (const jd of [2451545, 2458928, 2460000]) {
         const p = get(jd);
         const after = get(jd + step, { includeSpeed: false });
-        const before = step === 1 ? p : get(jd - step, { includeSpeed: false });
-        const speed = delta(after.longitude, before.longitude) / (step === 1 ? 1 : 2 * step);
-        // Centered Earth propagation uses six harmonics; allow 0.01 arcsec/day.
-        assert.ok(Math.abs(p.longitudeSpeed - speed) < 0.01 / 3600);
+        const before = get(jd - step, { includeSpeed: false });
+        const speed = delta(after.longitude, before.longitude) / (2 * step);
+        // Full analytic Earth velocity linearizes the centered endpoints.
+        assert.ok(Math.abs(p.longitudeSpeed - speed) < 1e-7);
+      }
+    }
+  });
+
+  it('agrees with full independent 0.001-day derivatives over 240 dates per body', () => {
+    for (const get of [
+      getSunPosition,
+      getMercuryPosition,
+      getVenusPosition,
+      getMarsPosition,
+      getJupiterPosition,
+      getSaturnPosition,
+      getUranusPosition,
+      getNeptunePosition,
+      getPlutoPosition,
+      getChironPosition,
+      getCeresPosition,
+      getPallasPosition,
+      getJunoPosition,
+      getVestaPosition,
+    ]) {
+      for (let i = 0; i < 240; i++) {
+        const jd = 2415020 + i * (73050 / 239);
+        const before = get(jd - 0.001, { includeSpeed: false });
+        const after = get(jd + 0.001, { includeSpeed: false });
+        const reference = delta(after.longitude, before.longitude) / 0.002;
+        assert.ok(Math.abs(get(jd).longitudeSpeed - reference) < 1.1e-6);
       }
     }
   });

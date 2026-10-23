@@ -156,7 +156,6 @@ export function getPlutoPosition(jd: number, options: EphemerisOptions = {}): Pl
     },
     jd,
     options,
-    0.01,
     (time) => {
       const { semiMajorAxis: a, eccentricity: e } = PLUTO_ORBITAL_ELEMENTS;
       const m = (14.89 + 0.003969 * (time - J2000_EPOCH)) * DEG_TO_RAD;

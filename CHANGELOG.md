@@ -8,40 +8,36 @@ All notable changes to this project are documented here, following
 
 ### Fixed
 
-- Shared Earth-of-date ephemeris for the Sun, planets, Chiron, and asteroids;
-  repaired VSOP87D coefficients and applied light-time and directional annual
-  aberration consistently. On expanded Horizons samples, maximum longitude errors
-  are Sun 0.31″, Mercury 1.12″, Venus 0.58″, Mars 1.18″, Jupiter 1.36″,
-  Saturn 1.66″, Uranus 3.35″, Neptune 4.65″, and Pluto 3.17″.
-- Moon latitude: added published ELP2000-82 harmonics to the existing Meeus table,
-  reducing expanded-sample maximum error from 3.38″ to 1.29″.
-
-- Mercury longitude: repaired corrupted VSOP87 L1/R1/L2/L4 terms and the Earth L2 constant;
-  applied light-time and direction-dependent aberration. Now ≤ ~5″ against JPL Horizons
-  over 1800–2200 (previously up to ~2–3°).
-- Pluto: corrected mixing of J2000 and Earth-of-date frames with precession, light-time,
-  and aberration. Now ≤ ~3″ against Horizons over 1885–2099 (previously up to ~1.6°).
+- Planet positions: the Sun, Mercury–Neptune, Pluto, Chiron and the asteroids now share one
+  apparent-place pipeline (one audited VSOP87D Earth series, light-time, direction-dependent
+  annual aberration, precession where needed). Corrupted VSOP87 coefficients were repaired
+  (Mercury L1/R1/L2/L4, Mars B2/R0/L2/R1, Saturn L1, Jupiter L4, and the Earth L2 constant
+  every planet previously used), and Pluto no longer mixes J2000 with equinox-of-date
+  coordinates. Maximum longitude error against JPL Horizons, 1800–2200 (Pluto 1885–2099):
+  Sun 0.31″, Mercury 1.12″, Venus 0.58″, Mars 1.18″, Jupiter 1.36″, Saturn 1.66″,
+  Uranus 3.35″, Neptune 4.65″, Pluto 3.17″ (previously 26″–53″, Mercury ~2°, Pluto ~1.6°).
+- Moon latitude: added ELP2000-82 harmonics; maximum error 3.4″ → 1.3″. Longitude unchanged.
+- `longitudeSpeed`/`isRetrograde` for all bodies except the Moon use a centered derivative;
+  some bodies previously used a one-day forward difference, which shifted stations by about
+  half a day.
 
 ### Changed
 
-- Stage A output shifts on the expanded fixtures (maximum longitude): Sun 30″,
-  Mercury 3″, Venus 38″, Mars 31″, Jupiter 46″, Saturn 53″, Uranus 42″,
-  Neptune 38″, Pluto 0.11″; Moon latitude shifts by up to 3.1″, longitude unchanged.
-  Chiron shifts by up to 0.77° after J2000-to-date frame correction; its retained
-  Keplerian approximation still has degree-scale errors over 1950–2050.
-  Asteroids also gain precession, shared Earth, light-time, and aberration.
-- The shared pipeline now honors opt-in `includeNutation` using the existing
-  approximation; defaults remain mean equinox of date. Moon options are unchanged.
-
-- Output shift notice: Mercury longitudes change by up to ~3° for 1800-era dates and by
-  sub-arcminute amounts to tens of arcminutes in the 20th/21st century. Pluto changes by
-  up to ~1.6°. Sign and house placements near boundaries may change.
-- Node >=20 required; CI tests Node 20, 22, and 24.
+- Output shift notice (default options): Mercury longitudes change by up to ~3° for
+  1800-era dates and by up to tens of arcminutes in the 20th/21st century; Pluto by up to
+  ~1.6°; Sun, Venus–Neptune by up to 30″–53″; Moon latitude by up to 3.1″. Chiron shifts by
+  up to 0.77° (frame correction); its Keplerian model still has degree-scale errors away from
+  J2000. Sign/house placements and retrograde flags near boundaries and stations may change.
+- `includeNutation: true` is now honored by every body except the Moon (unchanged); the default
+  (mean equinox of date, no nutation) is unchanged.
+- Node >=20 required; CI tests Node 20, 22 and 24.
 
 ### Added
 
-- Horizons fixture regression suite and guardrail gates via `npm run check`.
-- Visible regression budgets in `budgets.json`, public API snapshot, and agent contract in `AGENTS.md`.
+- Horizons fixture regression suite (1800–2200; 1,424 epochs incl. Chiron) and guardrail gates
+  via `npm run check`.
+- Visible regression budgets in `budgets.json`, public API snapshot, and agent contract in
+  `AGENTS.md`.
 
 ## [0.2.1] - 2026-01-01
 

@@ -200,6 +200,5 @@ export function getCeresPosition(
     },
     jd,
     options,
-    1,
   );
 }

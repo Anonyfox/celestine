@@ -1,4 +1,4 @@
-import { geocentricApparent } from './planets/precision.js';
+import { geocentricApparent, nutationInLongitude } from './planets/precision.js';
 /**
  * Sun Position Calculator
  *
@@ -22,7 +22,6 @@ import {
   ARCSECONDS_PER_DEGREE,
   DEG_TO_RAD,
   EARTH_ECCENTRICITY,
-  NUTATION_OMEGA,
   SUN_EQUATION_OF_CENTER,
   SUN_MEAN_ANOMALY,
   SUN_MEAN_LONGITUDE,
@@ -158,19 +157,7 @@ export function sunTrueLongitude(T: number): number {
  * @source Meeus, "Astronomical Algorithms", simplified from Ch. 22
  * @internal
  */
-export function nutationInLongitude(T: number): number {
-  // Longitude of Moon's ascending node
-  const { c0, c1, c2, c3 } = NUTATION_OMEGA;
-  const omega = c0 + c1 * T + c2 * T * T + c3 * T * T * T;
-  const omegaRad = omega * DEG_TO_RAD;
-
-  // Simplified nutation: dominant term only
-  // Full formula: Δψ = -17.20"·sin(Ω) - 1.32"·sin(2L₀) - 0.23"·sin(2L') + 0.21"·sin(2Ω) + ...
-  // Using just the dominant term: -17.20" ≈ -0.00478°
-  const deltaPsi = (-17.2 / ARCSECONDS_PER_DEGREE) * Math.sin(omegaRad);
-
-  return deltaPsi;
-}
+export { nutationInLongitude } from './planets/precision.js';
 
 /**
  * Calculates the Sun's apparent longitude.
@@ -231,15 +218,6 @@ export function sunDistance(T: number): number {
 }
 
 /**
- * Normalizes an angle to the range [0, 360).
- *
- * @param degrees - Angle in degrees
- * @returns Normalized angle in degrees [0, 360)
- *
- * @internal
- */
-
-/**
  * Calculates the geocentric position of the Sun.
  *
  * @param jd - Julian Date
@@ -269,5 +247,5 @@ export function sunDistance(T: number): number {
  * @source Meeus, "Astronomical Algorithms", Chapter 25
  */
 export function getSunPosition(jd: number, options: EphemerisOptions = {}): PlanetPosition {
-  return geocentricApparent(() => ({ longitude: 0, latitude: 0, distance: 0 }), jd, options, 1);
+  return geocentricApparent(() => ({ longitude: 0, latitude: 0, distance: 0 }), jd, options);
 }

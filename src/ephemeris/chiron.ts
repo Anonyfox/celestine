@@ -211,6 +211,5 @@ export function getChironPosition(jd: number, options: EphemerisOptions = {}): P
     },
     jd,
     options,
-    0.01,
   );
 }

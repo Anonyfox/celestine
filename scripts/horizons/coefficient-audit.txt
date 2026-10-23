@@ -2,20 +2,10 @@ Earth: https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.ear
   L0: 95 terms; rounding bound 0.1272 arcsec
   L1: 12 terms; rounding bound 0.0031 arcsec
   L2: 3 terms; rounding bound 0.0002 arcsec
-  L3: 0 terms; rounding bound 0.0000 arcsec
-  L4: 0 terms; rounding bound 0.0000 arcsec
-  L5: 0 terms; rounding bound 0.0000 arcsec
   B0: 14 terms; rounding bound 0.0116 arcsec
-  B1: 0 terms; rounding bound 0.0000 arcsec
-  B2: 0 terms; rounding bound 0.0000 arcsec
-  B3: 0 terms; rounding bound 0.0000 arcsec
-  B4: 0 terms; rounding bound 0.0000 arcsec
   R0: 60 terms; rounding bound 0.0703 arcsec
   R1: 3 terms; rounding bound 0.0012 arcsec
   R2: 1 terms; rounding bound 0.0002 arcsec
-  R3: 0 terms; rounding bound 0.0000 arcsec
-  R4: 0 terms; rounding bound 0.0000 arcsec
-  R5: 0 terms; rounding bound 0.0000 arcsec
 Mercury: https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.mer
   L0: 38 terms; rounding bound 0.0890 arcsec
   L1: 9 terms; rounding bound 0.0060 arcsec
@@ -36,111 +26,59 @@ Venus: https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.ven
   L0: 52 terms; rounding bound 0.0842 arcsec
   L1: 6 terms; rounding bound 0.0054 arcsec
   L2: 3 terms; rounding bound 0.0002 arcsec
-  L3: 0 terms; rounding bound 0.0000 arcsec
-  L4: 0 terms; rounding bound 0.0000 arcsec
-  L5: 0 terms; rounding bound 0.0000 arcsec
   B0: 22 terms; rounding bound 0.0261 arcsec
   B1: 4 terms; rounding bound 0.0016 arcsec
   B2: 1 terms; rounding bound 0.0001 arcsec
-  B3: 0 terms; rounding bound 0.0000 arcsec
-  B4: 0 terms; rounding bound 0.0000 arcsec
   R0: 25 terms; rounding bound 0.0326 arcsec
   R1: 3 terms; rounding bound 0.0008 arcsec
   R2: 1 terms; rounding bound 0.0001 arcsec
-  R3: 0 terms; rounding bound 0.0000 arcsec
-  B5: 0 terms; rounding bound 0.0000 arcsec
-  R4: 0 terms; rounding bound 0.0000 arcsec
-  R5: 0 terms; rounding bound 0.0000 arcsec
 Mars: https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.mar
   L0: 124 terms; rounding bound 0.2191 arcsec
   L1: 19 terms; rounding bound 0.0092 arcsec
   L2: 4 terms; rounding bound 0.0002 arcsec
-  L3: 0 terms; rounding bound 0.0000 arcsec
-  L4: 0 terms; rounding bound 0.0000 arcsec
-  L5: 0 terms; rounding bound 0.0000 arcsec
   B0: 40 terms; rounding bound 0.0511 arcsec
   B1: 5 terms; rounding bound 0.0020 arcsec
   B2: 2 terms; rounding bound 0.0002 arcsec
-  B3: 0 terms; rounding bound 0.0000 arcsec
-  B4: 0 terms; rounding bound 0.0000 arcsec
   R0: 95 terms; rounding bound 0.1993 arcsec
   R1: 12 terms; rounding bound 0.0038 arcsec
   R2: 3 terms; rounding bound 0.0001 arcsec
-  R3: 0 terms; rounding bound 0.0000 arcsec
-  R4: 0 terms; rounding bound 0.0000 arcsec
-  B5: 0 terms; rounding bound 0.0000 arcsec
-  R5: 0 terms; rounding bound 0.0000 arcsec
 Jupiter: https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.jup
   L0: 77 terms; rounding bound 0.2034 arcsec
   L1: 26 terms; rounding bound 0.0146 arcsec
   L2: 7 terms; rounding bound 0.0006 arcsec
-  L3: 0 terms; rounding bound 0.0000 arcsec
-  L4: 0 terms; rounding bound 0.0000 arcsec
-  L5: 0 terms; rounding bound 0.0000 arcsec
   B0: 29 terms; rounding bound 0.0977 arcsec
   B1: 6 terms; rounding bound 0.0034 arcsec
   B2: 1 terms; rounding bound 0.0002 arcsec
-  B3: 0 terms; rounding bound 0.0000 arcsec
-  B4: 0 terms; rounding bound 0.0000 arcsec
   R0: 56 terms; rounding bound 0.1771 arcsec
   R1: 17 terms; rounding bound 0.0091 arcsec
   R2: 2 terms; rounding bound 0.0006 arcsec
-  R3: 0 terms; rounding bound 0.0000 arcsec
-  R4: 0 terms; rounding bound 0.0000 arcsec
-  R5: 0 terms; rounding bound 0.0000 arcsec
-  B5: 0 terms; rounding bound 0.0000 arcsec
 Saturn: https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.sat
   L0: 98 terms; rounding bound 0.2189 arcsec
   L1: 26 terms; rounding bound 0.0136 arcsec
   L2: 7 terms; rounding bound 0.0007 arcsec
   L3: 1 terms; rounding bound 0.0000 arcsec
-  L4: 0 terms; rounding bound 0.0000 arcsec
-  L5: 0 terms; rounding bound 0.0000 arcsec
   B0: 36 terms; rounding bound 0.0930 arcsec
   B1: 10 terms; rounding bound 0.0063 arcsec
   B2: 2 terms; rounding bound 0.0002 arcsec
-  B3: 0 terms; rounding bound 0.0000 arcsec
-  B4: 0 terms; rounding bound 0.0000 arcsec
-  B5: 0 terms; rounding bound 0.0000 arcsec
   R0: 67 terms; rounding bound 0.1480 arcsec
   R1: 15 terms; rounding bound 0.0077 arcsec
   R2: 5 terms; rounding bound 0.0005 arcsec
-  R3: 0 terms; rounding bound 0.0000 arcsec
-  R4: 0 terms; rounding bound 0.0000 arcsec
-  R5: 0 terms; rounding bound 0.0000 arcsec
 Uranus: https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.ura
   L0: 98 terms; rounding bound 0.2212 arcsec
   L1: 16 terms; rounding bound 0.0120 arcsec
   L2: 2 terms; rounding bound 0.0001 arcsec
-  L3: 0 terms; rounding bound 0.0000 arcsec
-  L4: 0 terms; rounding bound 0.0000 arcsec
-  L5: 0 terms; rounding bound 0.0000 arcsec
   B0: 29 terms; rounding bound 0.0654 arcsec
   B1: 7 terms; rounding bound 0.0035 arcsec
   B2: 1 terms; rounding bound 0.0004 arcsec
-  B3: 0 terms; rounding bound 0.0000 arcsec
-  B4: 0 terms; rounding bound 0.0000 arcsec
   R0: 69 terms; rounding bound 0.1993 arcsec
   R1: 7 terms; rounding bound 0.0024 arcsec
-  R2: 0 terms; rounding bound 0.0000 arcsec
-  R3: 0 terms; rounding bound 0.0000 arcsec
-  R4: 0 terms; rounding bound 0.0000 arcsec
 Neptune: https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.nep
   L0: 46 terms; rounding bound 0.1084 arcsec
   L1: 6 terms; rounding bound 0.0024 arcsec
   L2: 1 terms; rounding bound 0.0000 arcsec
-  L3: 0 terms; rounding bound 0.0000 arcsec
-  L4: 0 terms; rounding bound 0.0000 arcsec
   B0: 19 terms; rounding bound 0.0355 arcsec
   B1: 5 terms; rounding bound 0.0017 arcsec
   B2: 1 terms; rounding bound 0.0002 arcsec
-  B3: 0 terms; rounding bound 0.0000 arcsec
-  B4: 0 terms; rounding bound 0.0000 arcsec
   R0: 34 terms; rounding bound 0.0869 arcsec
   R1: 2 terms; rounding bound 0.0008 arcsec
-  R2: 0 terms; rounding bound 0.0000 arcsec
-  R3: 0 terms; rounding bound 0.0000 arcsec
-  L5: 0 terms; rounding bound 0.0000 arcsec
-  B5: 0 terms; rounding bound 0.0000 arcsec
-  R4: 0 terms; rounding bound 0.0000 arcsec
 Moon: 34 additive ELP2 terms; rounding <=0.0018 arcsec/term

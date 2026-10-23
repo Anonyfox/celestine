@@ -178,6 +178,5 @@ export function getPallasPosition(
     },
     jd,
     options,
-    1,
   );
 }

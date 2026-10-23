@@ -177,6 +177,5 @@ export function getJunoPosition(
     },
     jd,
     options,
-    1,
   );
 }

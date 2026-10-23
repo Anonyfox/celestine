@@ -5,15 +5,15 @@ import { readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-for (const [body, suffix, file, prefix] of [
-  ['Earth', 'ear', 'precision', 'earth'],
-  ['Mercury', 'mer', 'mercury', ''],
-  ['Venus', 'ven', 'venus', ''],
-  ['Mars', 'mar', 'mars', ''],
-  ['Jupiter', 'jup', 'jupiter', ''],
-  ['Saturn', 'sat', 'saturn', ''],
-  ['Uranus', 'ura', 'uranus', ''],
-  ['Neptune', 'nep', 'neptune', ''],
+for (const [body, suffix, file] of [
+  ['Earth', 'ear', 'precision'],
+  ['Mercury', 'mer', 'mercury'],
+  ['Venus', 'ven', 'venus'],
+  ['Mars', 'mar', 'mars'],
+  ['Jupiter', 'jup', 'jupiter'],
+  ['Saturn', 'sat', 'saturn'],
+  ['Uranus', 'ura', 'uranus'],
+  ['Neptune', 'nep', 'neptune'],
 ]) {
   const path = join(tmpdir(), `celestine-VSOP87D.${suffix}`);
   const url = `https://cdsarc.cds.unistra.fr/ftp/VI/81/VSOP87D.${suffix}`;
@@ -31,28 +31,29 @@ for (const [body, suffix, file, prefix] of [
     'utf8',
   );
   console.log(`${body}: ${url}`);
-  const tables = [
-    ...source.matchAll(new RegExp(`const ${prefix}([LBR]\\d):.*?= (\\[.*?\\]);`, 'gs')),
-  ];
-  if (!tables.length) throw Error(`${body}: no tables audited`);
-  for (const [, key, table] of tables) {
-    const rows = JSON.parse(table.replace(/,\s*]/g, ']'));
-    let bound = 0;
-    const used = new Set();
-    for (const [a, b, c] of rows) {
-      const terms = groups[key];
-      const ref = terms.reduce((best, r) =>
-        Math.abs(r[2] - c) < Math.abs(best[2] - c) ? r : best,
-      );
-      if (used.has(ref)) throw Error(`${body} ${key}: duplicated term`);
-      used.add(ref);
-      const error =
-        (Math.abs(a - ref[0] * 1e8) + a * (Math.abs(b - ref[1]) + 0.201 * Math.abs(c - ref[2]))) /
-        1e8;
-      bound += error * 0.201 ** Number(key[1]) * 206264.806;
+  const table = source.match(/const (?:earthVsop|vsop): Vsop = (\[.*?\n\]);/s);
+  if (!table) throw Error(`${body}: no tables audited`);
+  const coordinates = JSON.parse(table[1].replace(/,\s*]/g, ']'));
+  for (const [axis, orders] of coordinates.entries()) {
+    for (const [order, rows] of orders.entries()) {
+      const key = 'LBR'[axis] + order;
+      let bound = 0;
+      const used = new Set();
+      for (const [a, b, c] of rows) {
+        const terms = groups[key];
+        const ref = terms.reduce((best, r) =>
+          Math.abs(r[2] - c) < Math.abs(best[2] - c) ? r : best,
+        );
+        if (used.has(ref)) throw Error(`${body} ${key}: duplicated term`);
+        used.add(ref);
+        const error =
+          (Math.abs(a - ref[0] * 1e8) + a * (Math.abs(b - ref[1]) + 0.201 * Math.abs(c - ref[2]))) /
+          1e8;
+        bound += error * 0.201 ** Number(key[1]) * 206264.806;
+      }
+      console.log(`  ${key}: ${rows.length} terms; rounding bound ${bound.toFixed(4)} arcsec`);
+      if (bound > 0.5) throw Error(`${body} ${key}: exceeds coefficient rounding allowance`);
     }
-    console.log(`  ${key}: ${rows.length} terms; rounding bound ${bound.toFixed(4)} arcsec`);
-    if (bound > 0.5) throw Error(`${body} ${key}: exceeds coefficient rounding allowance`);
   }
 }
 

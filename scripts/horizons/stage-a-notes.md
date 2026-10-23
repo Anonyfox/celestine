@@ -10,7 +10,7 @@ Every retained Mercury–Neptune and Earth coefficient is checked against CDS
 VI/81 VSOP87D originals by `node scripts/horizons/audit-coefficients.mjs`.
 Downloads go to the system temporary directory. The audit rejects duplicate
 terms and excessive rounding error; `coefficient-audit.txt` records every table,
-including empty higher orders. Amplitudes use Meeus units (1e-8 rad/AU).
+with trailing empty higher orders omitted. Amplitudes use Meeus units (1e-8 rad/AU).
 
 Selections use A × 0.201^order, covering 1800–2200. Earth cutoff is 10;
 Venus 20, Mars 25, Jupiter 60, Saturn 80, Uranus 80, Neptune 60.
@@ -52,7 +52,7 @@ precession. For centered 0.01-day speed differences, the Earth vector is
 linearly advanced from one evaluation using its dominant velocities. Forward
 one-day speeds use a separately evaluated Earth. A bounded 12-entry cache
 shares Earth results between bodies and speed dates without unbounded growth.
-Speed conventions remain forward one day or centered ±0.01 day, as before.
+(Superseded below: speeds are now uniformly centered.)
 
 The shared path honors `includeNutation` with the existing single-term solar
 helper. Default mean results are unchanged by this option handling. The Moon
@@ -113,3 +113,88 @@ until the reviewer stages them.
 Absolute timings vary with host load; normalized gates all passed on Node 20.
 No size, performance, coverage, API, or existing precision limit was loosened.
 The new Chiron entry explicitly records its coarse theory's error envelope.
+
+
+## Stage A follow-up: shared pipeline compression
+
+The eight VSOP tables now use one nested L/B/R representation, omitting trailing
+empty orders. One Horner evaluator and one heliocentric callback factory replace
+all repeated polynomials and planet callbacks. Every retained coefficient tuple
+was compared to HEAD and is numerically identical; the adapted CDS coefficient
+audit also passes. `evaluateSeries` is now private. Public declarations and all
+3476 API snapshot entries are unchanged, including heliocentric function exports.
+
+All geocentric apparent users now use centered ±0.001-day speeds; the returned position is
+the midpoint of the two evaluations (max deviation from a direct evaluation 0.0004″, Mercury),
+so a position with speed costs two pipeline evaluations instead of three. A full analytic
+Earth-series derivative, cached with its position, supplies linearized endpoints;
+the former six-harmonic Earth approximation is no longer used for speeds.
+Planet light-time velocities retain their existing six-harmonic approximation.
+The redundant initial/final geocentric conversion was removed where no additional
+light-time correction is needed. Moon behavior, TT inputs, default mean frame,
+and the chart UT gap are unchanged.
+
+The former forward-difference regression test was updated because it explicitly
+encoded the half-day-shifted convention this change fixes. A new regression
+compares all 14 affected bodies against independent full-position derivatives
+at 240 dates each. `measure-speeds.ts` additionally locates stations independently
+using 0.001-day full-position derivatives, bisects each crossing, and checks the
+station and ±0.5 day. Each reference endpoint independently evaluates Earth.
+The 240 regular epochs span 1900–2100; station searches cover 2000–2010.
+Sun has no longitude stations. Measured maximum absolute errors in degrees/day:
+
+| Body | Dates | Stations | Before | After |
+| --- | ---: | ---: | ---: | ---: |
+| Sun | 240 | 0 | 3.21065394e-4 | 2.04522621e-7 |
+| Mercury | 429 | 63 | 9.77950233e-2 | 1.00149578e-6 |
+| Venus | 276 | 12 | 2.11498817e-2 | 2.41095677e-7 |
+| Mars | 267 | 9 | 7.49926522e-3 | 1.51521817e-7 |
+| Jupiter | 294 | 18 | 1.74556664e-3 | 4.55656846e-8 |
+| Saturn | 297 | 19 | 2.42346061e-5 | 2.56363819e-8 |
+| Uranus | 300 | 20 | 1.08352197e-5 | 1.17950094e-8 |
+| Neptune | 300 | 20 | 6.25917096e-6 | 7.49196261e-9 |
+| Pluto | 300 | 20 | 4.96405619e-6 | 7.88418220e-9 |
+| Chiron | 300 | 20 | 2.99735518e-5 | 2.98996383e-8 |
+| Ceres | 288 | 16 | 3.66797246e-3 | 1.34576794e-7 |
+| Pallas | 285 | 15 | 5.97385127e-3 | 1.51624135e-7 |
+| Juno | 288 | 16 | 4.83814811e-3 | 1.53630708e-7 |
+| Vesta | 282 | 14 | 4.15953560e-3 | 1.48367008e-7 |
+
+`accuracy-after.txt` was refreshed and is byte-identical to the follow-up baseline:
+all per-body maximum/RMS longitude/latitude statistics are unchanged at 0.001″
+reporting precision. This includes Moon and the independent frame cross-check;
+no coefficients, fixtures, limits, budgets, or guarded files were changed.
+
+Static import/re-export graph scan of all non-test `src/**/*.ts` (excluding
+explicit type-only statements) found exactly one cycle before:
+`precision.ts → sun.ts → precision.ts`. Moving nutation to precision and retaining
+the Sun re-export eliminates it; the same scan finds zero cycles afterward.
+
+Node 20.19.2 standalone measurements (absolute timings vary with host load):
+
+| Metric | Before | After |
+| --- | ---: | ---: |
+| Full minified bytes | 176650 | 174314 |
+| Full gzip-9 bytes | 57787 | 56937 |
+| calculateChart ns/op | 485919 | 450004 |
+| ten-body getAllPositions with speed ns/op | 93038 | 94146 |
+| Mercury ns/op | 11661 | 15427 |
+| Pluto ns/op | 10140 | 10656 |
+| Moon ns/op | 7259 | 7221 |
+| 180-day station scan ns/op | 1261547 | 1289976 |
+
+All standalone size/performance entries pass without budget changes. Centered
+Mercury speed requires three planetary evaluations rather than two; its measured
+cost increases while chart throughput improves and ten-body throughput is similar.
+
+Final `npm run check` exits 0: types, lint, build, full tests/coverage (including
+Horizons and frame checks), size, performance, API, and ratchet all pass. Coverage
+is 90.38% lines, 89.87% branches, 96.83% functions, above unchanged budgets.
+The final integrated performance run measured chart 489768 ns/op, ten-body
+snapshots 103774, Mercury 16225, Pluto 10806, Moon 7238, and station scan 1317576;
+all normalized gates passed. These differ from the standalone samples above,
+so small timing differences should not be read as stable speedups. The ratchet
+prints fixture changes inherited from Stage A relative to its merge base; the
+follow-up itself changes no fixtures. No commit or push was performed.
+
+Runtime source: 1909 insertions, 2225 deletions, **316 net lines removed**.
