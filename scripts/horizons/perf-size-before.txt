@@ -1,0 +1,5 @@
+full ESM min: 200049 B, min+gz: 62105 B
+calculateChart bundle min: 196846 B, min+gz: 61428 B
+mercury.ts bundle min+gz: 2758 B
+pluto.ts bundle min+gz: 2160 B
+calculateChart 572 us | getAllPositions 213 us | mercury 12.59 us | pluto 6.48 us (median of 7)

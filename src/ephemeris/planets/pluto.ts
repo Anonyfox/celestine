@@ -19,7 +19,7 @@
 
 import { DAYS_PER_JULIAN_CENTURY, DEG_TO_RAD, J2000_EPOCH, RAD_TO_DEG } from '../constants.js';
 import type { EphemerisOptions, PlanetPosition } from '../types.js';
-import { aberration, earthHeliocentricPosition, precessEcliptic } from './precision.js';
+import { aberration, earthHeliocentricPosition, helioToGeo, precessEcliptic } from './precision.js';
 
 // =============================================================================
 // PLUTO ARGUMENT COEFFICIENTS (Meeus Chapter 37)
@@ -91,14 +91,7 @@ const PLUTO_ARGS: readonly (readonly [
  * @param jd - Julian Date
  * @returns Object with longitude (rad), latitude (rad), and radius (AU)
  */
-function plutoHeliocentric(jd: number): {
-  L: number;
-  B: number;
-  R: number;
-  dL: number;
-  dB: number;
-  dR: number;
-} {
+function plutoHeliocentric(jd: number): { L: number; B: number; R: number } {
   const T = (jd - J2000_EPOCH) / DAYS_PER_JULIAN_CENTURY;
 
   // Mean longitudes and arguments (degrees)
@@ -115,9 +108,6 @@ function plutoHeliocentric(jd: number): {
   let lonSum = 0;
   let latSum = 0;
   let radSum = 0;
-  let dL = 144.96;
-  let dB = 0;
-  let dR = 0;
 
   for (const [iJ, iS, iP, lonSin, lonCos, latSin, latCos, radSin, radCos] of PLUTO_ARGS) {
     const arg = iJ * Jrad + iS * Srad + iP * Prad;
@@ -127,10 +117,6 @@ function plutoHeliocentric(jd: number): {
     lonSum += lonSin * sinArg + lonCos * cosArg;
     latSum += latSin * sinArg + latCos * cosArg;
     radSum += radSin * sinArg + radCos * cosArg;
-    const rate = (iJ * 3034.9057 + iS * 1222.1138 + iP * 144.96) * DEG_TO_RAD;
-    dL += ((lonSin * cosArg - lonCos * sinArg) * rate) / 1e6;
-    dB += ((latSin * cosArg - latCos * sinArg) * rate) / 1e6;
-    dR += ((radSin * cosArg - radCos * sinArg) * rate) / 1e7;
   }
 
   // Convert from 10^-6 degrees/AU to degrees/AU
@@ -138,7 +124,7 @@ function plutoHeliocentric(jd: number): {
   const B = (-3.908239 + latSum / 1e6) * DEG_TO_RAD;
   const R = 40.7241346 + radSum / 1e7;
 
-  return { L, B, R, dL: (dL * DEG_TO_RAD) / 36525, dB: (dB * DEG_TO_RAD) / 36525, dR: dR / 36525 };
+  return { L, B, R };
 }
 
 /**
@@ -162,32 +148,16 @@ export function getPlutoPosition(jd: number, options: EphemerisOptions = {}): Pl
 
   const tau = (jd - J2000_EPOCH) / 365250;
   const earth = earthHeliocentricPosition(tau);
-  const pluto = plutoHeliocentric(jd);
-  // The distance estimate needs only arcminute frame accuracy.
-  const l = pluto.L + (5029.0966 / 3600) * DEG_TO_RAD * tau * 10;
-  const b = pluto.B;
-  const distance = Math.hypot(
-    pluto.R * Math.cos(b) * Math.cos(l) - earth.distance * Math.cos(earth.longitude),
-    pluto.R * Math.cos(b) * Math.sin(l) - earth.distance * Math.sin(earth.longitude),
-    pluto.R * Math.sin(b),
-  );
-  const delay = distance * 0.0057755183;
-  const [L, B] = precessEcliptic(pluto.L - delay * pluto.dL, pluto.B - delay * pluto.dB, tau * 10);
-  pluto.R -= delay * pluto.dR;
-  const x =
-    pluto.R * Math.cos(B) * Math.cos(L) -
-    earth.distance * Math.cos(earth.latitude) * Math.cos(earth.longitude);
-  const y =
-    pluto.R * Math.cos(B) * Math.sin(L) -
-    earth.distance * Math.cos(earth.latitude) * Math.sin(earth.longitude);
-  const z = pluto.R * Math.sin(B) - earth.distance * Math.sin(earth.latitude);
-  const geoDist = Math.hypot(x, y, z);
-  const [lon, lat] = aberration(
-    Math.atan2(y, x),
-    Math.atan2(z, Math.hypot(x, y)),
-    earth.longitude,
-    tau * 10,
-  );
+  // Light-time (~4-7 h). A two-body radius estimate is within ~2 AU of the true
+  // geocentric distance, i.e. <0.2″ of Pluto's motion, so one series evaluation suffices.
+  const { semiMajorAxis: a, eccentricity: e } = PLUTO_ORBITAL_ELEMENTS;
+  const M = (14.89 + 0.003969 * (jd - J2000_EPOCH)) * DEG_TO_RAD; // mean anomaly
+  const delay = a * (1 - e * Math.cos(M + e * Math.sin(M))) * 0.0057755183;
+  const pluto = plutoHeliocentric(jd - delay);
+  // Meeus Ch.37 gives J2000 coordinates; Earth (VSOP87D) is of date.
+  const geo = helioToGeo(...precessEcliptic(pluto.L, pluto.B, tau * 10), pluto.R, earth);
+  const geoDist = geo.distance;
+  const [lon, lat] = aberration(geo.longitude, geo.latitude, earth.longitude, tau * 10);
   const geoLon = (((lon * RAD_TO_DEG) % 360) + 360) % 360;
   const geoLat = lat * RAD_TO_DEG;
 

@@ -1,6 +1,7 @@
 import { DEG_TO_RAD } from '../constants.js';
 
-function evaluateSeries(
+/** Sum of A·cos(B + C·τ) over VSOP87 terms. */
+export function evaluateSeries(
   terms: readonly (readonly [number, number, number])[],
   tau: number,
 ): number {
@@ -65,11 +66,7 @@ const earthR1: readonly (readonly [number, number, number])[] = [
   [1721, 1.0644, 12566.1517],
 ];
 
-export function earthHeliocentricPosition(tau: number): {
-  longitude: number;
-  latitude: number;
-  distance: number;
-} {
+export function earthHeliocentricPosition(tau: number): Spherical {
   const tau2 = tau * tau;
 
   const L0sum = evaluateSeries(earthL0, tau);
@@ -85,6 +82,23 @@ export function earthHeliocentricPosition(tau: number): {
   const R = (R0sum + R1sum * tau) / 100000000;
 
   return { longitude: L, latitude: B, distance: R };
+}
+
+type Spherical = { longitude: number; latitude: number; distance: number };
+
+/** Heliocentric (rad, AU) minus Earth's heliocentric position → geocentric (longitude in [0, 2π)). */
+export function helioToGeo(lon: number, lat: number, dist: number, earth: Spherical): Spherical {
+  const e = earth.distance * Math.cos(earth.latitude);
+  const x = dist * Math.cos(lat) * Math.cos(lon) - e * Math.cos(earth.longitude);
+  const y = dist * Math.cos(lat) * Math.sin(lon) - e * Math.sin(earth.longitude);
+  const z = dist * Math.sin(lat) - earth.distance * Math.sin(earth.latitude);
+  const distance = Math.hypot(x, y, z);
+  const longitude = Math.atan2(y, x);
+  return {
+    longitude: longitude < 0 ? longitude + 2 * Math.PI : longitude,
+    latitude: Math.asin(z / distance),
+    distance,
+  };
 }
 
 /** Meeus Ch.21: J2000 ecliptic to mean ecliptic/equinox of date. */

@@ -1,1 +1,1 @@
-calculateChart 588 us | getAllPositions 217 us | mercury 15.31 us | pluto 8.65 us (median of 7)
+calculateChart 584 us | getAllPositions 216 us | mercury 15.12 us | pluto 8.24 us (median of 7)

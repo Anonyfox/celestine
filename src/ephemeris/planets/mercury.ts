@@ -21,7 +21,7 @@
 
 import { DAYS_PER_JULIAN_MILLENNIUM, J2000_EPOCH, RAD_TO_DEG } from '../constants.js';
 import type { EphemerisOptions, PlanetPosition } from '../types.js';
-import { aberration, earthHeliocentricPosition } from './precision.js';
+import { aberration, earthHeliocentricPosition, evaluateSeries, helioToGeo } from './precision.js';
 
 // =============================================================================
 // VSOP87 SERIES FOR MERCURY
@@ -236,25 +236,6 @@ const R3: readonly (readonly [number, number, number])[] = [
 // =============================================================================
 
 /**
- * Evaluates a VSOP87 series.
- *
- * @param terms - Array of [A, B, C] coefficients
- * @param tau - Julian millennia from J2000.0
- * @returns Sum of A * cos(B + C * τ)
- * @internal
- */
-function evaluateSeries(
-  terms: readonly (readonly [number, number, number])[],
-  tau: number,
-): number {
-  let sum = 0;
-  for (const [A, B, C] of terms) {
-    sum += A * Math.cos(B + C * tau);
-  }
-  return sum;
-}
-
-/**
  * Calculates Mercury's heliocentric longitude.
  *
  * @param tau - Julian millennia from J2000.0
@@ -330,45 +311,6 @@ export function mercuryHeliocentricDistance(tau: number): number {
 // =============================================================================
 
 /**
- * Converts heliocentric coordinates to geocentric ecliptic coordinates.
- *
- * @param planetLon - Planet's heliocentric longitude (radians)
- * @param planetLat - Planet's heliocentric latitude (radians)
- * @param planetDist - Planet's heliocentric distance (AU)
- * @param earthLon - Earth's heliocentric longitude (radians)
- * @param earthLat - Earth's heliocentric latitude (radians)
- * @param earthDist - Earth's heliocentric distance (AU)
- * @returns Geocentric ecliptic coordinates
- * @internal
- */
-function helioToGeo(
-  planetLon: number,
-  planetLat: number,
-  planetDist: number,
-  earthLon: number,
-  earthLat: number,
-  earthDist: number,
-): { longitude: number; latitude: number; distance: number } {
-  // Convert to rectangular coordinates
-  const cosB = Math.cos(planetLat);
-  const x =
-    planetDist * cosB * Math.cos(planetLon) - earthDist * Math.cos(earthLat) * Math.cos(earthLon);
-  const y =
-    planetDist * cosB * Math.sin(planetLon) - earthDist * Math.cos(earthLat) * Math.sin(earthLon);
-  const z = planetDist * Math.sin(planetLat) - earthDist * Math.sin(earthLat);
-
-  // Convert back to spherical
-  const distance = Math.sqrt(x * x + y * y + z * z);
-  let longitude = Math.atan2(y, x);
-  const latitude = Math.asin(z / distance);
-
-  // Normalize longitude to [0, 2π)
-  if (longitude < 0) longitude += 2 * Math.PI;
-
-  return { longitude, latitude, distance };
-}
-
-/**
  * Normalizes an angle to the range [0, 360).
  *
  * @param degrees - Angle in degrees
@@ -425,15 +367,13 @@ export function getMercuryPosition(jd: number, options: EphemerisOptions = {}): 
   const L = mercuryHeliocentricLongitude(tau);
   const B = mercuryHeliocentricLatitude(tau);
   const R = mercuryHeliocentricDistance(tau);
-  const initial = helioToGeo(L, B, R, earth.longitude, earth.latitude, earth.distance);
+  const initial = helioToGeo(L, B, R, earth);
   const delay = initial.distance * 0.0057755183;
   const geo = helioToGeo(
     L - delay * (velocity(L0) + L1[0][0] / 1e8 / DAYS_PER_JULIAN_MILLENNIUM),
     B - delay * velocity(B0),
     R - delay * velocity(R0),
-    earth.longitude,
-    earth.latitude,
-    earth.distance,
+    earth,
   );
   const [lon, lat] = aberration(geo.longitude, geo.latitude, earth.longitude, tau * 10);
   const longitude = normalizeAngle(lon * RAD_TO_DEG);
