@@ -6,6 +6,8 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-24
+
 ### Fixed
 
 - Planet positions: the Sun, Mercury–Neptune, Pluto, Chiron and the asteroids now share one
