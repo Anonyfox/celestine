@@ -8,6 +8,14 @@ All notable changes to this project are documented here, following
 
 ### Fixed
 
+- Shared Earth-of-date ephemeris for the Sun, planets, Chiron, and asteroids;
+  repaired VSOP87D coefficients and applied light-time and directional annual
+  aberration consistently. On expanded Horizons samples, maximum longitude errors
+  are Sun 0.31″, Mercury 1.12″, Venus 0.58″, Mars 1.18″, Jupiter 1.36″,
+  Saturn 1.66″, Uranus 3.35″, Neptune 4.65″, and Pluto 3.17″.
+- Moon latitude: added published ELP2000-82 harmonics to the existing Meeus table,
+  reducing expanded-sample maximum error from 3.38″ to 1.29″.
+
 - Mercury longitude: repaired corrupted VSOP87 L1/R1/L2/L4 terms and the Earth L2 constant;
   applied light-time and direction-dependent aberration. Now ≤ ~5″ against JPL Horizons
   over 1800–2200 (previously up to ~2–3°).
@@ -15,6 +23,15 @@ All notable changes to this project are documented here, following
   and aberration. Now ≤ ~3″ against Horizons over 1885–2099 (previously up to ~1.6°).
 
 ### Changed
+
+- Stage A output shifts on the expanded fixtures (maximum longitude): Sun 30″,
+  Mercury 3″, Venus 38″, Mars 31″, Jupiter 46″, Saturn 53″, Uranus 42″,
+  Neptune 38″, Pluto 0.11″; Moon latitude shifts by up to 3.1″, longitude unchanged.
+  Chiron shifts by up to 0.77° after J2000-to-date frame correction; its retained
+  Keplerian approximation still has degree-scale errors over 1950–2050.
+  Asteroids also gain precession, shared Earth, light-time, and aberration.
+- The shared pipeline now honors opt-in `includeNutation` using the existing
+  approximation; defaults remain mean equinox of date. Moon options are unchanged.
 
 - Output shift notice: Mercury longitudes change by up to ~3° for 1800-era dates and by
   sub-arcminute amounts to tens of arcminutes in the 20th/21st century. Pluto changes by

@@ -1,4 +1,5 @@
 import { DEG_TO_RAD } from '../constants.js';
+import { nutationInLongitude } from '../sun.js';
 
 /** Sum of A·cos(B + C·τ) over VSOP87 terms. */
 export function evaluateSeries(
@@ -6,27 +7,27 @@ export function evaluateSeries(
   tau: number,
 ): number {
   let sum = 0;
-  for (const [A, B, C] of terms) {
-    sum += A * Math.cos(B + C * tau);
+  for (let i = 0; i < terms.length; i++) {
+    const term = terms[i];
+    sum += term[0] * Math.cos(term[1] + term[2] * tau);
   }
   return sum;
 }
 
-// Simplified Earth position from VSOP87 (main terms only)
-// L0 terms for Earth
+// VSOP87D Earth: retain terms with A * 0.201^order >= 10 (1e-8 rad/AU).
 const earthL0: readonly (readonly [number, number, number])[] = [
-  [175347046, 0.0, 0.0],
+  [175347046, 0, 0],
   [3341656, 4.669257, 6283.07585],
   [34894, 4.6261, 12566.1517],
   [3418, 2.829, 3.523],
   [3497, 2.744, 5753.385],
-  [3136, 3.628, 77713.771],
+  [3136, 3.628, 77713.772],
   [2676, 4.418, 7860.419],
   [2343, 6.135, 3930.21],
   [1273, 2.037, 529.691],
-  [1324, 0.742, 11506.77],
-  [902, 2.05, 26.3],
-  [1199, 1.11, 1577.344],
+  [1324, 0.743, 11506.77],
+  [902, 2.04, 26.3],
+  [1199, 1.11, 1577.343],
   [857, 3.51, 398.15],
   [780, 1.18, 5223.69],
   [990, 5.23, 5884.93],
@@ -35,56 +36,236 @@ const earthL0: readonly (readonly [number, number, number])[] = [
   [492, 4.21, 775.52],
   [357, 2.92, 0.07],
   [284, 1.9, 796.3],
+  [243, 0.34, 5486.78],
+  [317, 5.85, 11790.63],
+  [271, 0.32, 10977.08],
+  [206, 4.81, 2544.31],
+  [205, 1.87, 5573.14],
+  [202, 2.46, 6069.78],
+  [126, 1.08, 20.77],
+  [156, 0.83, 213.3],
+  [115, 0.65, 0.98],
+  [103, 0.64, 4694],
+  [102, 4.27, 7.11],
+  [99, 6.21, 2146.16],
+  [132, 3.41, 2942.46],
+  [98, 0.68, 155.42],
+  [85, 1.3, 6275.96],
+  [75, 1.75, 5088.63],
+  [102, 0.98, 15720.84],
+  [85, 3.67, 71430.7],
+  [74, 4.68, 801.82],
+  [74, 3.5, 3154.69],
+  [79, 3.04, 12036.46],
+  [80, 1.81, 17260.15],
+  [86, 5.98, 161000.69],
+  [57, 2.78, 6286.6],
+  [61, 1.82, 7084.9],
+  [70, 0.83, 9437.76],
+  [56, 4.39, 14143.5],
+  [62, 3.98, 8827.39],
+  [51, 0.28, 5856.48],
+  [56, 3.47, 6279.55],
+  [41, 5.37, 8429.24],
+  [52, 1.33, 1748.02],
+  [52, 0.19, 12139.55],
+  [49, 0.49, 1194.45],
+  [39, 6.17, 10447.39],
+  [36, 1.78, 6812.77],
+  [37, 6.04, 10213.29],
+  [37, 2.57, 1059.38],
+  [33, 0.59, 17789.85],
+  [36, 1.71, 2352.87],
+  [41, 2.4, 19651.05],
+  [30, 2.74, 1349.87],
+  [30, 0.44, 83996.85],
+  [24, 0.48, 8031.09],
+  [24, 2.06, 3340.61],
+  [21, 4.15, 951.72],
+  [25, 0.21, 3.59],
+  [25, 3.17, 4690.48],
+  [23, 5.22, 4705.73],
+  [21, 1.43, 16730.46],
+  [22, 5.56, 553.57],
+  [17, 4.56, 135.06],
+  [20, 5.22, 12168],
+  [20, 5.78, 6309.37],
+  [20, 0.37, 283.86],
+  [14, 4.19, 242.73],
+  [16, 5.99, 11769.85],
+  [15, 4.2, 6256.78],
+  [19, 3.82, 23581.26],
+  [19, 5.39, 149854.4],
+  [14, 3.72, 38.03],
+  [18, 2.21, 13367.97],
+  [12, 2.62, 955.6],
+  [11, 0.18, 4164.31],
+  [14, 4.4, 6681.23],
+  [14, 1.89, 7632.94],
+  [12, 1.13, 5.52],
+  [10, 5.36, 1592.6],
+  [10, 1, 11371.7],
+  [10, 6.2, 6438.5],
+  [12, 1, 632.78],
+  [11, 0.33, 103.09],
+  [10, 6.03, 5746.27],
+  [11, 0.94, 11926.25],
+  [10, 5.24, 27511.47],
 ];
-
 const earthL1: readonly (readonly [number, number, number])[] = [
   [628331966747, 0, 0],
-  [206059, 2.678235, 6283.07585],
-  [4303, 2.6351, 12566.1517],
+  [206059, 2.67823, 6283.07585],
+  [4303, 2.635, 12566.152],
+  [425, 1.59, 3.52],
+  [109, 2.97, 1577.34],
+  [93, 2.59, 18849.23],
+  [119, 5.8, 26.3],
+  [72, 1.14, 529.69],
+  [68, 1.88, 398.15],
+  [67, 4.41, 5507.55],
+  [59, 2.89, 5223.69],
+  [56, 2.17, 155.42],
 ];
-
 const earthL2: readonly (readonly [number, number, number])[] = [
-  [8722, 1.0725, 6283.0758],
   [52919, 0, 0],
+  [8720, 1.072, 6283.076],
+  [309, 0.87, 12566.15],
 ];
-
-const earthB0: readonly (readonly [number, number, number])[] = [[280, 3.199, 84334.662]];
-
+const earthL3: readonly (readonly [number, number, number])[] = [];
+const earthL4: readonly (readonly [number, number, number])[] = [];
+const earthL5: readonly (readonly [number, number, number])[] = [];
+const earthB0: readonly (readonly [number, number, number])[] = [
+  [280, 3.2, 84334.66],
+  [102, 5.42, 5507.55],
+  [80, 3.88, 5223.69],
+  [44, 3.7, 2352.87],
+  [32, 4, 1577.34],
+  [23, 3.98, 1047.75],
+  [16, 3.56, 5856.48],
+  [18, 4.98, 6283.08],
+  [14, 3.7, 9437.76],
+  [14, 3.41, 10213.29],
+  [11, 4.83, 14143.5],
+  [11, 2.09, 6812.77],
+  [10, 3.47, 4694],
+  [10, 4.06, 71092.88],
+];
+const earthB1: readonly (readonly [number, number, number])[] = [];
+const earthB2: readonly (readonly [number, number, number])[] = [];
+const earthB3: readonly (readonly [number, number, number])[] = [];
+const earthB4: readonly (readonly [number, number, number])[] = [];
 const earthR0: readonly (readonly [number, number, number])[] = [
   [100013989, 0, 0],
-  [1670700, 3.0984635, 6283.07585],
-  [13956, 3.05525, 12566.1517],
-  [3084, 5.1985, 77713.7715],
-  [1628, 1.1739, 5753.3849],
-  [1576, 2.8469, 7860.4194],
-  [925, 5.453, 11506.77],
-  [542, 4.564, 3930.21],
+  [1670700, 3.098463, 6283.07585],
+  [13956, 3.0553, 12566.1517],
+  [3084, 5.199, 77713.772],
+  [1628, 1.174, 5753.385],
+  [1576, 2.847, 7860.419],
+  [925, 5.45, 11506.77],
+  [542, 4.56, 3930.21],
+  [472, 3.66, 5884.93],
+  [329, 5.9, 5223.69],
+  [346, 0.96, 5507.55],
+  [307, 0.3, 5573.14],
+  [175, 3.01, 18849.23],
+  [243, 4.27, 11790.63],
+  [212, 5.85, 1577.34],
+  [186, 5.02, 10977.08],
+  [110, 5.05, 5486.78],
+  [98, 0.89, 6069.78],
+  [86, 5.69, 15720.84],
+  [86, 1.27, 161000.69],
+  [63, 0.92, 529.69],
+  [57, 2.01, 83996.85],
+  [65, 0.27, 17260.15],
+  [49, 3.25, 2544.31],
+  [56, 5.24, 71430.7],
+  [43, 6.01, 6275.96],
+  [47, 2.58, 775.52],
+  [39, 5.36, 4694],
+  [45, 5.54, 9437.76],
+  [36, 1.68, 12036.46],
+  [32, 0.18, 5088.63],
+  [32, 1.78, 398.15],
+  [33, 0.24, 7084.9],
+  [38, 2.39, 8827.39],
+  [28, 1.21, 6286.6],
+  [37, 0.83, 19651.05],
+  [37, 4.9, 12139.55],
+  [35, 1.84, 2942.46],
+  [26, 4.59, 10447.39],
+  [25, 3.79, 8429.24],
+  [24, 0.27, 796.3],
+  [28, 1.9, 6279.55],
+  [24, 5, 5856.48],
+  [20, 4.65, 2146.16],
+  [23, 2.81, 14143.5],
+  [22, 1.95, 3154.69],
+  [20, 5.38, 2352.87],
+  [18, 0.2, 6812.77],
+  [17, 4.43, 10213.29],
+  [16, 5.23, 17789.85],
+  [17, 6.15, 16730.46],
+  [14, 5.19, 8031.09],
+  [19, 0.67, 149854.4],
+  [18, 2.25, 23581.26],
+  [14, 3.69, 4705.73],
+  [13, 0.65, 13367.97],
+  [10, 4.33, 11769.85],
+  [10, 4.2, 6309.37],
+  [10, 1.59, 4690.48],
+  [10, 3.68, 27511.47],
 ];
-
 const earthR1: readonly (readonly [number, number, number])[] = [
   [103019, 1.10749, 6283.07585],
-  [1721, 1.0644, 12566.1517],
+  [1721, 1.064, 12566.152],
+  [702, 3.14, 0],
 ];
-
+const earthR2: readonly (readonly [number, number, number])[] = [[4359, 5.785, 6283.076]];
+const earthR3: readonly (readonly [number, number, number])[] = [];
+const earthR4: readonly (readonly [number, number, number])[] = [];
+const earthR5: readonly (readonly [number, number, number])[] = [];
+// Cache the handful of dates used by forward/centered speeds across all bodies.
+const earthCache = new Map<number, Spherical>();
 export function earthHeliocentricPosition(tau: number): Spherical {
-  const tau2 = tau * tau;
-
-  const L0sum = evaluateSeries(earthL0, tau);
-  const L1sum = evaluateSeries(earthL1, tau);
-  const L2sum = evaluateSeries(earthL2, tau);
-  const L = (L0sum + L1sum * tau + L2sum * tau2) / 100000000;
-
-  const B0sum = evaluateSeries(earthB0, tau);
-  const B = B0sum / 100000000;
-
-  const R0sum = evaluateSeries(earthR0, tau);
-  const R1sum = evaluateSeries(earthR1, tau);
-  const R = (R0sum + R1sum * tau) / 100000000;
-
-  return { longitude: L, latitude: B, distance: R };
+  const cached = earthCache.get(tau);
+  if (cached) return cached;
+  const p = {
+    longitude:
+      (evaluateSeries(earthL0, tau) +
+        evaluateSeries(earthL1, tau) * tau ** 1 +
+        evaluateSeries(earthL2, tau) * tau ** 2 +
+        evaluateSeries(earthL3, tau) * tau ** 3 +
+        evaluateSeries(earthL4, tau) * tau ** 4 +
+        evaluateSeries(earthL5, tau) * tau ** 5) /
+      1e8,
+    latitude:
+      (evaluateSeries(earthB0, tau) +
+        evaluateSeries(earthB1, tau) * tau ** 1 +
+        evaluateSeries(earthB2, tau) * tau ** 2 +
+        evaluateSeries(earthB3, tau) * tau ** 3 +
+        evaluateSeries(earthB4, tau) * tau ** 4) /
+      1e8,
+    distance:
+      (evaluateSeries(earthR0, tau) +
+        evaluateSeries(earthR1, tau) * tau ** 1 +
+        evaluateSeries(earthR2, tau) * tau ** 2 +
+        evaluateSeries(earthR3, tau) * tau ** 3 +
+        evaluateSeries(earthR4, tau) * tau ** 4 +
+        evaluateSeries(earthR5, tau) * tau ** 5) /
+      1e8,
+  };
+  if (earthCache.size >= 12) earthCache.clear();
+  earthCache.set(tau, p);
+  return p;
 }
 
-type Spherical = { longitude: number; latitude: number; distance: number };
+type Spherical = {
+  longitude: number;
+  latitude: number;
+  distance: number;
+  velocity?: [number, number, number];
+};
 
 /** Heliocentric (rad, AU) minus Earth's heliocentric position → geocentric (longitude in [0, 2π)). */
 export function helioToGeo(lon: number, lat: number, dist: number, earth: Spherical): Spherical {
@@ -122,4 +303,91 @@ export function aberration(l: number, b: number, earthL: number, t: number): [nu
     l + (k * (-Math.cos(sun - l) + e * Math.cos(peri - l))) / Math.cos(b),
     b - k * Math.sin(b) * (Math.sin(sun - l) - e * Math.sin(peri - l)),
   ];
+}
+
+/** Shared apparent geocentric pipeline. JD is TT; default frame is mean ecliptic/equinox of date.
+ * A positive speed step uses the historical one-day forward difference; smaller steps
+ * use the historical centered derivative. The heliocentric callback returns radians/AU of date.
+ */
+export function geocentricApparent(
+  heliocentric: (jd: number, observationJD: number) => Spherical,
+  jd: number,
+  options: import('../types.js').EphemerisOptions = {},
+  step = 0.01,
+  lightTimeDistance?: (jd: number) => number,
+): import('../types.js').PlanetPosition {
+  const baseTau = (jd - 2451545) / 365250;
+  const baseEarth = earthHeliocentricPosition(baseTau);
+  const rate =
+    step < 1 && options.includeSpeed !== false
+      ? heliocentricVelocity(earthL0, earthB0, earthR0, earthL1[0][0], baseTau)
+      : undefined;
+  const position = (time: number) => {
+    const tau = (time - 2451545) / 365250;
+    const offset = time - jd;
+    const earth = rate
+      ? {
+          longitude: baseEarth.longitude + offset * rate[0],
+          latitude: baseEarth.latitude + offset * rate[1],
+          distance: baseEarth.distance + offset * rate[2],
+        }
+      : offset === 0
+        ? baseEarth
+        : earthHeliocentricPosition(tau);
+    const p = heliocentric(
+      time - (lightTimeDistance ? lightTimeDistance(time) * 0.0057755183 : 0),
+      time,
+    );
+    const initial = helioToGeo(p.longitude, p.latitude, p.distance, earth);
+    const delay = initial.distance * 0.0057755183;
+    const retarded = p.velocity
+      ? {
+          longitude: p.longitude - delay * p.velocity[0],
+          latitude: p.latitude - delay * p.velocity[1],
+          distance: p.distance - delay * p.velocity[2],
+        }
+      : lightTimeDistance || p.distance === 0
+        ? p
+        : heliocentric(time - delay, time);
+    const geo = helioToGeo(retarded.longitude, retarded.latitude, retarded.distance, earth);
+    const [lon, lat] = aberration(geo.longitude, geo.latitude, earth.longitude, tau * 10);
+    return {
+      longitude:
+        (((lon / DEG_TO_RAD + (options.includeNutation ? nutationInLongitude(tau * 10) : 0)) %
+          360) +
+          360) %
+        360,
+      latitude: lat / DEG_TO_RAD,
+      distance: geo.distance,
+    };
+  };
+  const p = position(jd);
+
+  let longitudeSpeed = 0;
+  if (options.includeSpeed !== false) {
+    const before = step === 1 ? p : position(jd - step);
+    const after = position(jd + step);
+    longitudeSpeed =
+      (((after.longitude - before.longitude + 540) % 360) - 180) / (step === 1 ? 1 : 2 * step);
+  }
+  return { ...p, longitudeSpeed, isRetrograde: longitudeSpeed < 0 };
+}
+
+/** Dominant harmonics give first-order retarded motion to <0.1″ for the retained series. */
+export function heliocentricVelocity(
+  l: readonly (readonly [number, number, number])[],
+  b: readonly (readonly [number, number, number])[],
+  r: readonly (readonly [number, number, number])[],
+  meanMotion: number,
+  tau: number,
+): [number, number, number] {
+  const derivative = (terms: readonly (readonly [number, number, number])[]) => {
+    let sum = 0;
+    for (let i = 0; i < Math.min(6, terms.length); i++) {
+      const [a, b, c] = terms[i];
+      sum -= a * c * Math.sin(b + c * tau);
+    }
+    return sum / 1e8 / 365250;
+  };
+  return [derivative(l) + meanMotion / 1e8 / 365250, derivative(b), derivative(r)];
 }

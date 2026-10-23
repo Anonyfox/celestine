@@ -86,18 +86,27 @@ async function query(id, dates, type) {
 for (const [name, id, count, start, end] of [
   ['Mercury', '199', 101, 1800, 2200],
   ['Pluto', '999', 85, 1885, 2099],
-  ['Sun', '10', 61, 1800, 2200],
+  ['Sun', '10', 123, 1800, 2200],
+  ['Chiron', '2060;', 123, 1950, 2050],
   ...['Moon', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'].map((n, i) => [
     n,
     ['301', '299', '499', '599', '699', '799', '899'][i],
-    20,
-    1900,
-    2100,
+    123,
+    n === 'Moon' ? 1900 : 1800,
+    n === 'Moon' ? 2100 : 2200,
   ]),
 ]) {
+  if (process.env.HORIZONS_BODIES && !process.env.HORIZONS_BODIES.split(',').includes(name))
+    continue;
   const dates = Array.from({ length: count }, (_, i) =>
     Math.round(
-      jd(`${start}-01-01`) + ((jd(`${end}-12-31`) - jd(`${start}-01-01`)) * i) / (count - 1),
+      jd(`${start}-01-${name === 'Neptune' ? '02' : '01'}`) +
+        ((jd(`${end}-01-01`) -
+          (name === 'Neptune' ? 3 : 0) -
+          jd(`${start}-01-${name === 'Neptune' ? '02' : '01'}`)) *
+          i) /
+          (count - 1) +
+        (i > 0 && i < count - 1 ? 37 * Math.sin(i * 2.399963229728653) : 0),
     ),
   );
   if (name === 'Mercury')
@@ -115,6 +124,14 @@ for (const [name, id, count, start, end] of [
   if (name === 'Mercury')
     for (const center of ['1900-03-04', '2000-02-15', '2100-01-29'])
       for (let d = -2; d <= 2; d++) dates.push(jd(center) + d);
+  if (name === 'Venus' || name === 'Mars')
+    for (const center of ['2004-06-08', '2012-06-06', '2020-10-14'])
+      for (const d of [-8, -2, 0, 2, 8]) dates.push(jd(center) + d);
+  if (name === 'Venus' || name === 'Mars')
+    for (const center of name === 'Venus'
+      ? ['2012-05-15', '2012-06-27']
+      : ['2020-09-09', '2020-11-14'])
+      for (const d of [-2, -1, 0, 1, 2]) dates.push(jd(center) + d);
   dates.sort((a, b) => a - b);
   const v = await query(id, dates, 'VECTORS'),
     o = await query(id, dates, 'OBSERVER');
@@ -137,7 +154,9 @@ for (const [name, id, count, start, end] of [
     maxCheck >= 0.5 ||
     rows.some((r) => r.slice(2).some((x) => !Number.isFinite(x)))
   ) {
-    throw Error(`${name}: incomplete or inconsistent Horizons output`);
+    throw Error(
+      `${name}: incomplete or inconsistent Horizons output (rows=${rows.length}, dates=${dates.length}, crosscheck=${maxCheck})`,
+    );
   }
   await writeFile(
     new URL(`${name.toLowerCase()}.json`, dir),
@@ -145,7 +164,7 @@ for (const [name, id, count, start, end] of [
       {
         body: name,
         target: id,
-        retrieved: '2026-10-23',
+        retrieved: '2026-10-24',
         sources: v.sources,
         columns: [
           'jd_tt',

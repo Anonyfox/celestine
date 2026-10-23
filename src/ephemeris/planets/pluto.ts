@@ -19,7 +19,7 @@
 
 import { DAYS_PER_JULIAN_CENTURY, DEG_TO_RAD, J2000_EPOCH, RAD_TO_DEG } from '../constants.js';
 import type { EphemerisOptions, PlanetPosition } from '../types.js';
-import { aberration, earthHeliocentricPosition, helioToGeo, precessEcliptic } from './precision.js';
+import { geocentricApparent, precessEcliptic } from './precision.js';
 
 // =============================================================================
 // PLUTO ARGUMENT COEFFICIENTS (Meeus Chapter 37)
@@ -144,47 +144,25 @@ function plutoHeliocentric(jd: number): { L: number; B: number; R: number } {
  * ```
  */
 export function getPlutoPosition(jd: number, options: EphemerisOptions = {}): PlanetPosition {
-  const { includeSpeed = true } = options;
-
-  const tau = (jd - J2000_EPOCH) / 365250;
-  const earth = earthHeliocentricPosition(tau);
-  // Light-time (~4-7 h). A two-body radius estimate is within ~2 AU of the true
-  // geocentric distance, i.e. <0.2″ of Pluto's motion, so one series evaluation suffices.
-  const { semiMajorAxis: a, eccentricity: e } = PLUTO_ORBITAL_ELEMENTS;
-  const M = (14.89 + 0.003969 * (jd - J2000_EPOCH)) * DEG_TO_RAD; // mean anomaly
-  const delay = a * (1 - e * Math.cos(M + e * Math.sin(M))) * 0.0057755183;
-  const pluto = plutoHeliocentric(jd - delay);
-  // Meeus Ch.37 gives J2000 coordinates; Earth (VSOP87D) is of date.
-  const geo = helioToGeo(...precessEcliptic(pluto.L, pluto.B, tau * 10), pluto.R, earth);
-  const geoDist = geo.distance;
-  const [lon, lat] = aberration(geo.longitude, geo.latitude, earth.longitude, tau * 10);
-  const geoLon = (((lon * RAD_TO_DEG) % 360) + 360) % 360;
-  const geoLat = lat * RAD_TO_DEG;
-
-  // Calculate speed if requested
-  let longitudeSpeed = 0;
-  let isRetrograde = false;
-
-  if (includeSpeed) {
-    const dt = 0.01;
-    const pos1 = getPlutoPosition(jd - dt, { includeSpeed: false });
-    const pos2 = getPlutoPosition(jd + dt, { includeSpeed: false });
-
-    let lonDiff = pos2.longitude - pos1.longitude;
-    if (lonDiff > 180) lonDiff -= 360;
-    if (lonDiff < -180) lonDiff += 360;
-
-    longitudeSpeed = lonDiff / (2 * dt);
-    isRetrograde = longitudeSpeed < 0;
-  }
-
-  return {
-    longitude: geoLon,
-    latitude: geoLat,
-    distance: geoDist,
-    longitudeSpeed,
-    isRetrograde,
-  };
+  return geocentricApparent(
+    (time, observationJD) => {
+      const p = plutoHeliocentric(time);
+      const [longitude, latitude] = precessEcliptic(
+        p.L,
+        p.B,
+        (observationJD - J2000_EPOCH) / 36525,
+      );
+      return { longitude, latitude, distance: p.R };
+    },
+    jd,
+    options,
+    0.01,
+    (time) => {
+      const { semiMajorAxis: a, eccentricity: e } = PLUTO_ORBITAL_ELEMENTS;
+      const m = (14.89 + 0.003969 * (time - J2000_EPOCH)) * DEG_TO_RAD;
+      return a * (1 - e * Math.cos(m + e * Math.sin(m)));
+    },
+  );
 }
 
 /**

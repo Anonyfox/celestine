@@ -1,0 +1,13 @@
+HEAD implementation on expanded Stage A fixtures; arcseconds.
+Body       N    max lon     RMS lon    max lat     RMS lat (arcsec)
+Chiron     123   17204.961    4837.324    2224.492     507.768
+Jupiter    123      45.431      20.486       1.377       0.395
+Mars       148      29.842      14.798       2.470       0.782
+Mercury    176       3.146       1.295       0.982       0.409
+Moon       123       7.583       2.734       3.379       0.931
+Neptune    123      38.611      21.171       0.855       0.388
+Pluto       91       3.162       1.165       0.357       0.177
+Saturn     123      53.195      23.538       1.715       0.678
+Sun        123      29.576      13.856       1.091       0.464
+Uranus     123      41.638      21.132       1.213       0.370
+Venus      148      37.912      17.177       3.469       1.155

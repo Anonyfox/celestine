@@ -1,54 +1,59 @@
 {
   "precision": {
     "Mercury": {
-      "lonArcsec": 7,
-      "latArcsec": 1.5,
-      "minSamples": 170
+      "lonArcsec": 1.4,
+      "latArcsec": 0.9,
+      "minSamples": 176
     },
     "Pluto": {
-      "lonArcsec": 5,
-      "latArcsec": 0.6,
-      "minSamples": 90
+      "lonArcsec": 3.8,
+      "latArcsec": 0.45,
+      "minSamples": 91
     },
     "Sun": {
-      "lonArcsec": 34,
-      "latArcsec": 1.3,
-      "minSamples": 60
+      "lonArcsec": 0.4,
+      "latArcsec": 0.2,
+      "minSamples": 123
     },
     "Moon": {
       "lonArcsec": 8,
-      "latArcsec": 2,
-      "minSamples": 20
+      "latArcsec": 1.6,
+      "minSamples": 123
     },
     "Venus": {
-      "lonArcsec": 35,
-      "latArcsec": 4,
-      "minSamples": 20
+      "lonArcsec": 0.7,
+      "latArcsec": 0.55,
+      "minSamples": 148
     },
     "Mars": {
-      "lonArcsec": 42,
-      "latArcsec": 2.5,
-      "minSamples": 20
+      "lonArcsec": 1.4,
+      "latArcsec": 0.85,
+      "minSamples": 148
     },
     "Jupiter": {
-      "lonArcsec": 47,
-      "latArcsec": 1.2,
-      "minSamples": 20
+      "lonArcsec": 1.7,
+      "latArcsec": 0.8,
+      "minSamples": 123
     },
     "Saturn": {
-      "lonArcsec": 49,
-      "latArcsec": 1.6,
-      "minSamples": 20
+      "lonArcsec": 2,
+      "latArcsec": 1.3,
+      "minSamples": 123
     },
     "Uranus": {
-      "lonArcsec": 48,
-      "latArcsec": 1,
-      "minSamples": 20
+      "lonArcsec": 4,
+      "latArcsec": 0.8,
+      "minSamples": 123
     },
     "Neptune": {
-      "lonArcsec": 49,
-      "latArcsec": 1.2,
-      "minSamples": 20
+      "lonArcsec": 5.6,
+      "latArcsec": 0.45,
+      "minSamples": 123
+    },
+    "Chiron": {
+      "lonArcsec": 24000,
+      "latArcsec": 2700,
+      "minSamples": 123
     }
   },
   "coverage": {

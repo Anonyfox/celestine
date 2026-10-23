@@ -19,7 +19,7 @@
  * - Inclination: 7.1°
  */
 
-import { getSunPosition } from '../sun.js';
+import { geocentricApparent, precessEcliptic } from '../planets/precision.js';
 
 // =============================================================================
 // Constants
@@ -166,41 +166,18 @@ export function getVestaPosition(
   longitudeSpeed: number;
   isRetrograde: boolean;
 } {
-  const { includeSpeed = true } = options;
-
-  const vestaHelio = getHeliocentricPosition(jd);
-
-  const sun = getSunPosition(jd);
-  const sunLonRad = sun.longitude * DEG_TO_RAD;
-  const sunLatRad = sun.latitude * DEG_TO_RAD;
-  const earthX = -sun.distance * Math.cos(sunLatRad) * Math.cos(sunLonRad);
-  const earthY = -sun.distance * Math.cos(sunLatRad) * Math.sin(sunLonRad);
-  const earthZ = -sun.distance * Math.sin(sunLatRad);
-
-  const geoX = vestaHelio.x - earthX;
-  const geoY = vestaHelio.y - earthY;
-  const geoZ = vestaHelio.z - earthZ;
-
-  const distance = Math.sqrt(geoX * geoX + geoY * geoY + geoZ * geoZ);
-  let longitude = Math.atan2(geoY, geoX) * RAD_TO_DEG;
-  if (longitude < 0) longitude += 360;
-  const latitude = Math.asin(geoZ / distance) * RAD_TO_DEG;
-
-  let longitudeSpeed = 0;
-  if (includeSpeed) {
-    const dt = 1;
-    const pos2 = getVestaPosition(jd + dt, { includeSpeed: false });
-    let dLon = pos2.longitude - longitude;
-    if (dLon > 180) dLon -= 360;
-    if (dLon < -180) dLon += 360;
-    longitudeSpeed = dLon / dt;
-  }
-
-  return {
-    longitude,
-    latitude,
-    distance,
-    longitudeSpeed,
-    isRetrograde: longitudeSpeed < 0,
-  };
+  return geocentricApparent(
+    (time, observationJD) => {
+      const p = getHeliocentricPosition(time);
+      const [longitude, latitude] = precessEcliptic(
+        Math.atan2(p.y, p.x),
+        Math.asin(p.z / p.r),
+        (observationJD - 2451545) / 36525,
+      );
+      return { longitude, latitude, distance: p.r };
+    },
+    jd,
+    options,
+    1,
+  );
 }

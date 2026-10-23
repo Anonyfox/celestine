@@ -1,3 +1,4 @@
+import { geocentricApparent } from './planets/precision.js';
 /**
  * Sun Position Calculator
  *
@@ -19,10 +20,8 @@
 import {
   ABERRATION_CONSTANT_ARCSEC,
   ARCSECONDS_PER_DEGREE,
-  DAYS_PER_JULIAN_CENTURY,
   DEG_TO_RAD,
   EARTH_ECCENTRICITY,
-  J2000_EPOCH,
   NUTATION_OMEGA,
   SUN_EQUATION_OF_CENTER,
   SUN_MEAN_ANOMALY,
@@ -239,11 +238,6 @@ export function sunDistance(T: number): number {
  *
  * @internal
  */
-function normalizeAngle(degrees: number): number {
-  let result = degrees % 360;
-  if (result < 0) result += 360;
-  return result;
-}
 
 /**
  * Calculates the geocentric position of the Sun.
@@ -275,42 +269,5 @@ function normalizeAngle(degrees: number): number {
  * @source Meeus, "Astronomical Algorithms", Chapter 25
  */
 export function getSunPosition(jd: number, options: EphemerisOptions = {}): PlanetPosition {
-  // Calculate Julian centuries from J2000.0
-  const T = (jd - J2000_EPOCH) / DAYS_PER_JULIAN_CENTURY;
-
-  // Calculate apparent longitude
-  const apparentLongitude = sunApparentLongitude(T, options);
-
-  // Normalize to [0, 360)
-  const longitude = normalizeAngle(apparentLongitude);
-
-  // Sun's ecliptic latitude is essentially 0
-  // (by definition, the Sun defines the ecliptic)
-  const latitude = 0;
-
-  // Distance in AU
-  const distance = sunDistance(T);
-
-  // Calculate daily motion (speed) if requested
-  let longitudeSpeed = 0;
-  if (options.includeSpeed !== false) {
-    // Calculate position tomorrow
-    const T1 = (jd + 1 - J2000_EPOCH) / DAYS_PER_JULIAN_CENTURY;
-    const longitude1 = normalizeAngle(sunApparentLongitude(T1, options));
-
-    // Handle wraparound at 360°
-    let diff = longitude1 - longitude;
-    if (diff > 180) diff -= 360;
-    if (diff < -180) diff += 360;
-
-    longitudeSpeed = diff;
-  }
-
-  return {
-    longitude,
-    latitude,
-    distance,
-    longitudeSpeed,
-    isRetrograde: longitudeSpeed < 0, // Sun never retrogrades
-  };
+  return geocentricApparent(() => ({ longitude: 0, latitude: 0, distance: 0 }), jd, options, 1);
 }

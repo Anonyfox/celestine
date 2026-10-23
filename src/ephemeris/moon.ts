@@ -266,6 +266,42 @@ const LATITUDE_TERMS: readonly (readonly [number, number, number, number, number
   [1, 0, -1, -1, -119],
   [4, -1, 0, -1, 115],
   [2, -2, 0, 1, 107],
+  // Additional ELP2000-82 main-problem latitude terms, |amplitude| >= 0.1 arcsec.
+  // CDS VI/79/ELP2; arcseconds converted to the table's microdegrees.
+  [0, 0, 2, -3, -36],
+  [0, 0, 2, 3, -33],
+  [0, 0, 4, 1, 73],
+  [0, 1, -2, 1, -84],
+  [0, 1, 2, -1, -87],
+  [0, 2, -1, -1, -31],
+  [1, 0, -2, -1, -30],
+  [1, 0, -1, 1, 39],
+  [1, 1, 1, 1, 28],
+  [2, -2, -1, -1, 75],
+  [2, -2, -1, 1, 87],
+  [2, -1, 2, -1, 36],
+  [2, -1, 2, 1, 34],
+  [2, 0, -4, -1, 37],
+  [2, 0, -3, 1, 71],
+  [2, 0, -1, -3, 91],
+  [2, 0, -1, 3, -68],
+  [2, 0, 0, 3, -40],
+  [2, 0, 1, -3, -81],
+  [2, 0, 3, -1, 41],
+  [2, 0, 3, 1, 38],
+  [2, 1, 1, 1, -66],
+  [2, 2, -1, -1, -29],
+  [2, 2, -1, 1, -31],
+  [2, 2, 0, -1, -37],
+  [3, 0, -1, -1, -85],
+  [3, 0, -1, 1, -57],
+  [3, 0, 0, -1, -98],
+  [4, -1, -2, 1, 59],
+  [4, -1, -1, 1, 94],
+  [4, -1, 0, 1, 44],
+  [4, 0, 1, 1, 59],
+  [4, 1, -1, -1, -48],
+  [4, 1, 0, -1, -31],
 ];
 
 // =============================================================================
@@ -374,10 +410,12 @@ export function moonLatitude(T: number): number {
   // Sum periodic terms for latitude
   let sumB = 0;
 
-  for (const [d, m, mp, f, sb] of LATITUDE_TERMS) {
-    const arg = d * Drad + m * Mrad + mp * Mprad + f * Frad;
+  for (let index = 0; index < LATITUDE_TERMS.length; index++) {
+    const term = LATITUDE_TERMS[index];
+    const m = term[1];
+    const arg = term[0] * Drad + m * Mrad + term[2] * Mprad + term[3] * Frad;
 
-    let coefficient = sb;
+    let coefficient = term[4];
 
     // Apply eccentricity correction for terms involving M
     if (Math.abs(m) === 1) {
