@@ -20,11 +20,12 @@ jobs:
           node-version: '22'
           cache: npm
           registry-url: https://registry.npmjs.org
+      # Trusted publishing (OIDC): no stored npm token. Needs npm >= 11.5.1 and the
+      # trusted publisher configured on npmjs.com (Anonyfox/celestine, publish.yml).
+      - run: npm install -g npm@latest
       - run: npm ci
       - run: npm run check
       - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: gh release create "$GITHUB_REF_NAME" --generate-notes --verify-tag
         env:
           GH_TOKEN: ${{ github.token }}
