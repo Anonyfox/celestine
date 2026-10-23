@@ -124,7 +124,10 @@ Ship readable JavaScript without sourcemaps; maps to unshipped source are not us
 parity, subpaths, and executed neutral-platform esbuild consumer bundles. The size gate also
 resolves the published package exports: full, toJulianDate, eclipticToZodiac,
 getMercuryPosition, calculateChart, getAllPositions through its namespace, and a realistic
-combined consumer. Keep all existing entry keys when tightening via `check:size -- --update`.
-Minified bytes are always enforced; gzip-9 is enforced on `budgets.perf.nodeMajor` only.
+combined consumer, plus subpath forms (`celestine/ephemeris` etc.): esbuild cannot tree-shake member
+access on re-exported namespaces (`ephemeris.getMercuryPosition` via the root pulls the whole
+ephemeris module tree; rollup/Vite can), so subpaths are the minimal-bundle path. Keep all existing entry keys when tightening via `check:size -- --update`.
+Minified bytes and gzip bytes are enforced on every platform; gzip is computed with pure-JS fflate
+(level 9, mtime 0) because node:zlib output differs between Node builds and platforms.
 `node scripts/guard/api-compare.mjs <previous-index.d.ts>` lists and compares root/namespace
 export paths across snapshot schema migrations. Snapshot removals/changes still need approval.

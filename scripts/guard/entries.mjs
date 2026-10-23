@@ -12,6 +12,16 @@ export const entries = {
   calculateChart: `export {calculateChart} from 'celestine';`,
   getAllPositions: `import {ephemeris} from 'celestine'; export const getAllPositions = ephemeris.getAllPositions;`,
   realistic,
+  // esbuild cannot shake member access on re-exported namespaces (rollup/Vite can), so the
+  // subpath form is the minimal-bundle path for namespace-only functions.
+  'subpath.getMercuryPosition': `export {getMercuryPosition} from 'celestine/ephemeris';`,
+  'subpath.realistic': `import {toJulianDate, fromJulianDate} from 'celestine/time';
+import {eclipticToZodiac} from 'celestine/zodiac';
+import {findStationPoints} from 'celestine/transits';
+import {findAllAspects} from 'celestine/aspects';
+import {calculateChart} from 'celestine/chart';
+export * from 'celestine/ephemeris';
+export {toJulianDate, fromJulianDate, eclipticToZodiac, findStationPoints, findAllAspects, calculateChart};`,
 };
 export const bundleOptions = {
   bundle: true,

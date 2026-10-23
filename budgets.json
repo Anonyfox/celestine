@@ -64,7 +64,7 @@
   "size": {
     "full": {
       "minBytes": 174464,
-      "gzipBytes": 56640
+      "gzipBytes": 59008
     },
     "toJulianDate": {
       "minBytes": 576,
@@ -76,19 +76,27 @@
     },
     "getMercuryPosition": {
       "minBytes": 62848,
-      "gzipBytes": 24000
+      "gzipBytes": 24960
     },
     "calculateChart": {
       "minBytes": 86656,
-      "gzipBytes": 31552
+      "gzipBytes": 32704
     },
     "getAllPositions": {
       "minBytes": 62848,
-      "gzipBytes": 24000
+      "gzipBytes": 24960
     },
     "realistic": {
       "minBytes": 133952,
-      "gzipBytes": 46400
+      "gzipBytes": 48384
+    },
+    "subpath.getMercuryPosition": {
+      "minBytes": 9280,
+      "gzipBytes": 4224
+    },
+    "subpath.realistic": {
+      "minBytes": 100864,
+      "gzipBytes": 37952
     }
   },
   "perf": {

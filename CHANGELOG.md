@@ -23,8 +23,13 @@ All notable changes to this project are documented here, following
 
 ### Changed
 
-- Preserve the ESM module graph for tree-shaking and ship per-module declarations. Mark the
-  package as side-effect-free; retain CommonJS support and omit sourcemaps from the lean package.
+- Packaging: the ESM build preserves the module graph (per-module `.d.ts`), the package is marked
+  `sideEffects: false`, and sourcemaps are no longer shipped (they pointed at unshipped sources).
+  Single imports are now cheap, e.g. `import { toJulianDate } from 'celestine'` bundles to
+  ~0.4 KB gzipped instead of the whole library; `celestine/ephemeris` `getMercuryPosition` ~4.2 KB.
+  With esbuild, namespace access through the root (`ephemeris.getMercuryPosition`) still pulls the
+  whole ephemeris module (~25 KB gz); use the subpath or rollup/Vite for minimal bundles.
+  Packed npm size 793 kB → 366 kB. CommonJS `require('celestine')` is unchanged.
 - Snapshot public API paths and resolved types independently of declaration bundler names.
 
 - Output shift notice (default options): Mercury longitudes change by up to ~3° for

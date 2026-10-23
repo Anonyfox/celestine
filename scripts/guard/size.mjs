@@ -1,16 +1,11 @@
-import { gzipSync } from 'node:zlib';
 import { build } from 'esbuild';
+import { gzipSync } from 'fflate';
 import { budgets, gate, update, updating } from './common.mjs';
 
 import { bundleOptions, entries } from './entries.mjs';
 
-// gzip output differs between Node majors (bundled zlib versions), so gzip budgets are
-// enforced only on the Node major the budgets were recorded on; minified bytes are exact everywhere.
-const gzipComparable = Number(process.versions.node.split('.')[0]) === budgets.perf.nodeMajor;
-if (!updating && !gzipComparable)
-  console.log(
-    `size: Node ${process.versions.node} != recorded major ${budgets.perf.nodeMajor}; gzip budgets skipped, minified bytes enforced.`,
-  );
+// gzip via pure-JS fflate (level 9, mtime 0): node:zlib output differs between platforms and
+// Node builds (system vs bundled zlib), fflate is byte-identical everywhere.
 const measured = {};
 for (const [name, contents] of Object.entries(entries)) {
   const result = await build({
@@ -18,8 +13,10 @@ for (const [name, contents] of Object.entries(entries)) {
     stdin: { contents, resolveDir: process.cwd() },
   });
   const bytes = result.outputFiles[0].contents;
-  measured[name] = { minBytes: bytes.length };
-  if (updating || gzipComparable) measured[name].gzipBytes = gzipSync(bytes, { level: 9 }).length;
+  measured[name] = {
+    minBytes: bytes.length,
+    gzipBytes: gzipSync(bytes, { level: 9, mtime: 0 }).length,
+  };
 }
 if (updating)
   update(
