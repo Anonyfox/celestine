@@ -13,7 +13,7 @@ npm run check
 ```
 
 This is the one required command: types, lint, build, full tests with coverage (including precision),
-size, performance, API stability, and ratchet checks. Use Node >=20; `.nvmrc` selects Node 22.
+consumer packaging smoke checks, size, performance, API stability, and ratchet checks. Use Node >=20; `.nvmrc` selects Node 22.
 Do not bypass a failed dimension to improve another. Individual `check:*` scripts aid diagnosis.
 
 ## Precision and budgets
@@ -57,7 +57,8 @@ default coordinate frame is mean ecliptic/equinox of date. Do not silently chang
 
 A production consumer relies on the following exact names, signatures, fields, and string values.
 Preserve bare-function calls and optional arguments. `api-surface.json` snapshots runtime export
-names/kinds and enum values, plus normalized declarations and output types from `dist/index.d.ts`.
+names/kinds and enum values, plus checker-resolved public paths, signatures, members, and referenced
+types from `dist/index.d.ts`. Bundler-private declaration names are never snapshot keys.
 Tests remain responsible for behavior; the snapshot alone cannot prove it.
 
 - Root namespaces: `time`, `zodiac`, `ephemeris`, `transits`, `aspects`, `chart`; root `CelestialBody`
@@ -110,3 +111,20 @@ coverage. Include approval tags only with actual authorization and explain the r
 - `scripts/guard/`: coverage, size, performance, API snapshot, ratchet gates and comparison tests.
 - `scripts/horizons/`: fixture fetching, coefficient audits, precision measurements.
 - `scripts/bench/`: exploratory performance and size measurements.
+
+## Packaging
+
+The package has no import-time effects beyond constants and private caches (`sideEffects: false`).
+Keep the ESM module graph and per-module `.d.ts` files; do not replace root namespace re-exports
+with bundled getter objects. CJS uses one bundle and `.d.cts`, with small subpath wrappers.
+Root and eight module subpaths must resolve in ESM, CJS, and TypeScript (types conditions first).
+Ship readable JavaScript without sourcemaps; maps to unshipped source are not useful.
+
+`npm run check:consumer` runs after build in `npm run check`: package self-references, ESM/CJS
+parity, subpaths, and executed neutral-platform esbuild consumer bundles. The size gate also
+resolves the published package exports: full, toJulianDate, eclipticToZodiac,
+getMercuryPosition, calculateChart, getAllPositions through its namespace, and a realistic
+combined consumer. Keep all existing entry keys when tightening via `check:size -- --update`.
+Minified bytes are always enforced; gzip-9 is enforced on `budgets.perf.nodeMajor` only.
+`node scripts/guard/api-compare.mjs <previous-index.d.ts>` lists and compares root/namespace
+export paths across snapshot schema migrations. Snapshot removals/changes still need approval.

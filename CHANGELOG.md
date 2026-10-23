@@ -23,6 +23,10 @@ All notable changes to this project are documented here, following
 
 ### Changed
 
+- Preserve the ESM module graph for tree-shaking and ship per-module declarations. Mark the
+  package as side-effect-free; retain CommonJS support and omit sourcemaps from the lean package.
+- Snapshot public API paths and resolved types independently of declaration bundler names.
+
 - Output shift notice (default options): Mercury longitudes change by up to ~3° for
   1800-era dates and by up to tens of arcminutes in the 20th/21st century; Pluto by up to
   ~1.6°; Sun, Venus–Neptune by up to 30″–53″; Moon latitude by up to 3.1″. Chiron shifts by
@@ -33,6 +37,9 @@ All notable changes to this project are documented here, following
 - Node >=20 required; CI tests Node 20, 22 and 24.
 
 ### Added
+
+- Typed ESM/CommonJS subpath exports for ephemeris, time, zodiac, aspects, transits, chart,
+  houses, and progressions; consumer packaging and bundle-size checks.
 
 - Horizons fixture regression suite (1800–2200; 1,424 epochs incl. Chiron) and guardrail gates
   via `npm run check`.

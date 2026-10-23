@@ -2,14 +2,8 @@ import { gzipSync } from 'node:zlib';
 import { build } from 'esbuild';
 import { budgets, gate, update, updating } from './common.mjs';
 
-const entries = {
-  full: null,
-  toJulianDate: 'import {toJulianDate} from "./dist/index.js"; export {toJulianDate};',
-  calculateChart: 'import {calculateChart} from "./dist/index.js"; export {calculateChart};',
-  getAllPositions:
-    'import {ephemeris} from "./dist/index.js"; export const getAllPositions = ephemeris.getAllPositions;',
-  eclipticToZodiac: 'import {eclipticToZodiac} from "./dist/index.js"; export {eclipticToZodiac};',
-};
+import { bundleOptions, entries } from './entries.mjs';
+
 // gzip output differs between Node majors (bundled zlib versions), so gzip budgets are
 // enforced only on the Node major the budgets were recorded on; minified bytes are exact everywhere.
 const gzipComparable = Number(process.versions.node.split('.')[0]) === budgets.perf.nodeMajor;
@@ -20,16 +14,8 @@ if (!updating && !gzipComparable)
 const measured = {};
 for (const [name, contents] of Object.entries(entries)) {
   const result = await build({
-    ...(contents
-      ? { stdin: { contents, resolveDir: process.cwd() } }
-      : { entryPoints: ['dist/index.js'] }),
-    logOverride: { 'duplicate-case': 'silent' },
-    bundle: true,
-    minify: true,
-    format: 'esm',
-    platform: 'neutral',
-    treeShaking: true,
-    write: false,
+    ...bundleOptions,
+    stdin: { contents, resolveDir: process.cwd() },
   });
   const bytes = result.outputFiles[0].contents;
   measured[name] = { minBytes: bytes.length };

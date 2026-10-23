@@ -16,6 +16,86 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
+    },
+    "./ephemeris": {
+      "import": {
+        "types": "./dist/ephemeris/index.d.ts",
+        "default": "./dist/ephemeris/index.js"
+      },
+      "require": {
+        "types": "./dist/ephemeris/index.d.cts",
+        "default": "./dist/ephemeris/index.cjs"
+      }
+    },
+    "./time": {
+      "import": {
+        "types": "./dist/time/index.d.ts",
+        "default": "./dist/time/index.js"
+      },
+      "require": {
+        "types": "./dist/time/index.d.cts",
+        "default": "./dist/time/index.cjs"
+      }
+    },
+    "./zodiac": {
+      "import": {
+        "types": "./dist/zodiac/index.d.ts",
+        "default": "./dist/zodiac/index.js"
+      },
+      "require": {
+        "types": "./dist/zodiac/index.d.cts",
+        "default": "./dist/zodiac/index.cjs"
+      }
+    },
+    "./aspects": {
+      "import": {
+        "types": "./dist/aspects/index.d.ts",
+        "default": "./dist/aspects/index.js"
+      },
+      "require": {
+        "types": "./dist/aspects/index.d.cts",
+        "default": "./dist/aspects/index.cjs"
+      }
+    },
+    "./transits": {
+      "import": {
+        "types": "./dist/transits/index.d.ts",
+        "default": "./dist/transits/index.js"
+      },
+      "require": {
+        "types": "./dist/transits/index.d.cts",
+        "default": "./dist/transits/index.cjs"
+      }
+    },
+    "./chart": {
+      "import": {
+        "types": "./dist/chart/index.d.ts",
+        "default": "./dist/chart/index.js"
+      },
+      "require": {
+        "types": "./dist/chart/index.d.cts",
+        "default": "./dist/chart/index.cjs"
+      }
+    },
+    "./houses": {
+      "import": {
+        "types": "./dist/houses/index.d.ts",
+        "default": "./dist/houses/index.js"
+      },
+      "require": {
+        "types": "./dist/houses/index.d.cts",
+        "default": "./dist/houses/index.cjs"
+      }
+    },
+    "./progressions": {
+      "import": {
+        "types": "./dist/progressions/index.d.ts",
+        "default": "./dist/progressions/index.js"
+      },
+      "require": {
+        "types": "./dist/progressions/index.d.cts",
+        "default": "./dist/progressions/index.cjs"
+      }
     }
   },
   "files": [
@@ -24,7 +104,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/build-esm.mjs",
     "dev": "tsx src/index.ts",
     "test": "node --import tsx --test --test-reporter=dot $(find src -name '*.test.ts' -type f)",
     "test:verbose": "node --import tsx --test $(find src -name '*.test.ts' -type f)",
@@ -32,7 +112,7 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "check": "npm run check:types && npm run check:lint && npm run build && npm run check:coverage && npm run check:size && npm run check:perf && npm run check:api && npm run check:ratchet",
+    "check": "npm run check:types && npm run check:lint && npm run build && npm run check:consumer && npm run check:coverage && npm run check:size && npm run check:perf && npm run check:api && npm run check:ratchet",
     "prepublishOnly": "npm run check",
     "typecheck": "tsc --noEmit",
     "docs": "typedoc",
@@ -48,7 +128,8 @@
     "check:api": "node scripts/guard/api.mjs",
     "check:ratchet": "node --test scripts/guard/*.test.mjs && node scripts/guard/ratchet.mjs",
     "check:precision": "node --import tsx --test src/ephemeris/horizons-fixtures.test.ts",
-    "budgets:update": "npm run build && node scripts/guard/coverage.mjs --update && node scripts/guard/size.mjs --update && node scripts/guard/perf.mjs --update && node scripts/guard/api.mjs --update"
+    "budgets:update": "npm run build && node scripts/guard/coverage.mjs --update && node scripts/guard/size.mjs --update && node scripts/guard/perf.mjs --update && node scripts/guard/api.mjs --update",
+    "check:consumer": "node scripts/guard/consumer.mjs"
   },
   "keywords": [
     "astrology",
@@ -174,10 +255,40 @@
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
     "@types/node": "^25.0.3",
+    "esbuild": "0.27.2",
+    "rollup": "4.53.5",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typedoc": "^0.28.15",
-    "typescript": "^5.9.3",
-    "esbuild": "0.27.2"
+    "typescript": "^5.9.3"
+  },
+  "sideEffects": false,
+  "typesVersions": {
+    "*": {
+      "ephemeris": [
+        "dist/ephemeris/index.d.ts"
+      ],
+      "time": [
+        "dist/time/index.d.ts"
+      ],
+      "zodiac": [
+        "dist/zodiac/index.d.ts"
+      ],
+      "aspects": [
+        "dist/aspects/index.d.ts"
+      ],
+      "transits": [
+        "dist/transits/index.d.ts"
+      ],
+      "chart": [
+        "dist/chart/index.d.ts"
+      ],
+      "houses": [
+        "dist/houses/index.d.ts"
+      ],
+      "progressions": [
+        "dist/progressions/index.d.ts"
+      ]
+    }
   }
 }

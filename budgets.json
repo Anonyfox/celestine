@@ -63,36 +63,44 @@
   },
   "size": {
     "full": {
-      "minBytes": 174528,
-      "gzipBytes": 57024
+      "minBytes": 174464,
+      "gzipBytes": 56640
     },
     "toJulianDate": {
-      "minBytes": 173440,
-      "gzipBytes": 56576
-    },
-    "calculateChart": {
-      "minBytes": 173440,
-      "gzipBytes": 56640
-    },
-    "getAllPositions": {
-      "minBytes": 173440,
-      "gzipBytes": 56640
+      "minBytes": 576,
+      "gzipBytes": 384
     },
     "eclipticToZodiac": {
-      "minBytes": 173440,
-      "gzipBytes": 56576
+      "minBytes": 2560,
+      "gzipBytes": 896
+    },
+    "getMercuryPosition": {
+      "minBytes": 62848,
+      "gzipBytes": 24000
+    },
+    "calculateChart": {
+      "minBytes": 86656,
+      "gzipBytes": 31552
+    },
+    "getAllPositions": {
+      "minBytes": 62848,
+      "gzipBytes": 24000
+    },
+    "realistic": {
+      "minBytes": 133952,
+      "gzipBytes": 46400
     }
   },
   "perf": {
     "nodeMajor": 20,
     "tolerance": 1.3,
     "baselines": {
-      "calculateChart": 12540.0,
-      "ephemeris.getAllPositions": 2147.0,
+      "calculateChart": 12540,
+      "ephemeris.getAllPositions": 2147,
       "getMercuryPosition": 369.3,
       "getPlutoPosition": 240.2,
       "getMoonPosition": 179.6,
-      "transits.findStationPoints.180days": 33100.0,
+      "transits.findStationPoints.180days": 33100,
       "time.toJulianDate.x64": 52.35
     }
   }
