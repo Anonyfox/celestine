@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { compareApi, compareBudgets } from './ratchet.mjs';
+import { compareApi, compareBudgets, guardrailChanges } from './ratchet.mjs';
 
 const before = {
   precision: { Mercury: { lonArcsec: 7, latArcsec: 1.5, minSamples: 170 } },
@@ -71,4 +71,28 @@ test('actual precision budget rejects loosening, including sample loss', async (
   changed.precision.Mercury.lonArcsec -= 1;
   changed.precision.Mercury.minSamples -= 1;
   assert.match(compareBudgets(current, changed)[0], /precision.Mercury.minSamples/);
+});
+
+test('gate files, test deletions and check scripts need approval; new tests do not', () => {
+  const diff = [
+    'M\tscripts/guard/perf.mjs',
+    'M\t.github/workflows/ci.yml',
+    'D\tsrc/time/julian-date.test.ts',
+    'A\tsrc/time/new.test.ts',
+    'M\tsrc/time/julian-date.ts',
+  ].join('\n');
+  const changes = guardrailChanges(diff, { check: 'a', build: 'x' }, { check: 'b', build: 'y' });
+  assert.deepEqual(changes, [
+    'M\tscripts/guard/perf.mjs',
+    'M\t.github/workflows/ci.yml',
+    'D\tsrc/time/julian-date.test.ts',
+    'package.json scripts.check: a → b',
+  ]);
+  assert.deepEqual(guardrailChanges('', { test: 't' }, { test: 't' }), []);
+});
+
+test('any perf.nodeMajor change counts as loosening', () => {
+  assert.deepEqual(compareBudgets({ perf: { nodeMajor: 20 } }, { perf: { nodeMajor: 18 } }), [
+    'perf.nodeMajor: 20 → 18',
+  ]);
 });

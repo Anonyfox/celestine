@@ -17,7 +17,11 @@ export function compareBudgets(before, after, path = '') {
       if (
         typeof after[key] !== 'number' ||
         !Number.isFinite(after[key]) ||
-        (higher ? after[key] < value : after[key] > value)
+        (name.endsWith('.nodeMajor') // any change disables or re-bases the perf gate
+          ? after[key] !== value
+          : higher
+            ? after[key] < value
+            : after[key] > value)
       )
         changes.push(`${name}: ${value} → ${after[key]}`);
     }
@@ -28,6 +32,28 @@ export function compareApi(before, after) {
   return Object.keys(before)
     .filter((key) => JSON.stringify(before[key]) !== JSON.stringify(after[key]))
     .map((key) => `${key}: ${key in after ? 'changed' : 'removed'}`);
+}
+export const GUARDED_PATHS = [
+  'scripts/guard/',
+  '.github/workflows/',
+  'biome.json',
+  'tsconfig.json',
+  'src/ephemeris/horizons-fixtures.test.ts',
+];
+/** Changed gate files, deleted/renamed test files, and changed check/test scripts. */
+export function guardrailChanges(nameStatus, oldScripts, newScripts) {
+  const changes = nameStatus
+    .split('\n')
+    .filter(Boolean)
+    .filter((line) => {
+      const [status, file] = line.split('\t');
+      if (file.startsWith('src/')) return /\.test\.ts$/.test(file) && /^[DR]/.test(status);
+      return GUARDED_PATHS.some((path) => file === path || file.startsWith(path));
+    });
+  for (const key of new Set([...Object.keys(oldScripts), ...Object.keys(newScripts)]))
+    if (/^(check|test|prepublishOnly|budgets)/.test(key) && oldScripts[key] !== newScripts[key])
+      changes.push(`package.json scripts.${key}: ${oldScripts[key]} → ${newScripts[key]}`);
+  return changes;
 }
 function git(...args) {
   return execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -73,16 +99,26 @@ function run() {
       if (!messages.includes(tag)) failures.push(`Requires ${tag}`);
     }
   }
-  const fixtureChanges = [
-    git('diff', '--name-status', base, '--', 'src/ephemeris/__fixtures__/'),
-    git('ls-files', '--others', '--exclude-standard', '--', 'src/ephemeris/__fixtures__/'),
-  ]
-    .filter(Boolean)
+  // Adding fixture files is fine; editing, renaming or deleting them is not.
+  const fixtureChanges = git('diff', '--name-status', base, '--', 'src/ephemeris/__fixtures__/')
+    .split('\n')
+    .filter((line) => line && !line.startsWith('A'))
     .join('\n');
   if (fixtureChanges) {
     console.log(`Fixture changes:\n${fixtureChanges}`);
     if (!messages.includes('[fixtures-regenerated]'))
       failures.push('Requires [fixtures-regenerated]');
+  }
+  // The gates themselves: weakening them must be as visible as loosening a budget.
+  const guardChanges = guardrailChanges(
+    git('diff', '--name-status', base, '--', ...GUARDED_PATHS, 'src'),
+    JSON.parse(git('show', `${base}:package.json`)).scripts ?? {},
+    JSON.parse(readFileSync('package.json', 'utf8')).scripts ?? {},
+  );
+  if (guardChanges.length) {
+    console.log(`Guardrail changes:\n${guardChanges.join('\n')}`);
+    if (!messages.includes('[guardrails-change-approved]'))
+      failures.push('Requires [guardrails-change-approved]');
   }
   if (failures.length) throw new Error(failures.join('\n'));
   console.log(`Ratchet passed against ${base}.`);

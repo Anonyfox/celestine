@@ -36,6 +36,15 @@ stating the reason and the human who approved. Review all generated diffs.
 The ratchet compares against the merge-base with origin/main (then main, then HEAD~1).
 Use `--base <ref>` or `RATCHET_BASE` for an explicit comparison; CI checks actual PR head commit
 messages. API removals or changes require `[api-change-approved]`; pure additions do not.
+Weakening the gates themselves also counts as loosening: editing `scripts/guard/`,
+`.github/workflows/`, `biome.json`, `tsconfig.json`, or the Horizons precision test; deleting or
+renaming any `src/**/*.test.ts`; or changing `check*`/`test*`/`budgets*`/`prepublishOnly` scripts
+requires `[guardrails-change-approved]` with the approving human named. Adding fixtures or tests
+is free; modifying or deleting fixtures requires `[fixtures-regenerated]`.
+
+Performance baselines are recorded on one Node major (`perf.nodeMajor`); other majors skip the
+perf gate with a notice, and CI enforces it on that matrix leg. Changing `nodeMajor` re-bases all
+baselines and needs `[budget-increase-approved]`.
 
 ## Design and time scales
 

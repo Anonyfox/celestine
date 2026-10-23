@@ -24,7 +24,13 @@ const benchmarks = {
   getMercuryPosition: (i) => ephemeris.getMercuryPosition(2451545 + (i % 365)).longitude,
   getPlutoPosition: (i) => ephemeris.getPlutoPosition(2451545 + (i % 365)).longitude,
   getMoonPosition: (i) => ephemeris.getMoonPosition(2451545 + (i % 365)).longitude,
-  'time.toJulianDate': (i) => time.toJulianDate({ ...birth, second: i % 60 }),
+  // Batched: a single call is too cheap to time stably against the calibration loop.
+  'time.toJulianDate.x64': (i) => {
+    let jd = 0;
+    for (let k = 0; k < 64; k++)
+      jd += time.toJulianDate({ ...birth, day: 1 + (k % 28), second: i % 60 });
+    return jd;
+  },
   'transits.findStationPoints.180days': (i) =>
     transits.findStationPoints(
       ephemeris.CelestialBody.Mercury,
@@ -81,11 +87,20 @@ function run() {
   }
   return results;
 }
+// JIT behaviour differs between Node majors, so ratios are only comparable on the
+// major the baselines were recorded with (CI runs that leg; others report and skip).
+const major = Number(process.versions.node.split('.')[0]);
+const recordedMajor = budgets.perf.nodeMajor;
+if (!updating && major !== recordedMajor) {
+  console.log(`Perf gate skipped: baselines are for Node ${recordedMajor}, running Node ${major}.`);
+  process.exit(0);
+}
 let rows = run();
 if (updating)
   update('perf', {
+    nodeMajor: major === recordedMajor ? recordedMajor : major,
     tolerance: 1.3,
-    baselines: Object.fromEntries(rows.map((row) => [row.bench, row.ratio])),
+    baselines: Object.fromEntries(rows.map((row) => [row.bench, Number(row.ratio.toPrecision(4))])),
   });
 else {
   if (rows.some((row) => row.status === 'FAIL')) {
