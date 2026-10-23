@@ -1,0 +1,93 @@
+{
+  "precision": {
+    "Mercury": {
+      "lonArcsec": 7,
+      "latArcsec": 1.5,
+      "minSamples": 170
+    },
+    "Pluto": {
+      "lonArcsec": 5,
+      "latArcsec": 0.6,
+      "minSamples": 90
+    },
+    "Sun": {
+      "lonArcsec": 34,
+      "latArcsec": 1.3,
+      "minSamples": 60
+    },
+    "Moon": {
+      "lonArcsec": 8,
+      "latArcsec": 2,
+      "minSamples": 20
+    },
+    "Venus": {
+      "lonArcsec": 35,
+      "latArcsec": 4,
+      "minSamples": 20
+    },
+    "Mars": {
+      "lonArcsec": 42,
+      "latArcsec": 2.5,
+      "minSamples": 20
+    },
+    "Jupiter": {
+      "lonArcsec": 47,
+      "latArcsec": 1.2,
+      "minSamples": 20
+    },
+    "Saturn": {
+      "lonArcsec": 49,
+      "latArcsec": 1.6,
+      "minSamples": 20
+    },
+    "Uranus": {
+      "lonArcsec": 48,
+      "latArcsec": 1,
+      "minSamples": 20
+    },
+    "Neptune": {
+      "lonArcsec": 49,
+      "latArcsec": 1.2,
+      "minSamples": 20
+    }
+  },
+  "coverage": {
+    "lines": 90.3,
+    "branches": 88.7,
+    "functions": 96.3
+  },
+  "size": {
+    "full": {
+      "minBytes": 197696,
+      "gzipBytes": 62528
+    },
+    "toJulianDate": {
+      "minBytes": 196608,
+      "gzipBytes": 62080
+    },
+    "calculateChart": {
+      "minBytes": 196608,
+      "gzipBytes": 62080
+    },
+    "getAllPositions": {
+      "minBytes": 196608,
+      "gzipBytes": 62080
+    },
+    "eclipticToZodiac": {
+      "minBytes": 196608,
+      "gzipBytes": 62080
+    }
+  },
+  "perf": {
+    "tolerance": 1.3,
+    "baselines": {
+      "calculateChart": 19458.662353791868,
+      "ephemeris.getAllPositions": 6465.1178278013085,
+      "getMercuryPosition": 419.43807970266687,
+      "getPlutoPosition": 240.18066960859045,
+      "getMoonPosition": 179.64669059994412,
+      "time.toJulianDate": 0.8906492971156027,
+      "transits.findStationPoints.180days": 38890.96908882143
+    }
+  }
+}

@@ -32,14 +32,23 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "check": "npm run typecheck && npm run lint",
-    "prepublishOnly": "npm run check && npm run build",
+    "check": "npm run check:types && npm run check:lint && npm run build && npm run check:coverage && npm run check:size && npm run check:perf && npm run check:api && npm run check:ratchet",
+    "prepublishOnly": "npm run check",
     "typecheck": "tsc --noEmit",
     "docs": "typedoc",
     "docs:serve": "npx serve docs",
     "release:patch": "npm run check && npm version patch -m 'Release v%s' && git push && git push --tags",
     "release:minor": "npm run check && npm version minor -m 'Release v%s' && git push && git push --tags",
-    "release:major": "npm run check && npm version major -m 'Release v%s' && git push && git push --tags"
+    "release:major": "npm run check && npm version major -m 'Release v%s' && git push && git push --tags",
+    "check:types": "npm run typecheck",
+    "check:lint": "npm run lint",
+    "check:coverage": "node scripts/guard/coverage.mjs",
+    "check:size": "node scripts/guard/size.mjs",
+    "check:perf": "node scripts/guard/perf.mjs",
+    "check:api": "node scripts/guard/api.mjs",
+    "check:ratchet": "node --test scripts/guard/*.test.mjs && node scripts/guard/ratchet.mjs",
+    "check:precision": "node --import tsx --test src/ephemeris/horizons-fixtures.test.ts",
+    "budgets:update": "npm run build && node scripts/guard/coverage.mjs --update && node scripts/guard/size.mjs --update && node scripts/guard/perf.mjs --update && node scripts/guard/api.mjs --update"
   },
   "keywords": [
     "astrology",
@@ -151,7 +160,7 @@
     "url": "https://github.com/sponsors/Anonyfox"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20",
     "npm": ">=9.0.0"
   },
   "repository": {
@@ -168,6 +177,7 @@
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typedoc": "^0.28.15",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "esbuild": "0.27.2"
   }
 }

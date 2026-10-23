@@ -2,6 +2,7 @@
 // No coefficient tables are vendored or used at runtime by this audit.
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+
 const original = execFileSync(
   'curl',
   [

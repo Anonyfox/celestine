@@ -1,5 +1,6 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { getPosition } from '../../src/ephemeris/positions.js';
+
 const dir = new URL('../../src/ephemeris/__fixtures__/horizons/', import.meta.url);
 console.log('Body       N    max lon     RMS lon    max lat     RMS lat (arcsec)');
 for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {

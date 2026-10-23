@@ -1,6 +1,8 @@
 // Reproduce with node scripts/horizons/fetch-fixtures.mjs. No dependencies.
-import { mkdir, writeFile } from 'node:fs/promises';
+
 import { execFileSync } from 'node:child_process';
+import { mkdir, writeFile } from 'node:fs/promises';
+
 const dir = new URL('../../src/ephemeris/__fixtures__/horizons/', import.meta.url);
 await mkdir(dir, { recursive: true });
 const rad = Math.PI / 180;
@@ -36,7 +38,7 @@ function nutation(jd) {
     3600
   );
 }
-const jd = (iso) => Date.parse(iso + 'T12:00:00Z') / 86400000 + 2440587.5;
+const jd = (iso) => Date.parse(`${iso}T12:00:00Z`) / 86400000 + 2440587.5;
 async function query(id, dates, type) {
   if (dates.length > 50) {
     const chunks = [];
@@ -139,7 +141,7 @@ for (const [name, id, count, start, end] of [
   }
   await writeFile(
     new URL(`${name.toLowerCase()}.json`, dir),
-    JSON.stringify(
+    `${JSON.stringify(
       {
         body: name,
         target: id,
@@ -159,7 +161,7 @@ for (const [name, id, count, start, end] of [
       },
       null,
       2,
-    ) + '\n',
+    )}\n`,
   );
   console.log(name, rows.length, 'cross-check arcsec', maxCheck);
 }

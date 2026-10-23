@@ -3,23 +3,14 @@ import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import { getPosition } from './positions.js';
 
-// Longitude/latitude arcseconds. Controls are pre-shared-pipeline limits;
-// their algorithms are deliberately unchanged in this pass.
-const limits: Record<string, [number, number, number]> = {
-  Mercury: [7, 1.5, 170],
-  Pluto: [5, 0.6, 90],
-  Sun: [34, 1.3, 60],
-  Moon: [8, 2, 20],
-  Venus: [35, 4, 20],
-  Mars: [42, 2.5, 20],
-  Jupiter: [47, 1.2, 20],
-  Saturn: [49, 1.6, 20],
-  Uranus: [48, 1, 20],
-  Neptune: [49, 1.2, 20],
-};
+const limits = JSON.parse(readFileSync(new URL('../../budgets.json', import.meta.url), 'utf8'))
+  .precision as Record<string, { lonArcsec: number; latArcsec: number; minSamples: number }>;
 
 describe('NASA/JPL Horizons LT+S, mean ecliptic/equinox of date', () => {
-  for (const [body, [lonLimit, latLimit, count]] of Object.entries(limits)) {
+  for (const [
+    body,
+    { lonArcsec: lonLimit, latArcsec: latLimit, minSamples: count },
+  ] of Object.entries(limits)) {
     it(`${body}: longitude < ${lonLimit}″; latitude < ${latLimit}″`, () => {
       const fixture = JSON.parse(
         readFileSync(
