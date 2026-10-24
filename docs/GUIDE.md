@@ -218,6 +218,15 @@ const passes = searchTransitPasses({
 console.log(passes.transits);
 ```
 
+A second argument takes the frame and per-body orbs. Natal longitudes from
+`calculateChart` are mean-equinox values and need no option. Pass
+`{ includeNutation: true }` when natal points come from a true-equinox source such as
+Swiss Ephemeris or astro.com; exact hits then match `getPosition(body, jd,
+{ includeNutation: true })`. `bodyOrbs` sets the orb for a transiting body, either one
+number for every aspect or a map per aspect type. An override replaces the computed
+orb, including the luminary, angle and outer-planet extensions; aspects without one keep
+the computed orb. `findTransitPasses` takes the same frame option as its last argument.
+
 ## Progressions
 
 Progressions implement astrological time mappings. Their interpretation is

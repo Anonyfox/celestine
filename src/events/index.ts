@@ -30,6 +30,7 @@ export type {
   SolarEclipseEvent,
   SolarEclipseType,
   StationEvent,
+  TransitPassOptions,
   VoidOfCoursePeriod,
 } from './types.js';
 export { findVoidOfCourseMoon } from './void.js';

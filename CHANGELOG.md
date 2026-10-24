@@ -8,6 +8,12 @@ All notable changes to this project are documented here, following
 
 ### Added
 
+- `searchTransitPasses` and `findTransitPasses` (`celestine/events`) take an optional
+  `includeNutation` frame option, like the other event searches. The default stays the
+  mean equinox of date and its output is unchanged. In both frames, cusp passes match
+  108 JPL Horizons sign ingresses within 3.3″ of implied longitude.
+- `searchTransitPasses` accepts `bodyOrbs` in that options argument: an orb per
+  transiting body, as one number or per aspect type.
 - `findStationPoints` results carry `jdUT`, and `findRetrogradePeriods` /
   `getAllRetrogradePeriods` results carry `stationRetroJDUT` and `stationDirectJDUT`,
   matching `jdUT` on `findStations` events. The fields are optional in the types so

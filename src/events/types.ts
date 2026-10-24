@@ -1,3 +1,4 @@
+import type { AspectType } from '../aspects/types.js';
 import type { CelestialBody } from '../ephemeris/positions.js';
 
 /** TT event instant and its model-derived UT equivalent. @example event.jdUT */
@@ -146,6 +147,18 @@ export interface AscendantSignInterval {
   endUT: number;
 }
 /** Day report selection in the event longitude frame. @example { bodies: [CelestialBody.Moon] } */
+/**
+ * Options for searchTransitPasses: the event frame plus orb overrides per transiting body.
+ * @example { includeNutation: true, bodyOrbs: { Mars: 1, Saturn: { conjunction: 1.5 } } }
+ */
+export interface TransitPassOptions extends EventFrameOptions {
+  /**
+   * Orb in degrees per transiting body: one number for every aspect, or per aspect type.
+   * An override replaces the computed orb for that body (config.orbs and the luminary,
+   * angle and outer-planet extensions); aspects without an override keep the computed orb.
+   */
+  bodyOrbs?: Partial<Record<CelestialBody, number | Partial<Record<AspectType, number>>>>;
+}
 export interface SignsDuringOptions extends EventFrameOptions {
   bodies?: CelestialBody[];
 }
