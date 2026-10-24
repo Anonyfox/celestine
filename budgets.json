@@ -63,44 +63,44 @@
   },
   "size": {
     "full": {
-      "minBytes": 173248,
-      "gzipBytes": 59008
+      "minBytes": 171328,
+      "gzipBytes": 58880
     },
     "toJulianDate": {
       "minBytes": 576,
       "gzipBytes": 384
     },
     "eclipticToZodiac": {
-      "minBytes": 2560,
-      "gzipBytes": 896
+      "minBytes": 1088,
+      "gzipBytes": 704
     },
     "getMercuryPosition": {
       "minBytes": 62272,
       "gzipBytes": 24896
     },
     "calculateChart": {
-      "minBytes": 86784,
-      "gzipBytes": 33024
+      "minBytes": 85312,
+      "gzipBytes": 32832
     },
     "getAllPositions": {
       "minBytes": 62272,
       "gzipBytes": 24896
     },
     "realistic": {
-      "minBytes": 132864,
-      "gzipBytes": 48448
+      "minBytes": 130944,
+      "gzipBytes": 48192
     },
     "subpath.getMercuryPosition": {
       "minBytes": 9152,
       "gzipBytes": 4224
     },
     "subpath.realistic": {
-      "minBytes": 100928,
-      "gzipBytes": 38464
+      "minBytes": 99584,
+      "gzipBytes": 38272
     },
     "events.full": {
-      "minBytes": 73600,
-      "gzipBytes": 30080
+      "minBytes": 76672,
+      "gzipBytes": 32704
     },
     "events.findSeasons": {
       "minBytes": 9088,
@@ -111,8 +111,8 @@
       "gzipBytes": 5632
     },
     "events.findStations": {
-      "minBytes": 56192,
-      "gzipBytes": 22848
+      "minBytes": 58560,
+      "gzipBytes": 25280
     },
     "precise.getChironPosition": {
       "minBytes": 9984,

@@ -1,4 +1,7 @@
 {
+  "events:exports.chartToNatalPoints": {
+    "kind": "function"
+  },
   "events:exports.findAscendantSigns": {
     "kind": "function"
   },
@@ -102,6 +105,14 @@
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
       "EventInstant": "events:public.EventInstant"
+    }
+  },
+  "events:public.chartToNatalPoints": {
+    "kind": "value",
+    "type": "(chart: Pick<Chart, \"planets\" | \"nodes\" | \"angles\">) => NatalPoint[]",
+    "references": {
+      "Chart": "public.chart.Chart",
+      "NatalPoint": "public.transits.NatalPoint"
     }
   },
   "events:public.EclipseEvent": {
@@ -455,9 +466,10 @@
   },
   "events:public.findTransitPasses": {
     "kind": "value",
-    "type": "(body: CelestialBody, natalLongitude: number, aspectAngle: number, orb: number, startJD: number, endJD: number) => Omit<TransitTiming, \"transit\">[]",
+    "type": "(body: CelestialBody, natalLongitude: number, aspectAngle: number, orb: number, startJD: number, endJD: number, options?: EventFrameOptions) => Omit<TransitTiming, \"transit\">[]",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "TransitTiming": "public.transits.TransitTiming"
     }
   },
@@ -1320,20 +1332,244 @@
         "type": "number",
         "optional": false
       },
+      "phaseName": {
+        "type": "MoonPhaseName",
+        "optional": false
+      },
       "waxing": {
         "type": "boolean",
         "optional": false
       }
     },
-    "definition": "export interface MoonPhaseInfo { elongation: number; phaseAngle: number; illumination: number; waxing: boolean; phase: LunarPhase; }",
+    "definition": "export interface MoonPhaseInfo { elongation: number; phaseAngle: number; illumination: number; waxing: boolean; phase: LunarPhase; phaseName: MoonPhaseName; }",
+    "references": {
+      "LunarPhase": "events:public.LunarPhase",
+      "MoonPhaseName": "events:public.MoonPhaseName"
+    }
+  },
+  "events:public.MoonPhaseName": {
+    "kind": "type",
+    "type": "MoonPhaseName",
+    "members": {
+      "[Symbol.iterator]": {
+        "type": "() => StringIterator<string>",
+        "optional": false
+      },
+      "anchor": {
+        "type": "(name: string) => string",
+        "optional": false
+      },
+      "at": {
+        "type": "(index: number) => string | undefined",
+        "optional": false
+      },
+      "big": {
+        "type": "() => string",
+        "optional": false
+      },
+      "blink": {
+        "type": "() => string",
+        "optional": false
+      },
+      "bold": {
+        "type": "() => string",
+        "optional": false
+      },
+      "charAt": {
+        "type": "(pos: number) => string",
+        "optional": false
+      },
+      "charCodeAt": {
+        "type": "(index: number) => number",
+        "optional": false
+      },
+      "codePointAt": {
+        "type": "(pos: number) => number | undefined",
+        "optional": false
+      },
+      "concat": {
+        "type": "(...strings: string[]) => string",
+        "optional": false
+      },
+      "endsWith": {
+        "type": "(searchString: string, endPosition?: number) => boolean",
+        "optional": false
+      },
+      "fixed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "fontcolor": {
+        "type": "(color: string) => string",
+        "optional": false
+      },
+      "fontsize": {
+        "type": "{ (size: number): string; (size: string): string; }",
+        "optional": false
+      },
+      "includes": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "indexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "isWellFormed": {
+        "type": "() => boolean",
+        "optional": false
+      },
+      "italics": {
+        "type": "() => string",
+        "optional": false
+      },
+      "lastIndexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "length": {
+        "type": "number",
+        "optional": false
+      },
+      "link": {
+        "type": "(url: string) => string",
+        "optional": false
+      },
+      "localeCompare": {
+        "type": "{ (that: string): number; (that: string, locales?: string | string[], options?: Intl.CollatorOptions): number; (that: string, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): number; }",
+        "optional": false
+      },
+      "match": {
+        "type": "{ (regexp: string | RegExp): RegExpMatchArray | null; (matcher: { [Symbol.match](string: string): RegExpMatchArray | null; }): RegExpMatchArray | null; }",
+        "optional": false
+      },
+      "matchAll": {
+        "type": "(regexp: RegExp) => RegExpStringIterator<RegExpExecArray>",
+        "optional": false
+      },
+      "normalize": {
+        "type": "{ (form: \"NFC\" | \"NFD\" | \"NFKC\" | \"NFKD\"): string; (form?: string): string; }",
+        "optional": false
+      },
+      "padEnd": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "padStart": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "repeat": {
+        "type": "(count: number) => string",
+        "optional": false
+      },
+      "replace": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; (searchValue: { [Symbol.replace](string: string, replaceValue: string): string; }, replaceValue: string): string; (searchValue: { [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string; }, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "replaceAll": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "search": {
+        "type": "{ (regexp: string | RegExp): number; (searcher: { [Symbol.search](string: string): number; }): number; }",
+        "optional": false
+      },
+      "slice": {
+        "type": "(start?: number, end?: number) => string",
+        "optional": false
+      },
+      "small": {
+        "type": "() => string",
+        "optional": false
+      },
+      "split": {
+        "type": "{ (separator: string | RegExp, limit?: number): string[]; (splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[]; }",
+        "optional": false
+      },
+      "startsWith": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "strike": {
+        "type": "() => string",
+        "optional": false
+      },
+      "sub": {
+        "type": "() => string",
+        "optional": false
+      },
+      "substr": {
+        "type": "(from: number, length?: number) => string",
+        "optional": false
+      },
+      "substring": {
+        "type": "(start: number, end?: number) => string",
+        "optional": false
+      },
+      "sup": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toLocaleLowerCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLocaleUpperCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLowerCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toString": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toUpperCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toWellFormed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trim": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimEnd": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimLeft": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimRight": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimStart": {
+        "type": "() => string",
+        "optional": false
+      },
+      "valueOf": {
+        "type": "() => string",
+        "optional": false
+      }
+    },
+    "definition": "export type MoonPhaseName = LunarPhase | 'waxing-crescent' | 'waxing-gibbous' | 'waning-gibbous' | 'waning-crescent';",
     "references": {
       "LunarPhase": "events:public.LunarPhase"
     }
   },
   "events:public.searchTransitPasses": {
     "kind": "value",
-    "type": "(params: TransitSearchParams) => TransitSearchResult",
+    "type": "(params: TransitSearchParams, options?: TransitPassOptions) => TransitSearchResult",
     "references": {
+      "TransitPassOptions": "events:public.TransitPassOptions",
       "TransitSearchParams": "public.transits.TransitSearchParams",
       "TransitSearchResult": "public.transits.TransitSearchResult"
     }
@@ -1764,6 +2000,30 @@
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
       "EventInstant": "events:public.EventInstant"
+    }
+  },
+  "events:public.TransitPassOptions": {
+    "kind": "type",
+    "type": "TransitPassOptions",
+    "members": {
+      "bodyOrbs": {
+        "type": "Partial<Record<CelestialBody, number | Partial<Record<AspectType, number>>>> | undefined",
+        "optional": true
+      },
+      "includeNutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      },
+      "nutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      }
+    },
+    "definition": "export interface TransitPassOptions extends EventFrameOptions { bodyOrbs?: Partial<Record<CelestialBody, number | Partial<Record<AspectType, number>>>>; }",
+    "references": {
+      "AspectType": "public.aspects.AspectType",
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions"
     }
   },
   "events:public.VoidOfCoursePeriod": {
@@ -16162,8 +16422,9 @@
   },
   "public.transits.getRetrogradeShadow": {
     "kind": "value",
-    "type": "(period: RetrogradePeriod) => { preShadowStartJD: number; postShadowEndJD: number; shadowZoneStart: number; shadowZoneEnd: number; }",
+    "type": "(period: RetrogradePeriod, options?: EventFrameOptions) => { preShadowStartJD: number; postShadowEndJD: number; shadowZoneStart: number; shadowZoneEnd: number; }",
     "references": {
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "RetrogradePeriod": "public.transits.RetrogradePeriod"
     }
   },
@@ -17028,6 +17289,10 @@
         "type": "number",
         "optional": false
       },
+      "stationDirectJDUT": {
+        "type": "number | undefined",
+        "optional": true
+      },
       "stationDirectLongitude": {
         "type": "number",
         "optional": false
@@ -17036,12 +17301,16 @@
         "type": "number",
         "optional": false
       },
+      "stationRetroJDUT": {
+        "type": "number | undefined",
+        "optional": true
+      },
       "stationRetroLongitude": {
         "type": "number",
         "optional": false
       }
     },
-    "definition": "export interface RetrogradePeriod { body: CelestialBody; stationRetroJD: number; stationDirectJD: number; stationRetroLongitude: number; stationDirectLongitude: number; durationDays: number; }",
+    "definition": "export interface RetrogradePeriod { body: CelestialBody; stationRetroJD: number; stationDirectJD: number; stationRetroJDUT?: number; stationDirectJDUT?: number; stationRetroLongitude: number; stationDirectLongitude: number; durationDays: number; }",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody"
     }
@@ -17108,6 +17377,10 @@
         "type": "number",
         "optional": false
       },
+      "jdUT": {
+        "type": "number | undefined",
+        "optional": true
+      },
       "longitude": {
         "type": "number",
         "optional": false
@@ -17117,7 +17390,7 @@
         "optional": false
       }
     },
-    "definition": "export interface StationPoint { body: CelestialBody; type: 'station-retrograde' | 'station-direct'; jd: number; longitude: number; date: TransitDate; }",
+    "definition": "export interface StationPoint { body: CelestialBody; type: 'station-retrograde' | 'station-direct'; jd: number; jdUT?: number; longitude: number; date: TransitDate; }",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
       "TransitDate": "public.transits.TransitDate"
