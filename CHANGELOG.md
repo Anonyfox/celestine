@@ -60,6 +60,14 @@ All notable changes to this project are documented here, following
   0.41 min for Mercury through Mars, 0.62 min for Jupiter and Saturn, 2.3 min for Uranus,
   Neptune and Pluto; at most 0.71″ of implied longitude error.
 
+### Documentation
+
+- New "Pitfalls" section in the guide: UT versus TT inputs, the mean-equinox default
+  versus the true equinox used by almanacs (2.5–3.8 minutes on the Sun's 2026 cardinal
+  ingresses), traditional versus modern void-of-course partners, true-node ingresses
+  that cross back and forth, and short lunar phase names on input only. The README
+  points to it.
+
 ## [0.6.0] - 2026-10-24
 
 ### Added

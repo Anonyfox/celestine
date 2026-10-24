@@ -138,6 +138,12 @@ values carry uncertainty. See the [ΔT reference notes](src/time/__fixtures__/de
 Match time scale, frame, observer settings, and apparent/geometric conventions
 before comparing with another ephemeris.
 
+Swiss Ephemeris, astro.com and almanacs use the true equinox: pass
+`includeNutation: true` to match them (Sun ingresses otherwise differ by a few
+minutes). `findVoidOfCourseMoon` defaults to the traditional partners Sun through
+Saturn; pass `{ bodies: [...] }` with Uranus, Neptune and Pluto for the modern
+convention most apps use. More in the [guide's pitfalls](docs/GUIDE.md#pitfalls).
+
 ## Contributing and security
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup and regression checks,

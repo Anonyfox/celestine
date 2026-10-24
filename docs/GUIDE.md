@@ -45,6 +45,55 @@ Default coordinates use mean ecliptic/equinox of date. Position getters accept
 `includeNutation: true` for true equinox of date. Disabling speed avoids the speed
 calculation; its returned speed is zero and `isRetrograde` is false.
 
+### Pitfalls
+
+**UT versus TT.** `toJulianDate` returns UT. Position getters and every event search
+take TT, so wrap search bounds in `toTT(toJulianDate(...))`. In 2026 the two differ by
+about 69 seconds. Passing UT where TT is expected shifts a search window by that much
+and evaluates positions 69 seconds early, which moves the Moon by about 0.6′. Results
+carry both: `jd` is TT and `jdUT` is UT for display. `calculateChart` takes civil time
+and converts it itself.
+
+**Mean versus true equinox.** The default frame is the mean equinox of date, the same
+frame as `calculateChart`. Swiss Ephemeris, astro.com and almanacs use the true
+equinox, which differs by nutation in longitude (at most about 17″). An event time
+shifts by that angle divided by the body's speed. For the Sun's 2026 cardinal ingresses,
+`findSignIngresses` in the default frame lands 2.5–3.8 minutes from `findSeasons`
+(true equinox); with `{ includeNutation: true }` they agree. For slow planets near a
+station the shift can reach hours. Pick one frame for a project and pass natal
+longitudes from the same frame.
+
+**Void-of-course Moon.** `findVoidOfCourseMoon` uses the traditional partners (Sun,
+Mercury, Venus, Mars, Jupiter, Saturn) by default. Many apps use the modern set; pass
+it explicitly, because the void can start hours apart:
+
+```ts
+import { findVoidOfCourseMoon } from 'celestine/events';
+import { CelestialBody, toJulianDate, toTT } from 'celestine';
+
+const start = toTT(toJulianDate({
+  year: 2026, month: 1, day: 1, hour: 0, minute: 0, second: 0,
+}));
+const modern = findVoidOfCourseMoon(start, start + 30, {
+  bodies: [
+    CelestialBody.Sun, CelestialBody.Mercury, CelestialBody.Venus, CelestialBody.Mars,
+    CelestialBody.Jupiter, CelestialBody.Saturn, CelestialBody.Uranus,
+    CelestialBody.Neptune, CelestialBody.Pluto,
+  ],
+});
+```
+
+**True node ingresses.** The true node oscillates around the mean node, so near a cusp
+it can cross back and forth. Over 2000–2030 `findSignIngresses` finds 26 true-node
+ingresses against 20 for the mean node; six of them come back within 60 days of the
+previous crossing (at most 17 days apart). The library reports every real crossing
+and does not smooth them. Use `CelestialBody.NorthNode` (mean node) when you want one
+ingress per sign, or group crossings that are close together yourself.
+
+**Lunar phase names.** `findLunarPhases` accepts `'new'`, `'first'`, `'full'` and
+`'last'` as input, but results always use `'new-moon'`, `'first-quarter'`,
+`'full-moon'` and `'last-quarter'`.
+
 ## Local calendar days
 
 `localDayToUT` from `celestine/events` returns the half-open UT interval `[startJD, endJD)` of an IANA local date.
