@@ -80,7 +80,9 @@ export function deltaTAt(jd: number): number {
 }
 
 /**
- * Convert a UT Julian Date to a TT Julian Date using {@link deltaTAt}.
+ * Convert a UT Julian Date to a TT Julian Date using {@link deltaTAt} at that JD.
+ * JD-only convention; unlike legacy utToTT, no month-centre approximation.
+ * Time-scale conversion does not change the coordinate frame.
  * Accuracy and sources: USNO observed data (1800–2026), Espenak–Meeus
  * ancient estimates, and uncertain future extrapolation; see deltaTAt.
  * USNO max/RMS seconds: 1800–1899 1.347/.462; 1900–1954 .320/.104;
@@ -97,6 +99,8 @@ export function toTT(jdUT: number): number {
 
 /**
  * Convert a TT Julian Date to a UT Julian Date by three fixed-point iterations.
+ * Evaluates ΔT at the recovered UT JD, unlike legacy ttToUT's month-centre value.
+ * Time-scale conversion does not change the coordinate frame.
  * The inverse closes within 1e-9 day over −2000…3000 CE; physical accuracy
  * is that of deltaTAt: USNO max/RMS seconds 1800–1899 1.347/.462,
  * 1900–1954 .320/.104, 1955–2026 .104/.034. Ancient uncertainty reaches
@@ -127,7 +131,10 @@ export function deltaT(year: number, month: number): number {
 
 /**
  * Convert a TT JD to UT using ΔT at the supplied year/month (legacy convention).
- * Accuracy and sources are those of deltaTAt; use toUT for a JD-based inverse.
+ * The month centre is decimal year year + (month − 0.5)/12, not a civil day.
+ * Difference from toUT is the ΔT change over roughly half a month when the
+ * supplied month contains the instant: below 0.010 s in 2026 (hourly samples).
+ * No coordinate frame change. Accuracy/sources: deltaTAt; prefer toUT.
  * @param ttJD - TT Julian Date
  * @param year - Astronomical year for the correction
  * @param month - Month for the correction
@@ -140,7 +147,10 @@ export function ttToUT(ttJD: number, year: number, month: number): number {
 
 /**
  * Convert a UT JD to TT using ΔT at the supplied year/month (legacy convention).
- * Accuracy and sources are those of deltaTAt; use toTT for a JD-based conversion.
+ * The month centre is decimal year year + (month − 0.5)/12, not a civil day.
+ * Difference from toTT is the ΔT change over roughly half a month when the
+ * supplied month contains the instant: below 0.010 s in 2026 (hourly samples).
+ * No coordinate frame change. Accuracy/sources: deltaTAt; prefer toTT.
  * @param utJD - UT Julian Date
  * @param year - Astronomical year for the correction
  * @param month - Month for the correction

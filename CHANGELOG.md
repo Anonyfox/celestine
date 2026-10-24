@@ -22,6 +22,11 @@ All notable changes to this project are documented here, following
   continuous orb passes, retaining retrograde hits together only while within orb.
   `searchTransits` itself is unchanged.
 
+- `localDayToUT` from `celestine/events`: IANA local calendar day bounds in UT,
+  including skipped midnights, DST overlaps and fractional-hour offsets; skipped
+  dates throw. The subpath-only export keeps the root bundle unchanged.
+  Documented JD-only and legacy month-centre TT/UT conventions.
+
 - Runnable examples, executed in `npm run check` by `src/examples.test.ts`: `examples/node-cli.mjs`
   (next station-retrograde per planet, current Moon phase), `examples/browser-natal-chart.html`
   (no build step, ESM from a CDN) and `examples/cloudflare-worker.ts`. The README quickstart is

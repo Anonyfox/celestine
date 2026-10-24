@@ -1,0 +1,177 @@
+[
+  {
+    "zone": "Europe/Berlin",
+    "date": "2026-03-29",
+    "start": [2026, 3, 28, 23, 0, 0],
+    "end": [2026, 3, 29, 22, 0, 0],
+    "startOffset": 60.0,
+    "endOffset": 120.0,
+    "hours": 23.0
+  },
+  {
+    "zone": "Europe/Berlin",
+    "date": "2026-10-25",
+    "start": [2026, 10, 24, 22, 0, 0],
+    "end": [2026, 10, 25, 23, 0, 0],
+    "startOffset": 120.0,
+    "endOffset": 60.0,
+    "hours": 25.0
+  },
+  {
+    "zone": "America/New_York",
+    "date": "2026-03-08",
+    "start": [2026, 3, 8, 5, 0, 0],
+    "end": [2026, 3, 9, 4, 0, 0],
+    "startOffset": -300.0,
+    "endOffset": -240.0,
+    "hours": 23.0
+  },
+  {
+    "zone": "America/New_York",
+    "date": "2026-11-01",
+    "start": [2026, 11, 1, 4, 0, 0],
+    "end": [2026, 11, 2, 5, 0, 0],
+    "startOffset": -240.0,
+    "endOffset": -300.0,
+    "hours": 25.0
+  },
+  {
+    "zone": "Australia/Lord_Howe",
+    "date": "2026-04-05",
+    "start": [2026, 4, 4, 13, 0, 0],
+    "end": [2026, 4, 5, 13, 30, 0],
+    "startOffset": 660.0,
+    "endOffset": 630.0,
+    "hours": 24.5
+  },
+  {
+    "zone": "Australia/Lord_Howe",
+    "date": "2026-10-04",
+    "start": [2026, 10, 3, 13, 30, 0],
+    "end": [2026, 10, 4, 13, 0, 0],
+    "startOffset": 630.0,
+    "endOffset": 660.0,
+    "hours": 23.5
+  },
+  {
+    "zone": "America/Sao_Paulo",
+    "date": "2018-11-04",
+    "start": [2018, 11, 4, 3, 0, 0],
+    "end": [2018, 11, 5, 2, 0, 0],
+    "startOffset": -120.0,
+    "endOffset": -120.0,
+    "hours": 23.0
+  },
+  {
+    "zone": "America/Santiago",
+    "date": "2022-09-11",
+    "start": [2022, 9, 11, 4, 0, 0],
+    "end": [2022, 9, 12, 3, 0, 0],
+    "startOffset": -180.0,
+    "endOffset": -180.0,
+    "hours": 23.0
+  },
+  {
+    "zone": "America/Havana",
+    "date": "2026-03-08",
+    "start": [2026, 3, 8, 5, 0, 0],
+    "end": [2026, 3, 9, 4, 0, 0],
+    "startOffset": -240.0,
+    "endOffset": -240.0,
+    "hours": 23.0
+  },
+  {
+    "zone": "America/Havana",
+    "date": "2026-11-01",
+    "start": [2026, 11, 1, 4, 0, 0],
+    "end": [2026, 11, 2, 5, 0, 0],
+    "startOffset": -240.0,
+    "endOffset": -300.0,
+    "hours": 25.0
+  },
+  {
+    "zone": "Asia/Beirut",
+    "date": "2026-03-29",
+    "start": [2026, 3, 28, 22, 0, 0],
+    "end": [2026, 3, 29, 21, 0, 0],
+    "startOffset": 180.0,
+    "endOffset": 180.0,
+    "hours": 23.0
+  },
+  {
+    "zone": "Pacific/Apia",
+    "date": "2011-12-29",
+    "start": [2011, 12, 29, 10, 0, 0],
+    "end": [2011, 12, 30, 10, 0, 0],
+    "startOffset": -600.0,
+    "endOffset": 840.0,
+    "hours": 24.0
+  },
+  {
+    "zone": "Pacific/Apia",
+    "date": "2011-12-30"
+  },
+  {
+    "zone": "Asia/Kathmandu",
+    "date": "2026-01-01",
+    "start": [2025, 12, 31, 18, 15, 0],
+    "end": [2026, 1, 1, 18, 15, 0],
+    "startOffset": 345.0,
+    "endOffset": 345.0,
+    "hours": 24.0
+  },
+  {
+    "zone": "Asia/Kathmandu",
+    "date": "1986-01-01",
+    "start": [1985, 12, 31, 18, 30, 0],
+    "end": [1986, 1, 1, 18, 15, 0],
+    "startOffset": 345.0,
+    "endOffset": 345.0,
+    "hours": 23.75
+  },
+  {
+    "zone": "Asia/Kolkata",
+    "date": "2026-01-01",
+    "start": [2025, 12, 31, 18, 30, 0],
+    "end": [2026, 1, 1, 18, 30, 0],
+    "startOffset": 330.0,
+    "endOffset": 330.0,
+    "hours": 24.0
+  },
+  {
+    "zone": "Australia/Eucla",
+    "date": "2026-01-01",
+    "start": [2025, 12, 31, 15, 15, 0],
+    "end": [2026, 1, 1, 15, 15, 0],
+    "startOffset": 525.0,
+    "endOffset": 525.0,
+    "hours": 24.0
+  },
+  {
+    "zone": "Pacific/Kiritimati",
+    "date": "2026-01-01",
+    "start": [2025, 12, 31, 10, 0, 0],
+    "end": [2026, 1, 1, 10, 0, 0],
+    "startOffset": 840.0,
+    "endOffset": 840.0,
+    "hours": 24.0
+  },
+  {
+    "zone": "Africa/Monrovia",
+    "date": "1972-01-07",
+    "start": [1972, 1, 7, 0, 44, 30],
+    "end": [1972, 1, 8, 0, 0, 0],
+    "startOffset": 0.0,
+    "endOffset": 0.0,
+    "hours": 23.258333333333333
+  },
+  {
+    "zone": "UTC",
+    "date": "2026-01-01",
+    "start": [2026, 1, 1, 0, 0, 0],
+    "end": [2026, 1, 2, 0, 0, 0],
+    "startOffset": 0.0,
+    "endOffset": 0.0,
+    "hours": 24.0
+  }
+]

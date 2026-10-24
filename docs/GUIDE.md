@@ -10,6 +10,23 @@ Civil dates produce UT Julian Dates. Convert to TT before calling position
 getters. Longitudes and latitudes are degrees; longitude speed is degrees/day.
 Negative longitude speed indicates retrograde motion.
 
+`toJulianDate` returns UT. Ephemeris position getters and event searches take TT;
+point events carry TT `jd` and UT `jdUT` computed with `toUT`. `calculateChart`
+takes civil birth time and applies ΔT itself by default (its `deltaT` option can
+override this). Sidereal time uses UT; house angles use the resulting local
+sidereal time, location and obliquity.
+
+`toTT(jdUT)` evaluates ΔT at that UT JD. `toUT(jdTT)` iterates the inverse,
+evaluating ΔT at the recovered UT JD. The legacy forms
+`utToTT(jdUT, year, month)` and `ttToUT(jdTT, year, month)` instead use one
+ΔT value for the middle of the supplied month: decimal year
+`year + (month - 0.5) / 12`. This is an equal-month model coordinate, not an
+exact civil timestamp. If the month contains the instant, the difference is
+the ΔT change over roughly half a month. Hourly samples throughout 2026 give
+a maximum correction difference of 0.009292 seconds (about 9 milliseconds);
+see `src/events/local-day.test.ts`. This is a convention difference, separate
+from the physical uncertainty of ΔT. Converting time scales does not change frames.
+
 ```ts
 import { toJulianDate, toTT, fromJulianDate } from 'celestine/time';
 import { getSunPosition, getMercuryPosition, getAllPositions } from 'celestine/ephemeris';
@@ -27,6 +44,28 @@ console.log(getAllPositions(jdTT));
 Default coordinates use mean ecliptic/equinox of date. Position getters accept
 `includeNutation: true` for true equinox of date. Disabling speed avoids the speed
 calculation; its returned speed is zero and `isRetrograde` is false.
+
+## Local calendar days
+
+`localDayToUT` from `celestine/events` returns the half-open UT interval `[startJD, endJD)` of an IANA local date.
+`hours` is the elapsed duration; `startOffset` and `endOffset` are minutes east
+of UTC at those exact instants. The end offset includes a transition at the
+boundary. A skipped midnight begins at the first existing instant; an entirely
+skipped date, invalid Gregorian date or invalid zone throws `RangeError`.
+The calendar is proleptic Gregorian with astronomical year numbering.
+Results use the host's `Intl.DateTimeFormat` timezone data, cached per zone;
+keep that data current. No timezone database is bundled. The helper lives in
+`celestine/events` rather than `celestine/time` so the root bundle does not grow.
+
+```ts
+import { localDayToUT } from 'celestine/events';
+import { toTT } from 'celestine/time';
+
+const day = localDayToUT({ year: 2026, month: 3, day: 29 }, 'Europe/Berlin');
+console.log(day.hours); // approximately 23 (JD subtraction rounds)
+const eventStartTT = toTT(day.startJD);
+const eventEndTT = toTT(day.endJD);
+```
 
 ## Precise small bodies
 
