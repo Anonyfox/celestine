@@ -1,5 +1,11 @@
 {
+  "events:exports.findAscendantSigns": {
+    "kind": "function"
+  },
   "events:exports.findAspectTimes": {
+    "kind": "function"
+  },
+  "events:exports.findEclipses": {
     "kind": "function"
   },
   "events:exports.findLunarPhases": {
@@ -14,11 +20,54 @@
   "events:exports.findStations": {
     "kind": "function"
   },
+  "events:exports.findTransitPasses": {
+    "kind": "function"
+  },
   "events:exports.findVoidOfCourseMoon": {
     "kind": "function"
   },
   "events:exports.getMoonPhase": {
     "kind": "function"
+  },
+  "events:exports.getSignsDuring": {
+    "kind": "function"
+  },
+  "events:exports.localDayToUT": {
+    "kind": "function"
+  },
+  "events:exports.searchTransitPasses": {
+    "kind": "function"
+  },
+  "events:public.AscendantSignInterval": {
+    "kind": "type",
+    "type": "AscendantSignInterval",
+    "members": {
+      "end": {
+        "type": "number",
+        "optional": false
+      },
+      "endUT": {
+        "type": "number",
+        "optional": false
+      },
+      "sign": {
+        "type": "number",
+        "optional": false
+      },
+      "signName": {
+        "type": "string",
+        "optional": false
+      },
+      "start": {
+        "type": "number",
+        "optional": false
+      },
+      "startUT": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface AscendantSignInterval { sign: number; signName: string; start: number; startUT: number; end: number; endUT: number; }"
   },
   "events:public.AspectTimeEvent": {
     "kind": "type",
@@ -55,6 +104,264 @@
       "EventInstant": "events:public.EventInstant"
     }
   },
+  "events:public.EclipseEvent": {
+    "kind": "type",
+    "type": "EclipseEvent",
+    "members": {
+      "gamma": {
+        "type": "number",
+        "optional": false
+      },
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "kind": {
+        "type": "\"solar\" | \"lunar\"",
+        "optional": false
+      },
+      "magnitude": {
+        "type": "number",
+        "optional": false
+      },
+      "moonLongitude": {
+        "type": "number",
+        "optional": false
+      },
+      "sunLongitude": {
+        "type": "number",
+        "optional": false
+      },
+      "type": {
+        "type": "\"total\" | \"annular\" | \"hybrid\" | \"partial\" | \"penumbral\"",
+        "optional": false
+      }
+    },
+    "definition": "export type EclipseEvent = SolarEclipseEvent | LunarEclipseEvent;",
+    "references": {
+      "LunarEclipseEvent": "events:public.LunarEclipseEvent",
+      "SolarEclipseEvent": "events:public.SolarEclipseEvent"
+    }
+  },
+  "events:public.EclipseKind": {
+    "kind": "type",
+    "type": "EclipseKind",
+    "members": {
+      "[Symbol.iterator]": {
+        "type": "() => StringIterator<string>",
+        "optional": false
+      },
+      "anchor": {
+        "type": "(name: string) => string",
+        "optional": false
+      },
+      "at": {
+        "type": "(index: number) => string | undefined",
+        "optional": false
+      },
+      "big": {
+        "type": "() => string",
+        "optional": false
+      },
+      "blink": {
+        "type": "() => string",
+        "optional": false
+      },
+      "bold": {
+        "type": "() => string",
+        "optional": false
+      },
+      "charAt": {
+        "type": "(pos: number) => string",
+        "optional": false
+      },
+      "charCodeAt": {
+        "type": "(index: number) => number",
+        "optional": false
+      },
+      "codePointAt": {
+        "type": "(pos: number) => number | undefined",
+        "optional": false
+      },
+      "concat": {
+        "type": "(...strings: string[]) => string",
+        "optional": false
+      },
+      "endsWith": {
+        "type": "(searchString: string, endPosition?: number) => boolean",
+        "optional": false
+      },
+      "fixed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "fontcolor": {
+        "type": "(color: string) => string",
+        "optional": false
+      },
+      "fontsize": {
+        "type": "{ (size: number): string; (size: string): string; }",
+        "optional": false
+      },
+      "includes": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "indexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "isWellFormed": {
+        "type": "() => boolean",
+        "optional": false
+      },
+      "italics": {
+        "type": "() => string",
+        "optional": false
+      },
+      "lastIndexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "length": {
+        "type": "number",
+        "optional": false
+      },
+      "link": {
+        "type": "(url: string) => string",
+        "optional": false
+      },
+      "localeCompare": {
+        "type": "{ (that: string): number; (that: string, locales?: string | string[], options?: Intl.CollatorOptions): number; (that: string, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): number; }",
+        "optional": false
+      },
+      "match": {
+        "type": "{ (regexp: string | RegExp): RegExpMatchArray | null; (matcher: { [Symbol.match](string: string): RegExpMatchArray | null; }): RegExpMatchArray | null; }",
+        "optional": false
+      },
+      "matchAll": {
+        "type": "(regexp: RegExp) => RegExpStringIterator<RegExpExecArray>",
+        "optional": false
+      },
+      "normalize": {
+        "type": "{ (form: \"NFC\" | \"NFD\" | \"NFKC\" | \"NFKD\"): string; (form?: string): string; }",
+        "optional": false
+      },
+      "padEnd": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "padStart": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "repeat": {
+        "type": "(count: number) => string",
+        "optional": false
+      },
+      "replace": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; (searchValue: { [Symbol.replace](string: string, replaceValue: string): string; }, replaceValue: string): string; (searchValue: { [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string; }, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "replaceAll": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "search": {
+        "type": "{ (regexp: string | RegExp): number; (searcher: { [Symbol.search](string: string): number; }): number; }",
+        "optional": false
+      },
+      "slice": {
+        "type": "(start?: number, end?: number) => string",
+        "optional": false
+      },
+      "small": {
+        "type": "() => string",
+        "optional": false
+      },
+      "split": {
+        "type": "{ (separator: string | RegExp, limit?: number): string[]; (splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[]; }",
+        "optional": false
+      },
+      "startsWith": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "strike": {
+        "type": "() => string",
+        "optional": false
+      },
+      "sub": {
+        "type": "() => string",
+        "optional": false
+      },
+      "substr": {
+        "type": "(from: number, length?: number) => string",
+        "optional": false
+      },
+      "substring": {
+        "type": "(start: number, end?: number) => string",
+        "optional": false
+      },
+      "sup": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toLocaleLowerCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLocaleUpperCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLowerCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toString": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toUpperCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toWellFormed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trim": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimEnd": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimLeft": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimRight": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimStart": {
+        "type": "() => string",
+        "optional": false
+      },
+      "valueOf": {
+        "type": "() => string",
+        "optional": false
+      }
+    },
+    "definition": "export type EclipseKind = 'solar' | 'lunar';"
+  },
   "events:public.EventFrameOptions": {
     "kind": "type",
     "type": "EventFrameOptions",
@@ -85,6 +392,14 @@
     },
     "definition": "export interface EventInstant { jd: number; jdUT: number; }"
   },
+  "events:public.findAscendantSigns": {
+    "kind": "value",
+    "type": "(startJD: number, endJD: number, latitude: number, longitude: number, options?: EventFrameOptions) => AscendantSignInterval[]",
+    "references": {
+      "AscendantSignInterval": "events:public.AscendantSignInterval",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions"
+    }
+  },
   "events:public.findAspectTimes": {
     "kind": "value",
     "type": "(body: CelestialBody, target: CelestialBody | number, startJD: number, endJD: number, options?: EventFrameOptions & { angles?: number[]; }) => AspectTimeEvent[]",
@@ -94,11 +409,22 @@
       "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions"
     }
   },
+  "events:public.findEclipses": {
+    "kind": "value",
+    "type": "(startJD: number, endJD: number, options?: EventFrameOptions & { kinds?: EclipseKind[]; }) => EclipseEvent[]",
+    "references": {
+      "EclipseEvent": "events:public.EclipseEvent",
+      "EclipseKind": "events:public.EclipseKind",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions"
+    }
+  },
   "events:public.findLunarPhases": {
     "kind": "value",
-    "type": "(startJD: number, endJD: number, options?: { phases?: LunarPhase[]; }) => LunarPhaseEvent[]",
+    "type": "(startJD: number, endJD: number, options?: EventFrameOptions & { phases?: (LunarPhase | LunarPhaseAlias)[]; }) => LunarPhaseEvent[]",
     "references": {
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "LunarPhase": "events:public.LunarPhase",
+      "LunarPhaseAlias": "events:public.LunarPhaseAlias",
       "LunarPhaseEvent": "events:public.LunarPhaseEvent"
     }
   },
@@ -127,6 +453,14 @@
       "StationEvent": "events:public.StationEvent"
     }
   },
+  "events:public.findTransitPasses": {
+    "kind": "value",
+    "type": "(body: CelestialBody, natalLongitude: number, aspectAngle: number, orb: number, startJD: number, endJD: number) => Omit<TransitTiming, \"transit\">[]",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "TransitTiming": "public.transits.TransitTiming"
+    }
+  },
   "events:public.findVoidOfCourseMoon": {
     "kind": "value",
     "type": "(startJD: number, endJD: number, options?: EventFrameOptions & { bodies?: CelestialBody[]; }) => VoidOfCoursePeriod[]",
@@ -142,6 +476,368 @@
     "references": {
       "MoonPhaseInfo": "events:public.MoonPhaseInfo"
     }
+  },
+  "events:public.getSignsDuring": {
+    "kind": "value",
+    "type": "(startJD: number, endJD: number, options?: SignsDuringOptions) => SignsDuring[]",
+    "references": {
+      "SignsDuring": "events:public.SignsDuring",
+      "SignsDuringOptions": "events:public.SignsDuringOptions"
+    }
+  },
+  "events:public.LocalDayDate": {
+    "kind": "type",
+    "type": "LocalDayDate",
+    "members": {
+      "day": {
+        "type": "number",
+        "optional": false
+      },
+      "month": {
+        "type": "number",
+        "optional": false
+      },
+      "year": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface LocalDayDate { year: number; month: number; day: number; }"
+  },
+  "events:public.localDayToUT": {
+    "kind": "value",
+    "type": "(date: LocalDayDate, timeZone: string) => LocalDayUT",
+    "references": {
+      "LocalDayDate": "events:public.LocalDayDate",
+      "LocalDayUT": "events:public.LocalDayUT"
+    }
+  },
+  "events:public.LocalDayUT": {
+    "kind": "type",
+    "type": "LocalDayUT",
+    "members": {
+      "endJD": {
+        "type": "number",
+        "optional": false
+      },
+      "endOffset": {
+        "type": "number",
+        "optional": false
+      },
+      "hours": {
+        "type": "number",
+        "optional": false
+      },
+      "startJD": {
+        "type": "number",
+        "optional": false
+      },
+      "startOffset": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface LocalDayUT { startJD: number; endJD: number; hours: number; startOffset: number; endOffset: number; }"
+  },
+  "events:public.LunarEclipseEvent": {
+    "kind": "type",
+    "type": "LunarEclipseEvent",
+    "members": {
+      "gamma": {
+        "type": "number",
+        "optional": false
+      },
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "kind": {
+        "type": "\"lunar\"",
+        "optional": false
+      },
+      "magnitude": {
+        "type": "number",
+        "optional": false
+      },
+      "moonLongitude": {
+        "type": "number",
+        "optional": false
+      },
+      "penumbralMagnitude": {
+        "type": "number",
+        "optional": false
+      },
+      "sunLongitude": {
+        "type": "number",
+        "optional": false
+      },
+      "type": {
+        "type": "LunarEclipseType",
+        "optional": false
+      },
+      "umbralMagnitude": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface LunarEclipseEvent extends EclipseGeometry { kind: 'lunar'; type: LunarEclipseType; umbralMagnitude: number; penumbralMagnitude: number; }",
+    "references": {
+      "EclipseGeometry": "events:public.LunarEclipseEvent.types.EclipseGeometry",
+      "LunarEclipseType": "events:public.LunarEclipseType"
+    }
+  },
+  "events:public.LunarEclipseEvent.types.EclipseGeometry": {
+    "kind": "type",
+    "type": "EclipseGeometry",
+    "members": {
+      "gamma": {
+        "type": "number",
+        "optional": false
+      },
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "magnitude": {
+        "type": "number",
+        "optional": false
+      },
+      "moonLongitude": {
+        "type": "number",
+        "optional": false
+      },
+      "sunLongitude": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "interface EclipseGeometry extends EventInstant { gamma: number; magnitude: number; sunLongitude: number; moonLongitude: number; }",
+    "references": {
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
+  "events:public.LunarEclipseType": {
+    "kind": "type",
+    "type": "LunarEclipseType",
+    "members": {
+      "[Symbol.iterator]": {
+        "type": "() => StringIterator<string>",
+        "optional": false
+      },
+      "anchor": {
+        "type": "(name: string) => string",
+        "optional": false
+      },
+      "at": {
+        "type": "(index: number) => string | undefined",
+        "optional": false
+      },
+      "big": {
+        "type": "() => string",
+        "optional": false
+      },
+      "blink": {
+        "type": "() => string",
+        "optional": false
+      },
+      "bold": {
+        "type": "() => string",
+        "optional": false
+      },
+      "charAt": {
+        "type": "(pos: number) => string",
+        "optional": false
+      },
+      "charCodeAt": {
+        "type": "(index: number) => number",
+        "optional": false
+      },
+      "codePointAt": {
+        "type": "(pos: number) => number | undefined",
+        "optional": false
+      },
+      "concat": {
+        "type": "(...strings: string[]) => string",
+        "optional": false
+      },
+      "endsWith": {
+        "type": "(searchString: string, endPosition?: number) => boolean",
+        "optional": false
+      },
+      "fixed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "fontcolor": {
+        "type": "(color: string) => string",
+        "optional": false
+      },
+      "fontsize": {
+        "type": "{ (size: number): string; (size: string): string; }",
+        "optional": false
+      },
+      "includes": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "indexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "isWellFormed": {
+        "type": "() => boolean",
+        "optional": false
+      },
+      "italics": {
+        "type": "() => string",
+        "optional": false
+      },
+      "lastIndexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "length": {
+        "type": "number",
+        "optional": false
+      },
+      "link": {
+        "type": "(url: string) => string",
+        "optional": false
+      },
+      "localeCompare": {
+        "type": "{ (that: string): number; (that: string, locales?: string | string[], options?: Intl.CollatorOptions): number; (that: string, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): number; }",
+        "optional": false
+      },
+      "match": {
+        "type": "{ (regexp: string | RegExp): RegExpMatchArray | null; (matcher: { [Symbol.match](string: string): RegExpMatchArray | null; }): RegExpMatchArray | null; }",
+        "optional": false
+      },
+      "matchAll": {
+        "type": "(regexp: RegExp) => RegExpStringIterator<RegExpExecArray>",
+        "optional": false
+      },
+      "normalize": {
+        "type": "{ (form: \"NFC\" | \"NFD\" | \"NFKC\" | \"NFKD\"): string; (form?: string): string; }",
+        "optional": false
+      },
+      "padEnd": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "padStart": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "repeat": {
+        "type": "(count: number) => string",
+        "optional": false
+      },
+      "replace": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; (searchValue: { [Symbol.replace](string: string, replaceValue: string): string; }, replaceValue: string): string; (searchValue: { [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string; }, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "replaceAll": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "search": {
+        "type": "{ (regexp: string | RegExp): number; (searcher: { [Symbol.search](string: string): number; }): number; }",
+        "optional": false
+      },
+      "slice": {
+        "type": "(start?: number, end?: number) => string",
+        "optional": false
+      },
+      "small": {
+        "type": "() => string",
+        "optional": false
+      },
+      "split": {
+        "type": "{ (separator: string | RegExp, limit?: number): string[]; (splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[]; }",
+        "optional": false
+      },
+      "startsWith": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "strike": {
+        "type": "() => string",
+        "optional": false
+      },
+      "sub": {
+        "type": "() => string",
+        "optional": false
+      },
+      "substr": {
+        "type": "(from: number, length?: number) => string",
+        "optional": false
+      },
+      "substring": {
+        "type": "(start: number, end?: number) => string",
+        "optional": false
+      },
+      "sup": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toLocaleLowerCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLocaleUpperCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLowerCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toString": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toUpperCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toWellFormed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trim": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimEnd": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimLeft": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimRight": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimStart": {
+        "type": "() => string",
+        "optional": false
+      },
+      "valueOf": {
+        "type": "() => string",
+        "optional": false
+      }
+    },
+    "definition": "export type LunarEclipseType = 'total' | 'partial' | 'penumbral';"
   },
   "events:public.LunarPhase": {
     "kind": "type",
@@ -358,6 +1054,221 @@
     },
     "definition": "export type LunarPhase = 'new-moon' | 'first-quarter' | 'full-moon' | 'last-quarter';"
   },
+  "events:public.LunarPhaseAlias": {
+    "kind": "type",
+    "type": "LunarPhaseAlias",
+    "members": {
+      "[Symbol.iterator]": {
+        "type": "() => StringIterator<string>",
+        "optional": false
+      },
+      "anchor": {
+        "type": "(name: string) => string",
+        "optional": false
+      },
+      "at": {
+        "type": "(index: number) => string | undefined",
+        "optional": false
+      },
+      "big": {
+        "type": "() => string",
+        "optional": false
+      },
+      "blink": {
+        "type": "() => string",
+        "optional": false
+      },
+      "bold": {
+        "type": "() => string",
+        "optional": false
+      },
+      "charAt": {
+        "type": "(pos: number) => string",
+        "optional": false
+      },
+      "charCodeAt": {
+        "type": "(index: number) => number",
+        "optional": false
+      },
+      "codePointAt": {
+        "type": "(pos: number) => number | undefined",
+        "optional": false
+      },
+      "concat": {
+        "type": "(...strings: string[]) => string",
+        "optional": false
+      },
+      "endsWith": {
+        "type": "(searchString: string, endPosition?: number) => boolean",
+        "optional": false
+      },
+      "fixed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "fontcolor": {
+        "type": "(color: string) => string",
+        "optional": false
+      },
+      "fontsize": {
+        "type": "{ (size: number): string; (size: string): string; }",
+        "optional": false
+      },
+      "includes": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "indexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "isWellFormed": {
+        "type": "() => boolean",
+        "optional": false
+      },
+      "italics": {
+        "type": "() => string",
+        "optional": false
+      },
+      "lastIndexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "length": {
+        "type": "number",
+        "optional": false
+      },
+      "link": {
+        "type": "(url: string) => string",
+        "optional": false
+      },
+      "localeCompare": {
+        "type": "{ (that: string): number; (that: string, locales?: string | string[], options?: Intl.CollatorOptions): number; (that: string, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): number; }",
+        "optional": false
+      },
+      "match": {
+        "type": "{ (regexp: string | RegExp): RegExpMatchArray | null; (matcher: { [Symbol.match](string: string): RegExpMatchArray | null; }): RegExpMatchArray | null; }",
+        "optional": false
+      },
+      "matchAll": {
+        "type": "(regexp: RegExp) => RegExpStringIterator<RegExpExecArray>",
+        "optional": false
+      },
+      "normalize": {
+        "type": "{ (form: \"NFC\" | \"NFD\" | \"NFKC\" | \"NFKD\"): string; (form?: string): string; }",
+        "optional": false
+      },
+      "padEnd": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "padStart": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "repeat": {
+        "type": "(count: number) => string",
+        "optional": false
+      },
+      "replace": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; (searchValue: { [Symbol.replace](string: string, replaceValue: string): string; }, replaceValue: string): string; (searchValue: { [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string; }, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "replaceAll": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "search": {
+        "type": "{ (regexp: string | RegExp): number; (searcher: { [Symbol.search](string: string): number; }): number; }",
+        "optional": false
+      },
+      "slice": {
+        "type": "(start?: number, end?: number) => string",
+        "optional": false
+      },
+      "small": {
+        "type": "() => string",
+        "optional": false
+      },
+      "split": {
+        "type": "{ (separator: string | RegExp, limit?: number): string[]; (splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[]; }",
+        "optional": false
+      },
+      "startsWith": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "strike": {
+        "type": "() => string",
+        "optional": false
+      },
+      "sub": {
+        "type": "() => string",
+        "optional": false
+      },
+      "substr": {
+        "type": "(from: number, length?: number) => string",
+        "optional": false
+      },
+      "substring": {
+        "type": "(start: number, end?: number) => string",
+        "optional": false
+      },
+      "sup": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toLocaleLowerCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLocaleUpperCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLowerCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toString": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toUpperCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toWellFormed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trim": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimEnd": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimLeft": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimRight": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimStart": {
+        "type": "() => string",
+        "optional": false
+      },
+      "valueOf": {
+        "type": "() => string",
+        "optional": false
+      }
+    },
+    "definition": "export type LunarPhaseAlias = 'new' | 'first' | 'full' | 'last';"
+  },
   "events:public.LunarPhaseEvent": {
     "kind": "type",
     "type": "LunarPhaseEvent",
@@ -370,12 +1281,20 @@
         "type": "number",
         "optional": false
       },
+      "moonLongitude": {
+        "type": "number",
+        "optional": false
+      },
       "phase": {
         "type": "LunarPhase",
         "optional": false
+      },
+      "sunLongitude": {
+        "type": "number",
+        "optional": false
       }
     },
-    "definition": "export interface LunarPhaseEvent extends EventInstant { phase: LunarPhase; }",
+    "definition": "export interface LunarPhaseEvent extends EventInstant { phase: LunarPhase; moonLongitude: number; sunLongitude: number; }",
     "references": {
       "EventInstant": "events:public.EventInstant",
       "LunarPhase": "events:public.LunarPhase"
@@ -409,6 +1328,14 @@
     "definition": "export interface MoonPhaseInfo { elongation: number; phaseAngle: number; illumination: number; waxing: boolean; phase: LunarPhase; }",
     "references": {
       "LunarPhase": "events:public.LunarPhase"
+    }
+  },
+  "events:public.searchTransitPasses": {
+    "kind": "value",
+    "type": "(params: TransitSearchParams) => TransitSearchResult",
+    "references": {
+      "TransitSearchParams": "public.transits.TransitSearchParams",
+      "TransitSearchResult": "public.transits.TransitSearchResult"
     }
   },
   "events:public.SeasonEvent": {
@@ -475,6 +1402,330 @@
       "CelestialBody": "public.ephemeris.CelestialBody",
       "EventInstant": "events:public.EventInstant"
     }
+  },
+  "events:public.SignsDuring": {
+    "kind": "type",
+    "type": "SignsDuring",
+    "members": {
+      "body": {
+        "type": "CelestialBody",
+        "optional": false
+      },
+      "changesSign": {
+        "type": "boolean",
+        "optional": false
+      },
+      "endSign": {
+        "type": "number",
+        "optional": false
+      },
+      "endSignName": {
+        "type": "string",
+        "optional": false
+      },
+      "ingresses": {
+        "type": "SignIngress[]",
+        "optional": false
+      },
+      "startSign": {
+        "type": "number",
+        "optional": false
+      },
+      "startSignName": {
+        "type": "string",
+        "optional": false
+      }
+    },
+    "definition": "export interface SignsDuring { body: CelestialBody; startSign: number; startSignName: string; endSign: number; endSignName: string; changesSign: boolean; ingresses: SignIngress[]; }",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "SignIngress": "events:public.SignIngress"
+    }
+  },
+  "events:public.SignsDuringOptions": {
+    "kind": "type",
+    "type": "SignsDuringOptions",
+    "members": {
+      "bodies": {
+        "type": "CelestialBody[] | undefined",
+        "optional": true
+      },
+      "includeNutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      },
+      "nutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      }
+    },
+    "definition": "export interface SignsDuringOptions extends EventFrameOptions { bodies?: CelestialBody[]; }",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions"
+    }
+  },
+  "events:public.SolarEclipseEvent": {
+    "kind": "type",
+    "type": "SolarEclipseEvent",
+    "members": {
+      "central": {
+        "type": "boolean",
+        "optional": false
+      },
+      "gamma": {
+        "type": "number",
+        "optional": false
+      },
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "kind": {
+        "type": "\"solar\"",
+        "optional": false
+      },
+      "magnitude": {
+        "type": "number",
+        "optional": false
+      },
+      "moonLongitude": {
+        "type": "number",
+        "optional": false
+      },
+      "sunLongitude": {
+        "type": "number",
+        "optional": false
+      },
+      "type": {
+        "type": "SolarEclipseType",
+        "optional": false
+      }
+    },
+    "definition": "export interface SolarEclipseEvent extends EclipseGeometry { kind: 'solar'; type: SolarEclipseType; central: boolean; }",
+    "references": {
+      "EclipseGeometry": "events:public.LunarEclipseEvent.types.EclipseGeometry",
+      "SolarEclipseType": "events:public.SolarEclipseType"
+    }
+  },
+  "events:public.SolarEclipseType": {
+    "kind": "type",
+    "type": "SolarEclipseType",
+    "members": {
+      "[Symbol.iterator]": {
+        "type": "() => StringIterator<string>",
+        "optional": false
+      },
+      "anchor": {
+        "type": "(name: string) => string",
+        "optional": false
+      },
+      "at": {
+        "type": "(index: number) => string | undefined",
+        "optional": false
+      },
+      "big": {
+        "type": "() => string",
+        "optional": false
+      },
+      "blink": {
+        "type": "() => string",
+        "optional": false
+      },
+      "bold": {
+        "type": "() => string",
+        "optional": false
+      },
+      "charAt": {
+        "type": "(pos: number) => string",
+        "optional": false
+      },
+      "charCodeAt": {
+        "type": "(index: number) => number",
+        "optional": false
+      },
+      "codePointAt": {
+        "type": "(pos: number) => number | undefined",
+        "optional": false
+      },
+      "concat": {
+        "type": "(...strings: string[]) => string",
+        "optional": false
+      },
+      "endsWith": {
+        "type": "(searchString: string, endPosition?: number) => boolean",
+        "optional": false
+      },
+      "fixed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "fontcolor": {
+        "type": "(color: string) => string",
+        "optional": false
+      },
+      "fontsize": {
+        "type": "{ (size: number): string; (size: string): string; }",
+        "optional": false
+      },
+      "includes": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "indexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "isWellFormed": {
+        "type": "() => boolean",
+        "optional": false
+      },
+      "italics": {
+        "type": "() => string",
+        "optional": false
+      },
+      "lastIndexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "length": {
+        "type": "number",
+        "optional": false
+      },
+      "link": {
+        "type": "(url: string) => string",
+        "optional": false
+      },
+      "localeCompare": {
+        "type": "{ (that: string): number; (that: string, locales?: string | string[], options?: Intl.CollatorOptions): number; (that: string, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): number; }",
+        "optional": false
+      },
+      "match": {
+        "type": "{ (regexp: string | RegExp): RegExpMatchArray | null; (matcher: { [Symbol.match](string: string): RegExpMatchArray | null; }): RegExpMatchArray | null; }",
+        "optional": false
+      },
+      "matchAll": {
+        "type": "(regexp: RegExp) => RegExpStringIterator<RegExpExecArray>",
+        "optional": false
+      },
+      "normalize": {
+        "type": "{ (form: \"NFC\" | \"NFD\" | \"NFKC\" | \"NFKD\"): string; (form?: string): string; }",
+        "optional": false
+      },
+      "padEnd": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "padStart": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "repeat": {
+        "type": "(count: number) => string",
+        "optional": false
+      },
+      "replace": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; (searchValue: { [Symbol.replace](string: string, replaceValue: string): string; }, replaceValue: string): string; (searchValue: { [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string; }, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "replaceAll": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "search": {
+        "type": "{ (regexp: string | RegExp): number; (searcher: { [Symbol.search](string: string): number; }): number; }",
+        "optional": false
+      },
+      "slice": {
+        "type": "(start?: number, end?: number) => string",
+        "optional": false
+      },
+      "small": {
+        "type": "() => string",
+        "optional": false
+      },
+      "split": {
+        "type": "{ (separator: string | RegExp, limit?: number): string[]; (splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[]; }",
+        "optional": false
+      },
+      "startsWith": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "strike": {
+        "type": "() => string",
+        "optional": false
+      },
+      "sub": {
+        "type": "() => string",
+        "optional": false
+      },
+      "substr": {
+        "type": "(from: number, length?: number) => string",
+        "optional": false
+      },
+      "substring": {
+        "type": "(start: number, end?: number) => string",
+        "optional": false
+      },
+      "sup": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toLocaleLowerCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLocaleUpperCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLowerCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toString": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toUpperCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toWellFormed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trim": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimEnd": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimLeft": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimRight": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimStart": {
+        "type": "() => string",
+        "optional": false
+      },
+      "valueOf": {
+        "type": "() => string",
+        "optional": false
+      }
+    },
+    "definition": "export type SolarEclipseType = 'total' | 'annular' | 'hybrid' | 'partial';"
   },
   "events:public.StationEvent": {
     "kind": "type",

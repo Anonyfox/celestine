@@ -63,7 +63,7 @@
   },
   "size": {
     "full": {
-      "minBytes": 174464,
+      "minBytes": 173248,
       "gzipBytes": 59008
     },
     "toJulianDate": {
@@ -75,68 +75,68 @@
       "gzipBytes": 896
     },
     "getMercuryPosition": {
-      "minBytes": 62848,
-      "gzipBytes": 24960
+      "minBytes": 62272,
+      "gzipBytes": 24896
     },
     "calculateChart": {
       "minBytes": 86784,
       "gzipBytes": 33024
     },
     "getAllPositions": {
-      "minBytes": 62848,
-      "gzipBytes": 24960
+      "minBytes": 62272,
+      "gzipBytes": 24896
     },
     "realistic": {
-      "minBytes": 133952,
+      "minBytes": 132864,
       "gzipBytes": 48448
     },
     "subpath.getMercuryPosition": {
-      "minBytes": 9280,
+      "minBytes": 9152,
       "gzipBytes": 4224
     },
     "subpath.realistic": {
       "minBytes": 100928,
       "gzipBytes": 38464
     },
-    "precise.getChironPosition": {
-      "minBytes": 10176,
-      "gzipBytes": 5504
-    },
-    "precise.getCeresPosition": {
-      "minBytes": 14656,
-      "gzipBytes": 8960
-    },
-    "precise.getPallasPosition": {
-      "minBytes": 18560,
-      "gzipBytes": 11840
-    },
-    "precise.getJunoPosition": {
-      "minBytes": 17088,
-      "gzipBytes": 10816
-    },
-    "precise.getVestaPosition": {
-      "minBytes": 15488,
-      "gzipBytes": 9536
-    },
-    "precise.all": {
-      "minBytes": 43712,
-      "gzipBytes": 30784
-    },
     "events.full": {
-      "minBytes": 60160,
-      "gzipBytes": 24576
+      "minBytes": 73600,
+      "gzipBytes": 30080
     },
     "events.findSeasons": {
-      "minBytes": 9344,
-      "gzipBytes": 4544
+      "minBytes": 9088,
+      "gzipBytes": 4416
     },
     "events.findLunarPhases": {
-      "minBytes": 11392,
-      "gzipBytes": 5504
+      "minBytes": 11648,
+      "gzipBytes": 5632
     },
     "events.findStations": {
       "minBytes": 56192,
       "gzipBytes": 22848
+    },
+    "precise.getChironPosition": {
+      "minBytes": 9984,
+      "gzipBytes": 5504
+    },
+    "precise.getCeresPosition": {
+      "minBytes": 14464,
+      "gzipBytes": 8960
+    },
+    "precise.getPallasPosition": {
+      "minBytes": 18432,
+      "gzipBytes": 11840
+    },
+    "precise.getJunoPosition": {
+      "minBytes": 16960,
+      "gzipBytes": 10816
+    },
+    "precise.getVestaPosition": {
+      "minBytes": 15360,
+      "gzipBytes": 9536
+    },
+    "precise.all": {
+      "minBytes": 43520,
+      "gzipBytes": 30720
     }
   },
   "perf": {
