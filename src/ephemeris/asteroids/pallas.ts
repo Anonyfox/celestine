@@ -5,7 +5,7 @@
  * @description
  * Calculates geocentric position of Pallas (second-largest asteroid).
  *
- * Uses JPL Horizons orbital elements at J2000.0 epoch for optimal accuracy.
+ * Uses mean orbital elements fitted to JPL Horizons over 1800–2200.
  *
  * @remarks
  * Pallas has the highest inclination (34.8°) of any major asteroid,
@@ -27,41 +27,42 @@ import { geocentricApparent, precessEcliptic } from '../planets/precision.js';
 
 const DEG_TO_RAD = Math.PI / 180;
 const RAD_TO_DEG = 180 / Math.PI;
-const AU_IN_KM = 149597870.7;
 
 /**
- * JPL Horizons orbital elements for Pallas at J2000.0 epoch
- * Source: JPL Horizons EPHEM_TYPE='ELEMENTS' at 2000-01-01 12:00 TT
- * Retrieved: 2025-Dec-19
- * These are AUTHORITATIVE values - do not modify without verification!
+ * Mean orbital elements for Pallas: J2000 ecliptic and equinox, epoch J2000.0 (TDB).
+ * Least-squares fit to JPL Horizons heliocentric ecliptic-J2000 vectors, 10-day grid,
+ * 1800–2200 (scripts/mean-elements/fit-mean-elements.py, 2026-10-24); rounded to the precision
+ * that keeps the fit within 0.1′. These are not osculating elements: the J2000 osculating set
+ * (used until 0.3.0) is exact near 2000 but drifts by degrees within a century, while these
+ * minimize the error over the whole span.
  */
 export const PALLAS_ORBITAL_ELEMENTS = {
   /** Reference epoch (Julian Date TDB) - J2000.0 */
   epoch: 2451545.0,
 
   /** Semi-major axis in AU */
-  semiMajorAxis: 4.147335391694663e8 / AU_IN_KM, // ~2.772 AU
+  semiMajorAxis: 2.771,
 
   /** Eccentricity (dimensionless) */
-  eccentricity: 0.2296435321725964,
+  eccentricity: 0.2324,
 
   /** Inclination in degrees */
-  inclination: 34.8461400333228,
+  inclination: 34.84,
 
   /** Longitude of ascending node in degrees */
-  longitudeOfAscendingNode: 173.197799126349,
+  longitudeOfAscendingNode: 173.2,
 
   /** Argument of perihelion in degrees */
-  argumentOfPerihelion: 310.2656378931236,
+  argumentOfPerihelion: 310.2,
 
   /** Mean anomaly at epoch in degrees */
-  meanAnomalyAtEpoch: 352.9602856376183,
+  meanAnomalyAtEpoch: 352.94,
 
   /** Mean daily motion in degrees/day */
-  meanDailyMotion: 2.471295695610626e-6 * 86400, // Convert from deg/s to deg/day
+  meanDailyMotion: 0.213646,
 
   /** Orbital period in days */
-  orbitalPeriod: 360 / (2.471295695610626e-6 * 86400),
+  orbitalPeriod: 360 / 0.213646,
 
   /** Orbital period in years */
   orbitalPeriodYears: 4.61,

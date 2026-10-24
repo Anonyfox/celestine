@@ -5,7 +5,7 @@
  * @description
  * Calculates geocentric position of Juno (third asteroid discovered).
  *
- * Uses JPL Horizons orbital elements at J2000.0 epoch for optimal accuracy.
+ * Uses mean orbital elements fitted to JPL Horizons over 1800–2200.
  *
  * @remarks
  * Juno was discovered in 1804 and is the 11th largest asteroid.
@@ -26,41 +26,42 @@ import { geocentricApparent, precessEcliptic } from '../planets/precision.js';
 
 const DEG_TO_RAD = Math.PI / 180;
 const RAD_TO_DEG = 180 / Math.PI;
-const AU_IN_KM = 149597870.7;
 
 /**
- * JPL Horizons orbital elements for Juno at J2000.0 epoch
- * Source: JPL Horizons EPHEM_TYPE='ELEMENTS' at 2000-01-01 12:00 TT
- * Retrieved: 2025-Dec-19
- * These are AUTHORITATIVE values - do not modify without verification!
+ * Mean orbital elements for Juno: J2000 ecliptic and equinox, epoch J2000.0 (TDB).
+ * Least-squares fit to JPL Horizons heliocentric ecliptic-J2000 vectors, 10-day grid,
+ * 1800–2200 (scripts/mean-elements/fit-mean-elements.py, 2026-10-24); rounded to the precision
+ * that keeps the fit within 0.1′. These are not osculating elements: the J2000 osculating set
+ * (used until 0.3.0) is exact near 2000 but drifts by degrees within a century, while these
+ * minimize the error over the whole span.
  */
 export const JUNO_ORBITAL_ELEMENTS = {
   /** Reference epoch (Julian Date TDB) - J2000.0 */
   epoch: 2451545.0,
 
   /** Semi-major axis in AU */
-  semiMajorAxis: 3.991323402397366e8 / AU_IN_KM, // ~2.668 AU
+  semiMajorAxis: 2.669,
 
   /** Eccentricity (dimensionless) */
-  eccentricity: 0.2584434725349585,
+  eccentricity: 0.25694,
 
   /** Inclination in degrees */
-  inclination: 12.96742544139138,
+  inclination: 12.97,
 
   /** Longitude of ascending node in degrees */
-  longitudeOfAscendingNode: 170.1725855275966,
+  longitudeOfAscendingNode: 170.226,
 
   /** Argument of perihelion in degrees */
-  argumentOfPerihelion: 248.031724336219,
+  argumentOfPerihelion: 247.58,
 
   /** Mean anomaly at epoch in degrees */
-  meanAnomalyAtEpoch: 240.2686465739974,
+  meanAnomalyAtEpoch: 240.9,
 
   /** Mean daily motion in degrees/day */
-  meanDailyMotion: 2.617598732651759e-6 * 86400, // Convert from deg/s to deg/day
+  meanDailyMotion: 0.225958,
 
   /** Orbital period in days */
-  orbitalPeriod: 360 / (2.617598732651759e-6 * 86400),
+  orbitalPeriod: 360 / 0.225958,
 
   /** Orbital period in years */
   orbitalPeriodYears: 4.36,

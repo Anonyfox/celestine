@@ -1403,11 +1403,11 @@
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.argumentOfPerihelion": {
     "kind": "number",
-    "value": 73.92286274285223
+    "value": 72.5187
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.eccentricity": {
     "kind": "number",
-    "value": 0.0783756264716304
+    "value": 0.07779
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.epoch": {
     "kind": "number",
@@ -1415,23 +1415,23 @@
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.inclination": {
     "kind": "number",
-    "value": 10.58336045805628
+    "value": 10.59
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.longitudeOfAscendingNode": {
     "kind": "number",
-    "value": 80.49435747295276
+    "value": 80.56
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.meanAnomalyAtEpoch": {
     "kind": "number",
-    "value": 6.176654513180486
+    "value": 7.666
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.meanDailyMotion": {
     "kind": "number",
-    "value": 0.21419483747966134
+    "value": 0.21408628
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.orbitalPeriod": {
     "kind": "number",
-    "value": 1680.712776442072
+    "value": 1681.5650213549416
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.orbitalPeriodYears": {
     "kind": "number",
@@ -1439,7 +1439,7 @@
   },
   "exports.ephemeris.CERES_ORBITAL_ELEMENTS.semiMajorAxis": {
     "kind": "number",
-    "value": 2.766496019994375
+    "value": 2.767
   },
   "exports.ephemeris.ceresHeliocentricDistance": {
     "kind": "function"
@@ -1718,11 +1718,11 @@
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.argumentOfPerihelion": {
     "kind": "number",
-    "value": 248.031724336219
+    "value": 247.58
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.eccentricity": {
     "kind": "number",
-    "value": 0.2584434725349585
+    "value": 0.25694
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.epoch": {
     "kind": "number",
@@ -1730,23 +1730,23 @@
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.inclination": {
     "kind": "number",
-    "value": 12.96742544139138
+    "value": 12.97
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.longitudeOfAscendingNode": {
     "kind": "number",
-    "value": 170.1725855275966
+    "value": 170.226
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.meanAnomalyAtEpoch": {
     "kind": "number",
-    "value": 240.2686465739974
+    "value": 240.9
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.meanDailyMotion": {
     "kind": "number",
-    "value": 0.22616053050111198
+    "value": 0.225958
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.orbitalPeriod": {
     "kind": "number",
-    "value": 1591.7896867430188
+    "value": 1593.2164384531638
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.orbitalPeriodYears": {
     "kind": "number",
@@ -1754,7 +1754,7 @@
   },
   "exports.ephemeris.JUNO_ORBITAL_ELEMENTS.semiMajorAxis": {
     "kind": "number",
-    "value": 2.6680349016474114
+    "value": 2.669
   },
   "exports.ephemeris.junoHeliocentricDistance": {
     "kind": "function"
@@ -2062,11 +2062,11 @@
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.argumentOfPerihelion": {
     "kind": "number",
-    "value": 310.2656378931236
+    "value": 310.2
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.eccentricity": {
     "kind": "number",
-    "value": 0.2296435321725964
+    "value": 0.2324
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.epoch": {
     "kind": "number",
@@ -2074,23 +2074,23 @@
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.inclination": {
     "kind": "number",
-    "value": 34.8461400333228
+    "value": 34.84
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.longitudeOfAscendingNode": {
     "kind": "number",
-    "value": 173.197799126349
+    "value": 173.2
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.meanAnomalyAtEpoch": {
     "kind": "number",
-    "value": 352.9602856376183
+    "value": 352.94
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.meanDailyMotion": {
     "kind": "number",
-    "value": 0.2135199481007581
+    "value": 0.213646
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.orbitalPeriod": {
     "kind": "number",
-    "value": 1686.0251381764072
+    "value": 1685.0303773531916
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.orbitalPeriodYears": {
     "kind": "number",
@@ -2098,7 +2098,7 @@
   },
   "exports.ephemeris.PALLAS_ORBITAL_ELEMENTS.semiMajorAxis": {
     "kind": "number",
-    "value": 2.772322475105031
+    "value": 2.771
   },
   "exports.ephemeris.pallasHeliocentricDistance": {
     "kind": "function"
@@ -2392,11 +2392,11 @@
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.argumentOfPerihelion": {
     "kind": "number",
-    "value": 149.5866679599199
+    "value": 150.349
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.eccentricity": {
     "kind": "number",
-    "value": 0.09002244561937413
+    "value": 0.08933
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.epoch": {
     "kind": "number",
@@ -2404,23 +2404,23 @@
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.inclination": {
     "kind": "number",
-    "value": 7.133935828421654
+    "value": 7.136
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.longitudeOfAscendingNode": {
     "kind": "number",
-    "value": 103.9514370845001
+    "value": 103.959
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.meanAnomalyAtEpoch": {
     "kind": "number",
-    "value": 341.0238343838706
+    "value": 340.111
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.meanDailyMotion": {
     "kind": "number",
-    "value": 0.27158921013253523
+    "value": 0.271564
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.orbitalPeriod": {
     "kind": "number",
-    "value": 1325.5313045180271
+    "value": 1325.6543577204636
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.orbitalPeriodYears": {
     "kind": "number",
@@ -2428,7 +2428,7 @@
   },
   "exports.ephemeris.VESTA_ORBITAL_ELEMENTS.semiMajorAxis": {
     "kind": "number",
-    "value": 2.3615349347390713
+    "value": 2.362
   },
   "exports.ephemeris.vestaHeliocentricDistance": {
     "kind": "function"
@@ -8202,7 +8202,7 @@
   },
   "public.ephemeris.CERES_ORBITAL_ELEMENTS": {
     "kind": "value",
-    "type": "{ readonly epoch: 2451545; readonly semiMajorAxis: number; readonly eccentricity: 0.0783756264716304; readonly inclination: 10.58336045805628; readonly longitudeOfAscendingNode: 80.49435747295276; readonly argumentOfPerihelion: 73.92286274285223; readonly meanAnomalyAtEpoch: 6.176654513180486; readonly meanDailyMotion: number; readonly orbitalPeriod: number; readonly orbitalPeriodYears: 4.6; }"
+    "type": "{ readonly epoch: 2451545; readonly semiMajorAxis: 2.767; readonly eccentricity: 0.07779; readonly inclination: 10.59; readonly longitudeOfAscendingNode: 80.56; readonly argumentOfPerihelion: 72.5187; readonly meanAnomalyAtEpoch: 7.666; readonly meanDailyMotion: 0.21408628; readonly orbitalPeriod: number; readonly orbitalPeriodYears: 4.6; }"
   },
   "public.ephemeris.ceresHeliocentricDistance": {
     "kind": "value",
@@ -8547,7 +8547,7 @@
   },
   "public.ephemeris.JUNO_ORBITAL_ELEMENTS": {
     "kind": "value",
-    "type": "{ readonly epoch: 2451545; readonly semiMajorAxis: number; readonly eccentricity: 0.2584434725349585; readonly inclination: 12.96742544139138; readonly longitudeOfAscendingNode: 170.1725855275966; readonly argumentOfPerihelion: 248.031724336219; readonly meanAnomalyAtEpoch: 240.2686465739974; readonly meanDailyMotion: number; readonly orbitalPeriod: number; readonly orbitalPeriodYears: 4.36; }"
+    "type": "{ readonly epoch: 2451545; readonly semiMajorAxis: 2.669; readonly eccentricity: 0.25694; readonly inclination: 12.97; readonly longitudeOfAscendingNode: 170.226; readonly argumentOfPerihelion: 247.58; readonly meanAnomalyAtEpoch: 240.9; readonly meanDailyMotion: 0.225958; readonly orbitalPeriod: number; readonly orbitalPeriodYears: 4.36; }"
   },
   "public.ephemeris.junoHeliocentricDistance": {
     "kind": "value",
@@ -8780,7 +8780,7 @@
   },
   "public.ephemeris.PALLAS_ORBITAL_ELEMENTS": {
     "kind": "value",
-    "type": "{ readonly epoch: 2451545; readonly semiMajorAxis: number; readonly eccentricity: 0.2296435321725964; readonly inclination: 34.8461400333228; readonly longitudeOfAscendingNode: 173.197799126349; readonly argumentOfPerihelion: 310.2656378931236; readonly meanAnomalyAtEpoch: 352.9602856376183; readonly meanDailyMotion: number; readonly orbitalPeriod: number; readonly orbitalPeriodYears: 4.61; }"
+    "type": "{ readonly epoch: 2451545; readonly semiMajorAxis: 2.771; readonly eccentricity: 0.2324; readonly inclination: 34.84; readonly longitudeOfAscendingNode: 173.2; readonly argumentOfPerihelion: 310.2; readonly meanAnomalyAtEpoch: 352.94; readonly meanDailyMotion: 0.213646; readonly orbitalPeriod: number; readonly orbitalPeriodYears: 4.61; }"
   },
   "public.ephemeris.pallasHeliocentricDistance": {
     "kind": "value",
@@ -9077,7 +9077,7 @@
   },
   "public.ephemeris.VESTA_ORBITAL_ELEMENTS": {
     "kind": "value",
-    "type": "{ readonly epoch: 2451545; readonly semiMajorAxis: number; readonly eccentricity: 0.09002244561937413; readonly inclination: 7.133935828421654; readonly longitudeOfAscendingNode: 103.9514370845001; readonly argumentOfPerihelion: 149.5866679599199; readonly meanAnomalyAtEpoch: 341.0238343838706; readonly meanDailyMotion: number; readonly orbitalPeriod: number; readonly orbitalPeriodYears: 3.63; }"
+    "type": "{ readonly epoch: 2451545; readonly semiMajorAxis: 2.362; readonly eccentricity: 0.08933; readonly inclination: 7.136; readonly longitudeOfAscendingNode: 103.959; readonly argumentOfPerihelion: 150.349; readonly meanAnomalyAtEpoch: 340.111; readonly meanDailyMotion: 0.271564; readonly orbitalPeriod: number; readonly orbitalPeriodYears: 3.63; }"
   },
   "public.ephemeris.vestaHeliocentricDistance": {
     "kind": "value",
