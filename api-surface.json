@@ -52,6 +52,17 @@
       "EventInstant": "events:public.EventInstant"
     }
   },
+  "events:public.EventFrameOptions": {
+    "kind": "type",
+    "type": "EventFrameOptions",
+    "members": {
+      "includeNutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      }
+    },
+    "definition": "export interface EventFrameOptions { includeNutation?: boolean; }"
+  },
   "events:public.EventInstant": {
     "kind": "type",
     "type": "EventInstant",
@@ -69,10 +80,11 @@
   },
   "events:public.findAspectTimes": {
     "kind": "value",
-    "type": "(body: CelestialBody, target: CelestialBody | number, startJD: number, endJD: number, options?: { angles?: number[]; }) => AspectTimeEvent[]",
+    "type": "(body: CelestialBody, target: CelestialBody | number, startJD: number, endJD: number, options?: EventFrameOptions & { angles?: number[]; }) => AspectTimeEvent[]",
     "references": {
       "AspectTimeEvent": "events:public.AspectTimeEvent",
-      "CelestialBody": "public.ephemeris.CelestialBody"
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "events:public.EventFrameOptions"
     }
   },
   "events:public.findLunarPhases": {
@@ -92,17 +104,19 @@
   },
   "events:public.findSignIngresses": {
     "kind": "value",
-    "type": "(body: CelestialBody, startJD: number, endJD: number, options?: { nutation?: boolean; }) => SignIngress[]",
+    "type": "(body: CelestialBody, startJD: number, endJD: number, options?: EventFrameOptions & { nutation?: boolean; }) => SignIngress[]",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "events:public.EventFrameOptions",
       "SignIngress": "events:public.SignIngress"
     }
   },
   "events:public.findVoidOfCourseMoon": {
     "kind": "value",
-    "type": "(startJD: number, endJD: number, options?: { bodies?: CelestialBody[]; }) => VoidOfCoursePeriod[]",
+    "type": "(startJD: number, endJD: number, options?: EventFrameOptions & { bodies?: CelestialBody[]; }) => VoidOfCoursePeriod[]",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "events:public.EventFrameOptions",
       "VoidOfCoursePeriod": "events:public.VoidOfCoursePeriod"
     }
   },

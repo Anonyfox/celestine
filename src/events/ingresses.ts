@@ -3,12 +3,12 @@ import { toUT } from '../time/delta-t.js';
 import { getSignName } from '../zodiac/sign-properties.js';
 import { bodyStep, position } from './bodies.js';
 import { crossings } from './search.js';
-import type { SignIngress } from './types.js';
+import type { EventFrameOptions, SignIngress } from './types.js';
 
 /**
  * Every 30-degree sign crossing, including retrograde re-entries, in inclusive TT JD bounds.
  * Same frame as the position API: by default apparent longitude in the mean equinox of
- * date (as getPosition and calculateChart); nutation:true is the true equinox of date, as
+ * date (as getPosition and calculateChart); includeNutation:true is the true equinox, as
  * getPosition(body, jd, { includeNutation: true }). At every returned jd the position API
  * with matching options is on the cusp to within 1e-4 arcsecond.
  * Supports all getPosition bodies, including nodes/Lilith. jd is TT; jdUT is UT via toUT.
@@ -16,18 +16,23 @@ import type { SignIngress } from './types.js';
  * @param body - Any supported celestial body, including nodes and Lilith.
  * @param startJD - Inclusive start, TT Julian Date.
  * @param endJD - Inclusive end, TT Julian Date.
- * @param options - Set nutation to use the true equinox of date.
+ * @param options - includeNutation for the true equinox of date. `nutation` is its
+ *   deprecated alias (0.4.0 name), still honoured when includeNutation is absent.
  * @returns Chronologically ordered crossings with entered and previous sign names.
- * @example findSignIngresses(CelestialBody.Mercury, 2451545, 2451910, { nutation: true })
+ * @example findSignIngresses(CelestialBody.Mercury, 2451545, 2451910, { includeNutation: true })
  */
 export function findSignIngresses(
   body: CelestialBody,
   startJD: number,
   endJD: number,
-  options: { nutation?: boolean } = {},
+  options: EventFrameOptions & {
+    /** @deprecated Since 0.5.0: use includeNutation (same meaning). */
+    nutation?: boolean;
+  } = {},
 ): SignIngress[] {
+  const trueEquinox = options.includeNutation ?? options.nutation;
   return crossings(
-    (jd) => position(body, jd, options.nutation),
+    (jd) => position(body, jd, trueEquinox),
     Array.from({ length: 12 }, (_, i) => i * 30),
     startJD,
     endJD,

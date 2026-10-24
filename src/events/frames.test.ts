@@ -7,8 +7,7 @@ import { findAspectTimes, findSeasons, findSignIngresses, findVoidOfCourseMoon }
 import { wrap } from './search.js';
 
 // Events and the position API share one frame: by default apparent longitude in the mean
-// equinox of date; `nutation: true` (events) is `includeNutation: true` (positions), the
-// true equinox of date. At every found instant the position API must sit on the target to
+// equinox of date; `includeNutation: true` means the true equinox of date in both. At every found instant the position API must sit on the target to
 // within the root finder's own tolerance, far below any ephemeris error.
 const TOLERANCE = 1e-4; // arcseconds
 const arcsec = (degrees: number) => Math.abs(wrap(degrees)) * 3600;
@@ -20,7 +19,9 @@ const span = (body: CelestialBody) =>
 test('every sign ingress lies on its cusp in the position API, in both frames', () => {
   for (const body of Object.values(CelestialBody)) {
     for (const nutation of [false, true]) {
-      const events = findSignIngresses(body, J2000, J2000 + span(body), { nutation });
+      const events = findSignIngresses(body, J2000, J2000 + span(body), {
+        includeNutation: nutation,
+      });
       assert.ok(events.length >= 2, `${body}: ${events.length} ingresses`);
       for (const e of events) {
         const cusp = (e.retrograde ? e.previousSign : e.sign) * 30;
@@ -45,7 +46,7 @@ test('frames differ by nutation in longitude for every body, nodes and Lilith in
 test('seasons are true-equinox Sun ingresses; the default Sun ingress is the mean one', () => {
   const seasons = findSeasons(J2000, J2000 + 3653);
   const ingress = (nutation: boolean) =>
-    findSignIngresses(CelestialBody.Sun, J2000, J2000 + 3653, { nutation }).filter(
+    findSignIngresses(CelestialBody.Sun, J2000, J2000 + 3653, { includeNutation: nutation }).filter(
       (e) => e.sign % 3 === 0,
     );
   const apparent = ingress(true);
@@ -65,25 +66,55 @@ test('seasons are true-equinox Sun ingresses; the default Sun ingress is the mea
   });
 });
 
-test('aspect times and void-of-course boundaries agree with default positions', () => {
-  for (const target of [CelestialBody.Saturn, 45]) {
-    for (const e of findAspectTimes(CelestialBody.Mars, target, J2000, J2000 + 1500)) {
-      const q = typeof target === 'number' ? target : getPosition(target, e.jd).longitude;
-      const separation = Math.abs(wrap(getPosition(e.body, e.jd).longitude - q));
-      assert.ok(Math.abs(separation - e.angle) * 3600 < TOLERANCE);
+test('aspect times and void-of-course boundaries agree with positions, in both frames', () => {
+  for (const includeNutation of [false, true]) {
+    const at = (body: CelestialBody, jd: number) =>
+      getPosition(body, jd, { includeNutation }).longitude;
+    for (const target of [CelestialBody.Saturn, 45]) {
+      const events = findAspectTimes(CelestialBody.Mars, target, J2000, J2000 + 1500, {
+        includeNutation,
+      });
+      assert.ok(events.length > 5);
+      for (const e of events) {
+        const q = typeof target === 'number' ? target : at(target, e.jd);
+        const separation = Math.abs(wrap(at(e.body, e.jd) - q));
+        assert.ok(Math.abs(separation - e.angle) * 3600 < TOLERANCE);
+      }
+    }
+    const periods = findVoidOfCourseMoon(J2000, J2000 + 60, { includeNutation });
+    assert.ok(periods.length > 15);
+    for (const period of periods) {
+      const cusp = period.nextSign * 30;
+      assert.ok(arcsec(at(CelestialBody.Moon, period.end) - cusp) < TOLERANCE);
+      if (period.lastAspect) {
+        const { body, angle, jd } = period.lastAspect;
+        const separation = Math.abs(wrap(at(CelestialBody.Moon, jd) - at(body, jd)));
+        assert.ok(Math.abs(separation - angle) * 3600 < TOLERANCE);
+      }
     }
   }
-  for (const period of findVoidOfCourseMoon(J2000, J2000 + 30)) {
-    assert.ok(
-      arcsec(getPosition(CelestialBody.Moon, period.end).longitude - period.nextSign * 30) <
-        TOLERANCE,
-    );
-    if (period.lastAspect) {
-      const { body, angle, jd } = period.lastAspect;
-      const separation = Math.abs(
-        wrap(getPosition(CelestialBody.Moon, jd).longitude - getPosition(body, jd).longitude),
-      );
-      assert.ok(Math.abs(separation - angle) * 3600 < TOLERANCE);
-    }
-  }
+  // Between two bodies the frame cancels; a fixed longitude shifts by Δψ / speed.
+  const moving = (includeNutation: boolean) =>
+    findAspectTimes(CelestialBody.Mars, CelestialBody.Saturn, J2000, J2000 + 1500, {
+      includeNutation,
+    });
+  moving(true).forEach((e, i) => {
+    assert.ok(Math.abs(e.jd - moving(false)[i]!.jd) * 86400 < 1e-3);
+  });
+  const fixed = (includeNutation: boolean) =>
+    findAspectTimes(CelestialBody.Sun, 45, J2000, J2000 + 3653, { includeNutation });
+  assert.equal(fixed(true).length, fixed(false).length);
+  assert.ok(fixed(true).some((e, i) => Math.abs(e.jd - fixed(false)[i]!.jd) * 86400 > 60));
+});
+
+test('`nutation` is a deprecated alias of includeNutation on findSignIngresses', () => {
+  const body = CelestialBody.Mars;
+  const canonical = findSignIngresses(body, J2000, J2000 + 1500, { includeNutation: true });
+  assert.deepEqual(findSignIngresses(body, J2000, J2000 + 1500, { nutation: true }), canonical);
+  assert.notDeepEqual(findSignIngresses(body, J2000, J2000 + 1500), canonical);
+  // The canonical name wins when both are given.
+  assert.deepEqual(
+    findSignIngresses(body, J2000, J2000 + 1500, { includeNutation: false, nutation: true }),
+    findSignIngresses(body, J2000, J2000 + 1500),
+  );
 });

@@ -2,12 +2,14 @@ import type { CelestialBody } from '../ephemeris/positions.js';
 import { toUT } from '../time/delta-t.js';
 import { bodyStep, position } from './bodies.js';
 import { crossings, normalize } from './search.js';
-import type { AspectTimeEvent } from './types.js';
+import type { AspectTimeEvent, EventFrameOptions } from './types.js';
 
 /**
  * Exact apparent geocentric longitude aspects in inclusive TT JD bounds, in the position
- * API's default frame (mean equinox of date). Between two bodies the frame cancels; a fixed
- * target longitude is a mean-equinox longitude, like a natal position from calculateChart.
+ * API's default frame (mean equinox of date); includeNutation uses the true equinox, as
+ * getPosition with includeNutation. Between two bodies the frame cancels (identical
+ * results); a fixed target longitude is read in the chosen frame, so a natal position from
+ * calculateChart is a default (mean-equinox) longitude.
  * Default angles are 0,60,90,120,180 degrees; both orientations are searched. Relative
  * stations are split to recover retrograde multiple passes. jd is TT; jdUT is UT via toUT.
  * increasing describes unsigned separation [0,180], false at the 0/180 cusps; together
@@ -17,7 +19,7 @@ import type { AspectTimeEvent } from './types.js';
  * @param target - Moving body or fixed mean-equinox ecliptic longitude in degrees.
  * @param startJD - Inclusive start, TT Julian Date.
  * @param endJD - Inclusive end, TT Julian Date.
- * @param options - Unique unsigned aspect angles, each from 0 through 180 degrees.
+ * @param options - Unsigned aspect angles (each 0–180 degrees) and the frame.
  * @returns Ordered isolated exact aspects with TT jd and UT jdUT.
  * @example findAspectTimes(CelestialBody.Mars, CelestialBody.Saturn, 2451545, 2452640)
  */
@@ -26,7 +28,7 @@ export function findAspectTimes(
   target: CelestialBody | number,
   startJD: number,
   endJD: number,
-  options: { angles?: number[] } = {},
+  options: EventFrameOptions & { angles?: number[] } = {},
 ): AspectTimeEvent[] {
   const angles = [...new Set(options.angles ?? [0, 60, 90, 120, 180])];
   if (
@@ -37,9 +39,11 @@ export function findAspectTimes(
   const targets = angles.flatMap((a) => (a > 0 && a < 180 ? [a, 360 - a] : [a]));
   return crossings(
     (jd) => {
-      const p = position(body, jd);
+      const p = position(body, jd, options.includeNutation);
       const q =
-        typeof target === 'number' ? { value: normalize(target), rate: 0 } : position(target, jd);
+        typeof target === 'number'
+          ? { value: normalize(target), rate: 0 }
+          : position(target, jd, options.includeNutation);
       return { value: p.value - q.value, rate: p.rate - q.rate };
     },
     targets,

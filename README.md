@@ -829,8 +829,11 @@ const voidPeriods = findVoidOfCourseMoon(start, start + 30);
 - `findSignIngresses` includes retrograde re-entries, entered/previous sign indices
   (Aries=0) and names. Events use the position API's frame: by default apparent
   longitude in the **mean ecliptic/equinox of date**, like `getPosition` and
-  `calculateChart`; `{ nutation: true }` gives true-equinox crossings, like
-  `getPosition(body, jd, { includeNutation: true })`. At every returned instant the
+  `calculateChart`; `{ includeNutation: true }` gives true-equinox crossings, like
+  `getPosition(body, jd, { includeNutation: true })`. The same option works for
+  `findAspectTimes` (it matters for a fixed target longitude; between two bodies the frame
+  cancels) and `findVoidOfCourseMoon` (the Moon's ingresses). `{ nutation: true }`, the
+  0.4.0 name on `findSignIngresses`, remains a deprecated alias. At every returned instant the
   position API with matching options is on the cusp to within 1e-4″ (tested for every
   body, nodes and Lilith included). Note that `calculateChart` takes UT; pass
   `deltaT: deltaTAt` for TT positions that match event instants exactly.
@@ -841,7 +844,7 @@ const voidPeriods = findVoidOfCourseMoon(start, start + 30);
   principal phase bucket (boundaries 45/135/225/315°).
 - `findSeasons` uses apparent solar longitude 0/90/180/270° from the **true equinox**,
   the definition used by USNO, the Astronomical Almanac and Meeus (ch. 27). It equals
-  the Sun's cardinal ingresses with `{ nutation: true }`; default (mean-equinox) Sun
+  the Sun's cardinal ingresses with `{ includeNutation: true }`; default (mean-equinox) Sun
   ingresses differ by Δψ/speed, up to about 19 minutes.
 - `findAspectTimes` finds exact unsigned longitude separations; default angles
   are 0/60/90/120/180°. Intermediate angles search both orientations. Target may

@@ -58,16 +58,17 @@ Horizons caches requests by URL SHA-256 prefix; remove `requests/` to re-fetch t
 ## Frames
 
 The library default for positions, charts and events is apparent longitude in the **mean**
-equinox of date; `includeNutation: true` (positions) and `nutation: true` (ingresses) give
+equinox of date; `includeNutation: true` (positions and events) gives
 the **true** equinox of date. Every reference is compared with the library in its own frame:
 
 | Event | Reference | Library call |
 |---|---|---|
-| Ingress, true | `jd` | `findSignIngresses(body, a, b, { nutation: true })` |
+| Ingress, true | `jd` | `findSignIngresses(body, a, b, { includeNutation: true })` |
 | Ingress, mean | `jdMean` | `findSignIngresses(body, a, b)` |
 | Season (true, the USNO/Meeus definition) | `jd` | `findSeasons` |
 | Season, mean | `jdMean` | default Sun ingress at 0/90/180/270° |
-| Aspect to a fixed (mean-equinox) longitude | `jdMean` | `findAspectTimes(body, fixed, …)` |
+| Aspect to a fixed longitude, mean | `jdMean` | `findAspectTimes(body, fixed, …)` |
+| Aspect to a fixed longitude, true | `jd` | `findAspectTimes(body, fixed, a, b, { includeNutation: true })` |
 | Phase, aspect between bodies | `jd` (frame cancels) | `findLunarPhases`, `findAspectTimes` |
 
 Horizons quantity 31 (ObsEcLon) is the true ecliptic and equinox of date and has no
@@ -131,6 +132,7 @@ measurements, not limits borrowed from a different time scale or positional budg
 | Horizons aspect Mars TT | 7 | 65.333 | 31.415 | |
 | Horizons aspect Jupiter TT | 7 | 369.214 | 157.592 | |
 | Horizons aspect Mercury mean fixed TT | 10 | 28.776 | 11.740 | |
+| Horizons aspect Mercury true fixed TT | 10 | 28.191 | 11.477 | |
 | Horizons aspect Mercury TT | 3 | 54.144 | 36.187 | |
 
 Illumination fraction max/RMS: **0.000036798 / 0.000017788** (51 epochs; unitless).

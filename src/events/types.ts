@@ -35,6 +35,18 @@ export interface MoonPhaseInfo {
 export interface SeasonEvent extends EventInstant {
   type: 'march-equinox' | 'june-solstice' | 'september-equinox' | 'december-solstice';
 }
+/**
+ * Frame option shared by the event searches, with the position API's name and meaning.
+ * @example { includeNutation: true }
+ */
+export interface EventFrameOptions {
+  /**
+   * Use apparent longitudes referred to the TRUE equinox of date, as
+   * getPosition(body, jd, { includeNutation: true }). Default: mean equinox of date, as
+   * getPosition and calculateChart.
+   */
+  includeNutation?: boolean;
+}
 /** Exact unsigned longitude separation, with TT/UT JD. @example event.increasing */
 export interface AspectTimeEvent extends EventInstant {
   body: CelestialBody;

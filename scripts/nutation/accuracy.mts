@@ -78,7 +78,7 @@ for (const r of events) {
   if (r.kind === 'phase') hit = findLunarPhases(a, b, { phases: [r.phase as never] });
   else if (r.kind === 'season') hit = findSeasons(a, b);
   else if (r.kind === 'ingress' && ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars'].includes(r.body))
-    hit = findSignIngresses(r.body as never, a, b, { nutation: true });
+    hit = findSignIngresses(r.body as never, a, b, { includeNutation: true });
   else continue;
   const error = Math.abs(hit[0]!.jd - r.jd) * 86400;
   worst[key] = Math.max(worst[key] ?? 0, error);

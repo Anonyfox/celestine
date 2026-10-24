@@ -42,11 +42,21 @@ for (const r of references) {
     runs.push(['true', r.jd, (a, b) => events.findSeasons(a, b)]);
     runs.push(['mean', r.jdMean, (a, b) => events.findSignIngresses('Sun', a, b)]);
   } else if (r.kind === 'ingress') {
-    runs.push(['true', r.jd, (a, b) => events.findSignIngresses(r.body, a, b, { nutation: true })]);
+    runs.push([
+      'true',
+      r.jd,
+      (a, b) => events.findSignIngresses(r.body, a, b, { includeNutation: true }),
+    ]);
     runs.push(['mean', r.jdMean, (a, b) => events.findSignIngresses(r.body, a, b)]);
   } else {
     const angles = [Math.min(r.angle, 360 - r.angle)];
     const fixed = r.fixed !== undefined;
+    if (fixed)
+      runs.push([
+        'true fixed',
+        r.jd,
+        (a, b) => events.findAspectTimes(r.body, r.fixed, a, b, { angles, includeNutation: true }),
+      ]);
     runs.push([
       fixed ? 'mean fixed' : '',
       fixed ? r.jdMean : r.jd,

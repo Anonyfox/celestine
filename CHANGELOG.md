@@ -49,6 +49,13 @@ All notable changes to this project are documented here, following
   matches `includeNutation: true`. At every found ingress, aspect, season and void-of-course
   boundary the position API is on target to within 1e-4″. Seasons stay on the true
   equinox (USNO, Meeus); lunar phases and aspects between bodies are frame-free.
+- Event searches take `includeNutation`, the position API's name, as their frame option:
+  `findSignIngresses`, and new on `findAspectTimes` (it changes results only for a fixed
+  target longitude, read in the chosen frame; between bodies the frame cancels) and
+  `findVoidOfCourseMoon` (the Moon's ingresses). The shared type is `EventFrameOptions`.
+  `nutation`, the 0.4.0 name on `findSignIngresses`, keeps working as a deprecated alias;
+  `includeNutation` wins when both are given. Fixed-longitude aspects measured against
+  Horizons: 28.8 s max (mean) and 28.2 s (true).
 - Horizons event references are labelled by frame, and each test compares like with like.
   Mean-equinox references (`jdMean`) are derived from the same Horizons samples with IAU
   2000A nutation (ERFA), independent of the library. Ingress tests now bound the implied

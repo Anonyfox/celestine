@@ -113,15 +113,15 @@ test('Horizons: independent fine-grid crossing times on TT, each in its own fram
     const label = `${r.kind} ${r.body} ${r.jd}`;
     const near = (jd: number) => [jd - 0.2, jd + 0.2] as const;
     if (r.kind === 'ingress') {
-      for (const [ref, nutation] of [
+      for (const [ref, includeNutation] of [
         [r.jdMean!, false],
         [r.jd, true],
       ] as const) {
-        const e = only(findSignIngresses(r.body, ...near(ref), { nutation }), label);
+        const e = only(findSignIngresses(r.body, ...near(ref), { includeNutation }), label);
         const arcsec = Math.abs(e.jd - ref) * Math.abs(speed(r.body, ref)) * 3600;
         assert.ok(
           arcsec < ingressLimits[r.body]!,
-          `${label} nutation:${nutation}: ${arcsec.toFixed(3)}″ > ${ingressLimits[r.body]}″`,
+          `${label} includeNutation:${includeNutation}: ${arcsec.toFixed(3)}″ > ${ingressLimits[r.body]}″`,
         );
       }
       continue;
@@ -139,12 +139,20 @@ test('Horizons: independent fine-grid crossing times on TT, each in its own fram
       assert.ok(Math.abs(mean.jd - r.jdMean!) * 86400 < 11, `${label} mean`);
       limit = 11;
     } else {
-      // A fixed longitude is in the default mean frame, so it is compared with jdMean.
-      const ref = r.fixed === undefined ? r.jd : r.jdMean!;
+      // A fixed longitude is read in the chosen frame: jdMean by default, jd (Horizons
+      // native) with includeNutation. Between bodies the frame cancels: jd only.
       const angles = [Math.min(r.angle, 360 - r.angle)];
-      error =
-        only(findAspectTimes(r.body, r.targetBody ?? r.fixed!, ...near(ref), { angles }), label)
-          .jd - ref;
+      const target = r.targetBody ?? r.fixed!;
+      if (r.fixed !== undefined) {
+        const e = only(
+          findAspectTimes(r.body, target, ...near(r.jd), { angles, includeNutation: true }),
+          label,
+        );
+        const trueError = Math.abs(e.jd - r.jd) * 86400;
+        assert.ok(trueError < aspectLimits[r.body]!, `${label} true: ${trueError.toFixed(3)} s`);
+      }
+      const ref = r.fixed === undefined ? r.jd : r.jdMean!;
+      error = only(findAspectTimes(r.body, target, ...near(ref), { angles }), label).jd - ref;
       limit = aspectLimits[r.body]!;
     }
     error = Math.abs(error) * 86400;

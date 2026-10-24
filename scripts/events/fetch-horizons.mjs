@@ -71,7 +71,7 @@ for (let i = 0; i < 11; i++) {
 }
 for (const body of Object.keys(ids)) {
   console.log('select ingresses', body);
-  const all = events.findSignIngresses(body, start, end, { nutation: true });
+  const all = events.findSignIngresses(body, start, end, { includeNutation: true });
   const chosen = select(all, 12);
   // Replace two central entries with retrograde crossings where possible.
   const retro = all.filter((e) => e.retrograde);

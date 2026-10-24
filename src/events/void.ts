@@ -3,7 +3,7 @@ import { toUT } from '../time/delta-t.js';
 import { findAspectTimes } from './aspects.js';
 import { findSignIngresses } from './ingresses.js';
 import { interval } from './search.js';
-import type { VoidOfCoursePeriod } from './types.js';
+import type { EventFrameOptions, VoidOfCoursePeriod } from './types.js';
 
 const traditional = [
   CelestialBody.Sun,
@@ -18,22 +18,25 @@ const traditional = [
  * aspect (0,60,90,120,180; no orbs) within a sign to Sun/Mercury/Venus/Mars/Jupiter/Saturn,
  * until the next Moon ingress. Pass bodies to use e.g. the modern outer-planet convention.
  * With no aspect, the whole sign stay is void. The Moon itself is ignored in bodies.
- * Uses the position API's default mean-equinox longitudes (ingresses and aspects). TT JD inputs; returns complete periods overlapping
+ * Uses the position API's mean-equinox longitudes by default; includeNutation uses the true
+ * equinox for the Moon's ingresses (the frame cancels in aspects between bodies). TT JD inputs; returns complete periods overlapping
  * the inclusive interval (unclipped), with start/end TT and startUT/endUT via toUT.
  * Searches four days beyond each bound to bracket full sign stays (Moon stays <3 days).
  * @param startJD - Inclusive overlap window start, TT Julian Date.
  * @param endJD - Inclusive overlap window end, TT Julian Date.
- * @param options - Aspect partners; defaults to the six traditional bodies.
+ * @param options - Aspect partners (default: the six traditional bodies) and the frame.
  * @returns Ordered, non-overlapping complete void periods and their last exact aspect.
  * @example findVoidOfCourseMoon(2451545, 2451576)
  */
 export function findVoidOfCourseMoon(
   startJD: number,
   endJD: number,
-  options: { bodies?: CelestialBody[] } = {},
+  options: EventFrameOptions & { bodies?: CelestialBody[] } = {},
 ): VoidOfCoursePeriod[] {
   interval(startJD, endJD);
-  const ingresses = findSignIngresses(CelestialBody.Moon, startJD - 4, endJD + 4);
+  const ingresses = findSignIngresses(CelestialBody.Moon, startJD - 4, endJD + 4, {
+    includeNutation: options.includeNutation,
+  });
   const bodies = [...new Set(options.bodies ?? traditional)].filter(
     (b) => b !== CelestialBody.Moon,
   );

@@ -5,6 +5,7 @@ export { findLunarPhases, getMoonPhase } from './lunar.js';
 export { findSeasons } from './seasons.js';
 export type {
   AspectTimeEvent,
+  EventFrameOptions,
   EventInstant,
   LunarPhase,
   LunarPhaseEvent,
