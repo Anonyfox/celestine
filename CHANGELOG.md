@@ -24,8 +24,32 @@ All notable changes to this project are documented here, following
   sizes, including the shared pipeline: Chiron 5.5 KB up to Pallas 11.8 KB, all five 30.7 KB.
 - The root `celestine` export and all other subpaths are unchanged.
 
+### Changed
+
+- Nutation is now one shared, more accurate series: the 13 largest IAU 2000B terms
+  (`nutationInLongitude`), within 0.05″ of the full IAU 2000A series for 1800–2200 (0.1″ for
+  1000–3000). It replaces the one-term formula behind `includeNutation` (about 2″ off) and the
+  four-term series in the event searches (0.35″ off).
+- Default output is unchanged. It is mean ecliptic and equinox of date and does not use
+  nutation; this is verified bit-identical for all 15 bodies (with and without speed) and
+  3,000 charts.
+- With `includeNutation: true`, longitudes shift by up to about 2″. Worst error vs JPL Horizons
+  (true equinox of date), before → after: Sun 2.06″ → 0.37″, Mercury 2.33″ → 1.07″,
+  Venus 2.15″ → 0.65″, Mars 1.92″ → 1.24″, Jupiter 2.51″ → 1.42″, Saturn 2.68″ → 1.69″,
+  Uranus 4.04″ → 3.22″, Neptune 5.74″ → 4.77″, Pluto 4.29″ → 3.29″. The precise bodies
+  (1800–2200) improve from 1.98–2.60″ to 0.74–0.93″.
+- True-equinox event times (seasons, `nutation: true` ingresses) move by up to a few seconds
+  for the inner bodies. Measured against Horizons, seasons improve from 9.3 s to 7.5 s max and
+  Sun ingresses from 9.1 s to 7.1 s. Jupiter and Saturn ingress maxima rise from 266 s to
+  333 s and from 586 s to 642 s. Those are near-station crossings, where a 0.1″ frame shift
+  moves the time by minutes. Mean-equinox events (the default) are unchanged.
+- Planet, Sun and precise-body positions are about 8–22% faster: the apparent-place pipeline no
+  longer builds intermediate objects by spreading them. Output is bit-identical.
+
 ### Fixed
 
+- `getMoonPosition` now honours `includeNutation`. Before, it silently returned the
+  mean-equinox longitude.
 - `calculateChart` now computes the aspect types requested in `options.aspectTypes`, including
   minor and Kepler aspects. Before, it detected only the major aspects and then filtered them, so
   a requested quincunx (and any pattern that needs one, such as a Yod) never appeared.

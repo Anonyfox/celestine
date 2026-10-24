@@ -57,10 +57,14 @@ Horizons caches requests by URL SHA-256 prefix; remove `requests/` to re-fetch t
 `frame.json` records three Sun epochs and independent Horizons longitude: TT JD 2415020,
 2451545 and 2488070. Mean-equinox residuals were −17.258, +14.087, −3.031 arcseconds;
 adding the dominant nutation term reduced these to −0.363, +0.005, −0.314 arcseconds,
-and the four-term series used by events to +0.156, +0.056, +0.232.
-The ephemeris nutation function keeps only the dominant 17.2″ term (size budget).
-Events use Meeus' four-term series (adds 1.32″, 0.23″, 0.21″ terms) for true-equinox
-searches, which halved season errors (19.5 → 9.3 s) and Sun ingress errors (35 → 9 s).
+the four-term series events used until 0.4 to +0.156, +0.056, +0.232, and the shared
+13-term IAU 2000B series (`nutationInLongitude`, within 0.05″ of IAU 2000A for 1800–2200,
+used everywhere since 0.5) to +0.084, +0.170, +0.239; the residual is mostly the Sun model.
+The four-term series halved season errors (19.5 → 9.3 s) and Sun ingress errors
+(35 → 9 s); the IAU 2000B series took them to 7.5 s and 7.1 s. Jupiter and Saturn ingress
+maxima rose (266 → 333 s, 586 → 642 s): their worst crossings are near stations, where a
+≈0.1″ frame shift moves the time by minutes. Their position errors at the crossing stay
+within 0.52″ and 0.73″, inside the planetary model's own error.
 Thus ObsEcLon is empirically **true-equinox of date**. Ingress references use
 `nutation:true`; season searches always use true-equinox longitude. Default ingress
 longitudes remain the library's mean-equinox values. The existing independent
@@ -75,19 +79,19 @@ measurements, not limits borrowed from a different time scale or positional budg
 | Source / event / scale | Samples | Max (s) | RMS (s) |
 |---|---:|---:|---:|
 | USNO phases UT | 9945 | 59.657 | 21.411 |
-| USNO seasons UT | 804 | 46.686 | 19.109 |
+| USNO seasons UT | 804 | 42.479 | 18.929 |
 | Horizons phase Moon TT | 64 | 14.531 | 5.551 |
-| Horizons season Sun TT | 44 | 9.250 | 4.615 |
-| Horizons ingress Sun TT | 12 | 9.142 | 5.211 |
-| Horizons ingress Moon TT | 12 | 10.832 | 5.956 |
-| Horizons ingress Mercury TT | 12 | 8.406 | 3.685 |
-| Horizons ingress Venus TT | 12 | 124.365 | 44.961 |
-| Horizons ingress Mars TT | 12 | 91.253 | 28.448 |
-| Horizons ingress Jupiter TT | 12 | 265.777 | 120.981 |
-| Horizons ingress Saturn TT | 12 | 586.453 | 186.137 |
-| Horizons ingress Uranus TT | 12 | 1356.670 | 594.406 |
-| Horizons ingress Neptune TT | 12 | 2466.519 | 1399.088 |
-| Horizons ingress Pluto TT | 12 | 10834.170 | 3864.983 |
+| Horizons season Sun TT | 44 | 7.506 | 3.913 |
+| Horizons ingress Sun TT | 12 | 7.121 | 4.045 |
+| Horizons ingress Moon TT | 12 | 10.925 | 5.881 |
+| Horizons ingress Mercury TT | 12 | 6.069 | 3.092 |
+| Horizons ingress Venus TT | 12 | 133.884 | 49.254 |
+| Horizons ingress Mars TT | 12 | 94.222 | 29.095 |
+| Horizons ingress Jupiter TT | 12 | 333.455 | 135.901 |
+| Horizons ingress Saturn TT | 12 | 642.367 | 207.322 |
+| Horizons ingress Uranus TT | 12 | 1300.786 | 580.075 |
+| Horizons ingress Neptune TT | 12 | 2496.650 | 1376.983 |
+| Horizons ingress Pluto TT | 12 | 10699.601 | 3842.188 |
 | Horizons aspect Moon TT | 14 | 7.982 | 3.735 |
 | Horizons aspect Sun TT | 7 | 17.167 | 12.165 |
 | Horizons aspect Mars TT | 7 | 65.333 | 31.415 |

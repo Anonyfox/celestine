@@ -18,6 +18,7 @@
  */
 
 import { DAYS_PER_JULIAN_CENTURY, DEG_TO_RAD, J2000_EPOCH } from './constants.js';
+import { nutationInLongitude } from './nutation.js';
 import type { EphemerisOptions, PlanetPosition } from './types.js';
 
 // =============================================================================
@@ -566,7 +567,9 @@ export function getMoonPosition(jd: number, options: EphemerisOptions = {}): Pla
   const T = (jd - J2000_EPOCH) / DAYS_PER_JULIAN_CENTURY;
 
   // Calculate position
-  const longitude = normalizeAngle(moonLongitude(T));
+  const longitude = normalizeAngle(
+    moonLongitude(T) + (options.includeNutation ? nutationInLongitude(T) : 0),
+  );
   const latitude = moonLatitude(T);
   const distance = moonDistanceAU(T);
 
@@ -575,7 +578,9 @@ export function getMoonPosition(jd: number, options: EphemerisOptions = {}): Pla
   if (options.includeSpeed !== false) {
     // Calculate position tomorrow
     const T1 = (jd + 1 - J2000_EPOCH) / DAYS_PER_JULIAN_CENTURY;
-    const longitude1 = normalizeAngle(moonLongitude(T1));
+    const longitude1 = normalizeAngle(
+      moonLongitude(T1) + (options.includeNutation ? nutationInLongitude(T1) : 0),
+    );
 
     // Handle wraparound at 360°
     let diff = longitude1 - longitude;

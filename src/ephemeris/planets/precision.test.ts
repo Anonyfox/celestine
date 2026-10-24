@@ -127,7 +127,10 @@ describe('shared apparent ephemeris pipeline', () => {
   });
 
   it('subtracts all three Earth components before applying directional aberration', () => {
-    const geo = helioToGeo(Math.PI / 2, 0, 2, { longitude: 0, latitude: 0, distance: 1 });
+    const geo = helioToGeo(
+      { longitude: Math.PI / 2, latitude: 0, distance: 2 },
+      { longitude: 0, latitude: 0, distance: 1 },
+    );
     assert.ok(Math.abs(geo.distance - Math.sqrt(5)) < 1e-14);
     assert.ok(Math.abs(geo.longitude - Math.atan2(2, -1)) < 1e-14);
     assert.equal(geo.latitude, 0);
@@ -150,7 +153,7 @@ describe('shared apparent ephemeris pipeline', () => {
       { includeSpeed: false },
     );
     const earth = earthHeliocentricPosition(0);
-    const distance = helioToGeo(1, 0.1, 2, earth).distance;
+    const distance = helioToGeo({ longitude: 1, latitude: 0.1, distance: 2 }, earth).distance;
     assert.equal(calls.length, 2);
     assert.ok(Math.abs(calls[1] - (2451545 - distance * 0.0057755183)) < 1e-9);
   });

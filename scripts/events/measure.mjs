@@ -1,6 +1,7 @@
 // Measured errors only: never updates limits or writes fixtures.
 import { readFile } from 'node:fs/promises';
-import { events, time } from '../../dist/index.js';
+import * as events from '../../dist/events/index.js';
+import { time } from '../../dist/index.js';
 
 const dir = new URL('../../src/events/__fixtures__/', import.meta.url);
 const stats = new Map();

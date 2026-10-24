@@ -140,21 +140,9 @@ export function sunTrueLongitude(T: number): number {
 }
 
 /**
- * Calculates the simplified nutation in longitude.
+ * Nutation in longitude Δψ (degrees) for T Julian centuries from J2000.0: the 13 largest
+ * IAU 2000B terms, max 0.049″ from IAU 2000A over 1800–2200.
  *
- * @param T - Julian centuries from J2000.0
- * @returns Nutation Δψ in degrees
- *
- * @remarks
- * This is a simplified formula using only the dominant term.
- * Full nutation has many more terms but this gives ±0.5" accuracy
- * which is within our arcminute target.
- *
- * Δψ ≈ -0.00478·sin(Ω)
- *
- * where Ω is the longitude of the Moon's ascending node.
- *
- * @source Meeus, "Astronomical Algorithms", simplified from Ch. 22
  * @internal
  */
 export { nutationInLongitude } from './planets/precision.js';

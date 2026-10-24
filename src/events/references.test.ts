@@ -25,8 +25,10 @@ const ingressLimits: Record<string, number> = {
   Mercury: 12,
   Venus: 150,
   Mars: 100,
-  Jupiter: 300,
-  Saturn: 620,
+  // Jupiter/Saturn: IAU 2000B nutation (0.4.x used a 4-term series) moved the worst
+  // near-station crossings from 0.42″/0.66″ to 0.52″/0.73″ position error (334 s / 642 s).
+  Jupiter: 350,
+  Saturn: 680,
   Uranus: 1450,
   Neptune: 2600,
   Pluto: 11500,

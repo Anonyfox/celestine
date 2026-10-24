@@ -84,14 +84,14 @@ export const ARCSECONDS_PER_ARCMINUTE = 60;
  *
  * @source Definition: π/180
  */
-export const DEG_TO_RAD = Math.PI / 180;
+export const DEG_TO_RAD: number = 0.017453292519943295; // Math.PI / 180, as a literal so bundlers can drop it
 
 /**
  * Conversion factor: radians to degrees.
  *
  * @source Definition: 180/π
  */
-export const RAD_TO_DEG = 180 / Math.PI;
+export const RAD_TO_DEG: number = 57.29577951308232; // 180 / Math.PI
 
 /**
  * Conversion factor: arcseconds to radians.
@@ -101,7 +101,7 @@ export const RAD_TO_DEG = 180 / Math.PI;
  *
  * @source Definition: π / (180 × 3600)
  */
-export const ARCSEC_TO_RAD = Math.PI / (180 * 3600);
+export const ARCSEC_TO_RAD: number = 4.84813681109536e-6; // Math.PI / (180 * 3600)
 
 // ============================================================================
 // DISTANCE CONSTANTS
@@ -138,7 +138,7 @@ export const SPEED_OF_LIGHT_KM_S = 299_792.458;
  *
  * @source Derived from IAU 2012 AU and SI speed of light
  */
-export const LIGHT_TIME_PER_AU_DAYS = AU_IN_KM / (SPEED_OF_LIGHT_KM_S * 86400);
+export const LIGHT_TIME_PER_AU_DAYS: number = 0.005775518331436995; // AU_IN_KM / (SPEED_OF_LIGHT_KM_S * 86400)
 
 // ============================================================================
 // EARTH ORBITAL CONSTANTS
@@ -175,11 +175,11 @@ export const OBLIQUITY_COEFFICIENTS = {
   /** Constant term: 23°26'21.448" in degrees */
   c0: 23.439291111,
   /** Linear term: -46.8150"/century in degrees/century */
-  c1: -46.815 / 3600,
+  c1: -0.013004166666666666, // -46.815 / 3600
   /** Quadratic term: -0.00059"/century² in degrees/century² */
-  c2: -0.00059 / 3600,
+  c2: -1.638888888888889e-7, // -0.00059 / 3600
   /** Cubic term: +0.001813"/century³ in degrees/century³ */
-  c3: 0.001813 / 3600,
+  c3: 5.036111111111111e-7, // 0.001813 / 3600
 };
 
 // ============================================================================

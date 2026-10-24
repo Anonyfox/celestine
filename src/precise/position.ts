@@ -30,7 +30,7 @@ export function precisePosition(
   return (jd, options = {}) => {
     if (!(jd >= PRECISE_RANGE.startJD && jd <= PRECISE_RANGE.endJD))
       throw new RangeError(
-        `celestine/precise: ${name} is only available for JD ${PRECISE_RANGE.startJD}–${PRECISE_RANGE.endJD} TT (1800–2200); got ${jd}. Use celestine/ephemeris for dates outside this range.`,
+        `celestine/precise: ${name} is only available for JD 2378497–2524594 TT (1800–2200); got ${jd}. Use celestine/ephemeris for dates outside this range.`,
       );
     return geocentricApparent(
       (time, observationJD) => {

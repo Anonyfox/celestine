@@ -236,10 +236,11 @@ export interface EphemerisOptions {
    *
    * @remarks
    * Nutation is a small periodic oscillation in Earth's axis (~±17").
+   * With this option longitudes are referred to the true equinox of date instead of the
+   * mean equinox. Celestine uses the 13 largest IAU 2000B terms (`nutationInLongitude`,
+   * within 0.05″ of IAU 2000A for 1800–2200).
    * For arcminute precision: not needed (error < 0.3')
    * For arcsecond precision: required
-   *
-   * @see Meeus Ch. 22 for nutation calculation
    */
   includeNutation?: boolean;
 

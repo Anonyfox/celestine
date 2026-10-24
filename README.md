@@ -166,8 +166,8 @@ console.log(pallas.longitude, pallas.isRetrograde);
   (gzip, including the shared apparent-place pipeline: Chiron ≈5.5 KB, Ceres ≈9 KB,
   Pallas ≈11.8 KB, Juno ≈10.8 KB, Vesta ≈9.5 KB, all five ≈30.7 KB). The root `celestine`
   import and `celestine/ephemeris` do not include this data.
-- `includeNutation: true` uses the library's one-term nutation (about 1.3″ from the full
-  series), the same as everywhere else in Celestine.
+- `includeNutation: true` uses the library's shared IAU 2000B nutation (13 terms, within
+  0.05″ of IAU 2000A for 1800–2200), the same as everywhere else in Celestine.
 
 ### Time Calculations
 

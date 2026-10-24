@@ -1,4 +1,5 @@
 import { moonLongitude } from '../ephemeris/moon.js';
+import { nutationInLongitude } from '../ephemeris/nutation.js';
 import { normalize, wrap } from './search.js';
 
 /** Centered derivative, unlike the public Moon's one-day forward speed. */
@@ -11,22 +12,9 @@ export function moon(jd: number) {
   };
 }
 
-/**
- * Nutation in longitude (degrees), Meeus eq. 22 four-term series (~0.5″ vs IAU 1980).
- * The ephemeris keeps its one-term value for size; event timing needs the extra terms
- * (1.32″ in Sun longitude is ~30 s of season time).
- */
+/** Nutation in longitude (degrees) at a TT Julian Date: the shared IAU 2000B series. */
 export function nutation(jd: number): number {
-  const t = (jd - 2451545) / 36525;
-  const r = Math.PI / 180;
-  const o = (125.04452 - 1934.136261 * t) * r;
-  return (
-    (-17.2 * Math.sin(o) -
-      1.32 * Math.sin((560.933 + 72001.5396 * t) * r) -
-      0.23 * Math.sin((436.633 + 962535.7626 * t) * r) +
-      0.21 * Math.sin(2 * o)) /
-    3600
-  );
+  return nutationInLongitude((jd - 2451545) / 36525);
 }
 
 /** Longitude/rate in search form, optionally referred to the true equinox of date. */

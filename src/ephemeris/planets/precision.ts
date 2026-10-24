@@ -1,4 +1,5 @@
-import { ARCSECONDS_PER_DEGREE, DEG_TO_RAD, NUTATION_OMEGA } from '../constants.js';
+import { DEG_TO_RAD } from '../constants.js';
+import { nutationInLongitude } from '../nutation.js';
 import type { EphemerisOptions, PlanetPosition } from '../types.js';
 
 /** Sum of A·cos(B + C·τ) over VSOP87 terms. */
@@ -7,10 +8,7 @@ function evaluateSeries(
   tau: number,
 ): number {
   let sum = 0;
-  for (let i = 0; i < terms.length; i++) {
-    const term = terms[i];
-    sum += term[0] * Math.cos(term[1] + term[2] * tau);
-  }
+  for (const term of terms) sum += term[0] * Math.cos(term[1] + term[2] * tau);
   return sum;
 }
 
@@ -235,6 +233,9 @@ export function earthHeliocentricPosition(tau: number): Spherical {
   return p;
 }
 
+// Light time per AU in days, to the precision the light-time iteration has always used.
+const LIGHT_DAYS_PER_AU = 0.0057755183;
+
 type Spherical = {
   longitude: number;
   latitude: number;
@@ -242,11 +243,24 @@ type Spherical = {
   velocity?: [number, number, number];
 };
 
+/** Linear step of a spherical position: `s + dt · rate` per component. */
+function advance(s: Spherical, dt: number, rate: readonly number[]): Spherical {
+  return {
+    longitude: s.longitude + dt * rate[0],
+    latitude: s.latitude + dt * rate[1],
+    distance: s.distance + dt * rate[2],
+  };
+}
+
 /** Heliocentric (rad, AU) minus Earth's heliocentric position → geocentric (longitude in [0, 2π)). */
-export function helioToGeo(lon: number, lat: number, dist: number, earth: Spherical): Spherical {
+export function helioToGeo(
+  { longitude: lon, latitude: lat, distance: dist }: Spherical,
+  earth: Spherical,
+): Spherical {
   const e = earth.distance * Math.cos(earth.latitude);
-  const x = dist * Math.cos(lat) * Math.cos(lon) - e * Math.cos(earth.longitude);
-  const y = dist * Math.cos(lat) * Math.sin(lon) - e * Math.sin(earth.longitude);
+  const c = dist * Math.cos(lat); // left-associative, so x and y are bit-identical to before
+  const x = c * Math.cos(lon) - e * Math.cos(earth.longitude);
+  const y = c * Math.sin(lon) - e * Math.sin(earth.longitude);
   const z = dist * Math.sin(lat) - earth.distance * Math.sin(earth.latitude);
   const distance = Math.hypot(x, y, z);
   const longitude = Math.atan2(y, x);
@@ -261,7 +275,7 @@ export function helioToGeo(lon: number, lat: number, dist: number, earth: Spheri
 export function precessEcliptic(l: number, b: number, t: number): [number, number] {
   const a = DEG_TO_RAD / 3600;
   const eta = (47.0029 * t - 0.03302 * t * t + 0.00006 * t * t * t) * a;
-  const pi = (174.876384 * 3600 - 869.8089 * t + 0.03536 * t * t) * a;
+  const pi = (629554.9824 - 869.8089 * t + 0.03536 * t * t) * a;
   const p = (5029.0966 * t + 1.11113 * t * t - 0.000006 * t * t * t) * a;
   const A = Math.cos(eta) * Math.cos(b) * Math.sin(pi - l) - Math.sin(eta) * Math.sin(b);
   const B = Math.cos(b) * Math.cos(pi - l);
@@ -291,66 +305,59 @@ export function geocentricApparent(
 ): PlanetPosition {
   const baseTau = (jd - 2451545) / 365250;
   const baseEarth = earthHeliocentricPosition(baseTau);
-  if (options.includeSpeed !== false && !baseEarth.velocity) {
-    baseEarth.velocity = [
-      vsopDerivative(earthVsop[0], baseTau),
-      vsopDerivative(earthVsop[1], baseTau),
-      vsopDerivative(earthVsop[2], baseTau),
+  const speed = options.includeSpeed !== false;
+  if (speed && !baseEarth.velocity) {
+    baseEarth.velocity = earthVsop.map((orders) => vsopDerivative(orders, baseTau)) as [
+      number,
+      number,
+      number,
     ];
   }
-  const rate = options.includeSpeed === false ? undefined : baseEarth.velocity;
+  const rate = speed ? baseEarth.velocity : undefined;
   const position = (time: number) => {
-    const tau = (time - 2451545) / 365250;
+    const T = ((time - 2451545) / 365250) * 10; // centuries, bit-identical to τ · 10
     const offset = time - jd;
-    const earth =
-      rate && offset !== 0
-        ? {
-            longitude: baseEarth.longitude + offset * rate[0],
-            latitude: baseEarth.latitude + offset * rate[1],
-            distance: baseEarth.distance + offset * rate[2],
-          }
-        : baseEarth;
+    const earth = rate && offset !== 0 ? advance(baseEarth, offset, rate) : baseEarth;
     const p = heliocentric(
-      time - (lightTimeDistance ? lightTimeDistance(time) * 0.0057755183 : 0),
+      time - (lightTimeDistance ? lightTimeDistance(time) * LIGHT_DAYS_PER_AU : 0),
       time,
     );
-    let geo = helioToGeo(p.longitude, p.latitude, p.distance, earth);
+    let geo = helioToGeo(p, earth);
     if (!lightTimeDistance && p.distance !== 0) {
-      const delay = geo.distance * 0.0057755183;
-      const retarded = p.velocity
-        ? {
-            longitude: p.longitude - delay * p.velocity[0],
-            latitude: p.latitude - delay * p.velocity[1],
-            distance: p.distance - delay * p.velocity[2],
-          }
-        : heliocentric(time - delay, time);
-      geo = helioToGeo(retarded.longitude, retarded.latitude, retarded.distance, earth);
+      const delay = geo.distance * LIGHT_DAYS_PER_AU;
+      // p + (−delay)·v is bit-identical to p − delay·v.
+      geo = helioToGeo(
+        p.velocity ? advance(p, -delay, p.velocity) : heliocentric(time - delay, time),
+        earth,
+      );
     }
-    const [lon, lat] = aberration(geo.longitude, geo.latitude, earth.longitude, tau * 10);
+    const [lon, lat] = aberration(geo.longitude, geo.latitude, earth.longitude, T);
     return {
       longitude:
-        (((lon / DEG_TO_RAD + (options.includeNutation ? nutationInLongitude(tau * 10) : 0)) %
-          360) +
+        (((lon / DEG_TO_RAD + (options.includeNutation ? nutationInLongitude(T) : 0)) % 360) +
           360) %
         360,
       latitude: lat / DEG_TO_RAD,
       distance: geo.distance,
+      longitudeSpeed: 0,
+      isRetrograde: false,
     };
   };
-  if (options.includeSpeed === false)
-    return { ...position(jd), longitudeSpeed: 0, isRetrograde: false };
+  // A literal, not a spread: object spread here measurably slows every position call.
+  if (!speed) return position(jd);
   // Two evaluations at jd ± 0.001 d give the centered speed; their midpoint is the position at jd
   // to within h²/2·|acceleration| (< 0.001″ even for Mercury), saving a third evaluation.
   const before = position(jd - 0.001);
   const after = position(jd + 0.001);
   const delta = ((after.longitude - before.longitude + 540) % 360) - 180;
   const longitudeSpeed = delta / 0.002;
-  const p = {
+  return {
     longitude: (before.longitude + delta / 2 + 360) % 360,
     latitude: (before.latitude + after.latitude) / 2,
     distance: (before.distance + after.distance) / 2,
+    longitudeSpeed,
+    isRetrograde: longitudeSpeed < 0,
   };
-  return { ...p, longitudeSpeed, isRetrograde: longitudeSpeed < 0 };
 }
 
 /** Dominant harmonics give first-order retarded motion to <0.1″ for the retained series. */
@@ -404,30 +411,15 @@ export function vsopHeliocentric(vsop: Vsop): (jd: number) => Spherical {
   };
 }
 
-export function nutationInLongitude(T: number): number {
-  // Longitude of Moon's ascending node
-  const { c0, c1, c2, c3 } = NUTATION_OMEGA;
-  const omega = c0 + c1 * T + c2 * T * T + c3 * T * T * T;
-  const omegaRad = omega * DEG_TO_RAD;
-
-  // Simplified nutation: dominant term only
-  // Full formula: Δψ = -17.20"·sin(Ω) - 1.32"·sin(2L₀) - 0.23"·sin(2L') + 0.21"·sin(2Ω) + ...
-  // Using just the dominant term: -17.20" ≈ -0.00478°
-  const deltaPsi = (-17.2 / ARCSECONDS_PER_DEGREE) * Math.sin(omegaRad);
-
-  return deltaPsi;
-}
+export { nutationInLongitude };
 
 /** Full analytic derivative for centered Earth propagation (rad/AU per day). */
 function vsopDerivative(orders: readonly Series[], tau: number): number {
   let sum = 0;
   for (let i = orders.length - 1; i >= 0; i--) {
     let derivative = 0;
-    const terms = orders[i];
-    for (let j = 0; j < terms.length; j++) {
-      const term = terms[j];
+    for (const term of orders[i])
       derivative -= term[0] * term[2] * Math.sin(term[1] + term[2] * tau);
-    }
     sum =
       sum * tau +
       derivative +
