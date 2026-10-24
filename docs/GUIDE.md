@@ -181,6 +181,12 @@ All input and returned JDs are TT. The zone runs forward from `shadowZoneStart`
 (station direct) to `shadowZoneEnd` (station retrograde); start greater than end means
 it crosses 0° Aries. A missing crossing within 800 days throws `RangeError`.
 
+`findStations(body, startJD, endJD, options?)` in `celestine/events` covers Mercury
+through Pluto and Chiron. Chiron stations come from the `celestine/precise` model
+within 1800–2200 and match JPL Horizons within 8 minutes (0.4″) over 2020–2035.
+`findStationPoints` and the retrograde-period functions in `celestine/transits` still
+use root Chiron, which can be off by days.
+
 For separate orb passes over a long window, use `searchTransitPasses` from
 `celestine/events`. It takes the same parameters as `searchTransits` and returns one
 timing per continuous interval within orb, so a retrograde triple appears as one

@@ -157,7 +157,7 @@ test('2026-10 Mercury retrograde: degree label and UT near the lab feed', () => 
 });
 
 test('rejects unsupported bodies and invalid intervals; empty when no station', () => {
-  for (const body of ['Sun', 'Moon', 'Chiron', 'TrueNode']) {
+  for (const body of ['Sun', 'Moon', 'TrueNode']) {
     assert.throws(() => findStations(body as CelestialBody, jd(2026), jd(2027)), RangeError);
   }
   assert.throws(() => findStations('Mars' as CelestialBody, jd(2027), jd(2026)), RangeError);
@@ -259,5 +259,28 @@ test('consumer reference: 17 Horizons stations 2026–2027 (true of date, UT to 
     assert.ok(minutes * 1440 < 5, `${s.body} ${s.utc}: ${(minutes * 1440).toFixed(2)} min`);
     const [event] = findStations(s.body, toTT(ut) - 5, toTT(ut) + 5, { includeNutation: true });
     assert.ok(Math.abs(event!.jdUT - ut) * 1440 < 5);
+  }
+});
+
+// Measured maxima rounded up: 8.0 min and 0.381″ over 31 stations.
+const LIMIT_S = 540;
+const LIMIT_ARCSEC = 0.4;
+test('Chiron stations match JPL Horizons (true equinox) 2020-2035', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const data = JSON.parse(
+    await readFile(new URL('./__fixtures__/horizons-chiron-events.json', import.meta.url), 'utf8'),
+  ) as { stations: { jd: number; type: string; longitude: number }[] };
+  const found = findStations('Chiron' as CelestialBody, 2458849.5, 2464693.5, {
+    includeNutation: true,
+  });
+  assert.equal(found.length, data.stations.length);
+  for (const [i, ref] of data.stations.entries()) {
+    const s = found[i]!;
+    assert.equal(s.type, ref.type);
+    assert.ok(
+      Math.abs(s.jd - ref.jd) * 86400 < LIMIT_S,
+      `${ref.jd}: ${(s.jd - ref.jd) * 1440} min`,
+    );
+    assert.ok(Math.abs(wrap(s.longitude - ref.longitude)) * 3600 < LIMIT_ARCSEC, `${ref.jd} lon`);
   }
 });

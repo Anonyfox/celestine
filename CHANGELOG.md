@@ -6,6 +6,12 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+### Added
+
+- `findStations` (`celestine/events`) accepts Chiron, using the precise Chiron model
+  within 1800–2200. Its 31 stations in 2020–2035 match JPL Horizons (retrieved
+  2026-10-24) within 8.0 minutes and 0.38″ of station longitude.
+
 ### Changed (output shift)
 
 - Chiron searches in `celestine/events` (ingresses, aspect times, transit passes) now
