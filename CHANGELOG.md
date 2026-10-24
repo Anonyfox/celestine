@@ -8,6 +8,9 @@ All notable changes to this project are documented here, following
 
 ### Added
 
+- The Map returned by `getAllRetrogradePeriods` (`celestine/transits`) now has a
+  `toJSON`, so `JSON.stringify` gives an object keyed by body name instead of `{}`.
+  It is still a `Map`.
 - `getMoonPhase` (`celestine/events`) also returns `phaseName`, one of eight Moon
   phase names in 45° elongation buckets (`'new-moon'`, `'waxing-crescent'`, …,
   `'waning-crescent'`), and the `MoonPhaseName` type is exported. `phase` is unchanged.

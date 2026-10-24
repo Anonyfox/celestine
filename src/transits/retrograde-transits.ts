@@ -578,7 +578,8 @@ export function formatStationPoint(station: StationPoint): string {
  * @param startJD - Start of search range
  * @param endJD - End of search range
  * @param options - Frame, as in {@link findStationPoints}
- * @returns Object mapping body name to its retrograde periods
+ * @returns Map from body name to its retrograde periods (bodies without one are left out).
+ * JSON.stringify gives a plain object keyed by body name, as Object.fromEntries(map).
  */
 export function getAllRetrogradePeriods(
   bodies: CelestialBody[],
@@ -595,5 +596,5 @@ export function getAllRetrogradePeriods(
     }
   }
 
-  return result;
+  return Object.assign(result, { toJSON: () => Object.fromEntries(result) });
 }
