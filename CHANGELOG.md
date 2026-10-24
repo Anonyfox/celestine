@@ -6,6 +6,8 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-24
+
 ### Added
 
 - `findLunarPhases` events carry `moonLongitude` and `sunLongitude` at the exact instant
@@ -18,14 +20,15 @@ All notable changes to this project are documented here, following
   eclipses with TT/UT instants, NASA magnitudes, gamma and frame-selectable longitudes.
   NASA Canon 2020–2030 agreement: 50/50 types matched, maximum |Δt| 17.103 s.
 
-- `searchTransitPasses` and `findTransitPasses` from `celestine/events` separate
-  continuous orb passes, retaining retrograde hits together only while within orb.
-  `searchTransits` itself is unchanged.
+- `searchTransitPasses` and `findTransitPasses` from `celestine/events` return one timing
+  per orb pass (entry, exact hits, exit). Retrograde hits stay in the same pass only while
+  the body never leaves orb. `searchTransits` itself is unchanged.
 
 - `localDayToUT` from `celestine/events`: IANA local calendar day bounds in UT,
   including skipped midnights, DST overlaps and fractional-hour offsets; skipped
-  dates throw. The subpath-only export keeps the root bundle unchanged.
-  Documented JD-only and legacy month-centre TT/UT conventions.
+  dates throw. It lives in the subpath so the root bundle stays the same size.
+  The guide now explains when to use `utToTT` (exact JD) and when `toTT` (legacy
+  month-centre ΔT); in 2026 they differ by at most 9.3 ms.
 
 - `celestine/events` day reports: `findAscendantSigns` for geographic ascendant sign intervals
   and `getSignsDuring` for endpoint signs and all ingresses. TT inputs, UT endpoints,
