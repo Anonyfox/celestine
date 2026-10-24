@@ -455,6 +455,15 @@ export interface RetrogradePeriod {
   /** Julian Date when direct motion resumes (station direct) */
   stationDirectJD: number;
 
+  /**
+   * stationRetroJD converted to UT (time.toUT), as StationEvent.jdUT in celestine/events.
+   * Always set on library results; optional so hand-built periods stay valid input.
+   */
+  stationRetroJDUT?: number;
+
+  /** stationDirectJD converted to UT (time.toUT); always set on library results. */
+  stationDirectJDUT?: number;
+
   /** Longitude at station retrograde */
   stationRetroLongitude: number;
 
@@ -472,11 +481,20 @@ export interface StationPoint {
   /** Body stationing */
   body: CelestialBody;
 
-  /** Type of station */
+  /**
+   * Type of station. findStations in celestine/events reports the same instants as
+   * 'retrograde' | 'direct'; that shorter vocabulary is the one used across the events API.
+   */
   type: 'station-retrograde' | 'station-direct';
 
-  /** Julian Date of station */
+  /** Julian Date of station (TT) */
   jd: number;
+
+  /**
+   * jd converted to UT (time.toUT), as StationEvent.jdUT in celestine/events.
+   * Always set on library results; optional so hand-built station points stay valid input.
+   */
+  jdUT?: number;
 
   /** Longitude at station */
   longitude: number;

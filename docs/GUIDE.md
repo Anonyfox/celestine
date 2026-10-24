@@ -187,6 +187,13 @@ within 1800–2200 and match JPL Horizons within 8 minutes (0.4″) over 2020–
 `findStationPoints` and the retrograde-period functions in `celestine/transits` still
 use root Chiron, which can be off by days.
 
+Stations have two spellings. `findStations` (`celestine/events`) uses
+`type: 'retrograde' | 'direct'`, the vocabulary of the events API; `findStationPoints`
+(`celestine/transits`) reports the same instants as `'station-retrograde' |
+'station-direct'`. Both carry TT `jd` and UT `jdUT`; retrograde periods carry
+`stationRetroJDUT` and `stationDirectJDUT` next to their TT values. Prefer
+`findStations` in new code.
+
 `getAllRetrogradePeriods(bodies, startJD, endJD)` returns a `Map` from body name to
 periods. `JSON.stringify` on it gives a plain object keyed by body name; use
 `Object.fromEntries(map)` when you need that object in code.

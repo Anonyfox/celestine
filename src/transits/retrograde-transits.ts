@@ -25,6 +25,7 @@
 import { type CelestialBody, getPosition } from '../ephemeris/positions.js';
 import { stationIn, stationStep, stations, wrap } from '../events/search.js';
 import type { EventFrameOptions } from '../events/types.js';
+import { toUT } from '../time/delta-t.js';
 import {
   AVERAGE_DAILY_MOTION,
   BODY_NAMES,
@@ -41,6 +42,8 @@ const period = (body: CelestialBody, r: StationPoint, d: StationPoint): Retrogra
   body,
   stationRetroJD: r.jd,
   stationDirectJD: d.jd,
+  stationRetroJDUT: r.jdUT,
+  stationDirectJDUT: d.jdUT,
   stationRetroLongitude: r.longitude,
   stationDirectLongitude: d.longitude,
   durationDays: d.jd - r.jd,
@@ -172,6 +175,7 @@ export function findStationPoints(
     body,
     type: retrograde ? 'station-retrograde' : 'station-direct',
     jd,
+    jdUT: toUT(jd),
     longitude: sample.value,
     date: jdToTransitDate(jd),
   }));

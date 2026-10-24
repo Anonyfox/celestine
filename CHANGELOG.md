@@ -8,6 +8,10 @@ All notable changes to this project are documented here, following
 
 ### Added
 
+- `findStationPoints` results carry `jdUT`, and `findRetrogradePeriods` /
+  `getAllRetrogradePeriods` results carry `stationRetroJDUT` and `stationDirectJDUT`,
+  matching `jdUT` on `findStations` events. The fields are optional in the types so
+  hand-built objects passed back in stay valid.
 - The Map returned by `getAllRetrogradePeriods` (`celestine/transits`) now has a
   `toJSON`, so `JSON.stringify` gives an object keyed by body name instead of `{}`.
   It is still a `Map`.
