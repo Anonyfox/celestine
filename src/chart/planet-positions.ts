@@ -31,6 +31,7 @@ import {
 import { CelestialBody } from '../ephemeris/positions.js';
 import { getSunPosition } from '../ephemeris/sun.js';
 import type { PlanetPosition } from '../ephemeris/types.js';
+import { deltaTAt } from '../time/delta-t.js';
 import { BODY_NAMES, PLANET_ORDER, STATIONARY_THRESHOLD } from './constants.js';
 import type { ChartOptions } from './types.js';
 
@@ -76,7 +77,8 @@ export interface PlanetPositions {
 /**
  * Calculate all planetary positions for a given Julian Date.
  *
- * @param jd - Julian Date
+ * @param jd - UT Julian Date (civil time); bodies are computed at TT = UT + ΔT, with ΔT from
+ *   options.deltaT (default deltaTAt). Pass deltaT: 0 when jd is already TT.
  * @param options - Chart options determining which bodies to include
  * @returns All calculated positions
  */
@@ -84,7 +86,8 @@ export function calculatePlanetPositions(
   jd: number,
   options: Required<ChartOptions>,
 ): PlanetPositions {
-  const dt = options.deltaT;
+  // Civil (UT) input: bodies use TT = UT + ΔT (deltaTAt unless overridden; 0 opts out).
+  const dt = options.deltaT ?? deltaTAt;
   if (dt) jd += (typeof dt === 'function' ? dt(jd) : dt) / 86400;
   const planets = new Map<CelestialBody, PlanetPosition>();
 

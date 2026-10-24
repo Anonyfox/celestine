@@ -59,10 +59,11 @@ export interface BirthData {
  */
 export interface ChartOptions {
   /**
-   * Optional TT−UT correction in seconds, or a function of the UT Julian Date.
-   * Only body ephemerides use the corrected TT date; houses/angles stay on UT.
-   * Omitted preserves the historical UT ephemeris input. Pass deltaTAt from
-   * celestine/time to use the built-in model; zero reproduces default positions.
+   * TT−UT correction in seconds, or a function of the UT Julian Date. Birth time is civil
+   * time (UT after the timezone); body ephemerides use TT = UT + ΔT, houses/angles stay on
+   * UT. Default (omitted/undefined): the built-in deltaTAt model (since 0.5.0; about 69 s
+   * today). Pass 0 to use the UT date as the ephemeris time (pre-0.5.0 output), or a number
+   * or function for your own ΔT.
    */
   deltaT?: number | ((jdUT: number) => number);
 

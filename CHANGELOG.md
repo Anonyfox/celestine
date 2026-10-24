@@ -6,6 +6,33 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+### Changed (output shift)
+
+- **`calculateChart` and `calculatePlanets` now apply ΔT by default.** The birth date and time
+  are civil time (UT after the timezone), while the ephemerides are TT-based. Body positions
+  (planets, Chiron, asteroids, nodes, Lilith) are now computed at TT = UT + `deltaTAt(jd)`,
+  as Swiss Ephemeris' `swe_calc_ut` does. Before, the UT date went into the ephemerides
+  unchanged, so every body was placed ΔT (about 69 s today) too early. Houses, angles,
+  sidereal time and `chart.calculated` are UT and do not change, and neither does
+  `chart.options` (no `deltaT` key is added).
+- Each body moves by its own speed × ΔT. For 2026-10-24 12:00 UT (ΔT 69.2 s): Moon +39.7″,
+  Sun +2.9″, Venus −1.8″, Mars +1.5″, Jupiter +0.4″, the others (Mercury, Saturn, Uranus,
+  Neptune, Pluto, Chiron, Ceres, Pallas, Juno, Vesta) ≤0.8″; Ascendant, MC and cusps 0.
+  Over 1900–2100 (200 random charts; ΔT −3 to 110 s) the largest shifts are Moon 62″,
+  Mercury 8.6″, Venus 5.6″, Sun 4.6″, Mars 3.2″ and ≤2.4″ for the rest. Before 1900 ΔT grows (14 s in 1800,
+  2 min in 1600, 26 min in 1000, 2.9 h in year 0), and so does the shift (Moon about 1′ in
+  1600, 1.6° in year 0). Aspect orbs, exact degrees and, near a boundary, signs, aspects and
+  patterns can change accordingly.
+- Against `swe_calc_ut` (Swiss Ephemeris 2.10.03, mean equinox, 200 random charts 1900–2100),
+  the maximum Moon difference falls from 55″ to 11″ (RMS 33″ → 3.5″), and the Sun from
+  3.4″ to 1.2″. Mercury, Venus and Mars fall to about 1.4″. The outer planets are unchanged
+  (≤5″, model differences).
+- Opt out with `deltaT: 0`: it reproduces the 0.4.0 positions bit for bit, and it is the
+  way to pass a date that is already TT. A number (seconds) or a function of the UT Julian Date
+  still overrides the model.
+- The position getters and event searches are unchanged; they take TT, as before. A chart
+  now matches `getPosition(body, toTT(jdUT))` and the event instants exactly, without options.
+
 ### Added
 
 - `findStations(body, startJD, endJD, options?)` in `celestine/events` finds retrograde and direct
@@ -40,9 +67,9 @@ All notable changes to this project are documented here, following
   (`nutationInLongitude`), within 0.05″ of the full IAU 2000A series for 1800–2200 (0.1″ for
   1000–3000). It replaces the one-term formula behind `includeNutation` (about 2″ off) and the
   four-term series in the event searches (0.35″ off).
-- Default output is unchanged. It is mean ecliptic and equinox of date and does not use
-  nutation; this is verified bit-identical for all 15 bodies (with and without speed) and
-  3,000 charts.
+- The default frame is unchanged: mean ecliptic and equinox of date, without nutation. The
+  new series is verified to leave default positions bit-identical for all 15 bodies (with and
+  without speed) and 3,000 charts (with `deltaT: 0`; the chart ΔT default is above).
 - With `includeNutation: true`, longitudes shift by up to about 2″. Worst error vs JPL Horizons
   (true equinox of date), before → after: Sun 2.06″ → 0.37″, Mercury 2.33″ → 1.07″,
   Venus 2.15″ → 0.65″, Mars 1.92″ → 1.24″, Jupiter 2.51″ → 1.42″, Saturn 2.68″ → 1.69″,

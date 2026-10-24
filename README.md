@@ -763,16 +763,19 @@ import { calculateChart } from 'celestine/chart';
 const jdUT = toJulianDate({ year: 2026, month: 10, day: 24, hour: 12 });
 const sun = getSunPosition(toTT(jdUT));
 const restoredUT = toUT(toTT(jdUT));
-// birth contains civil date/time, timezone, latitude and longitude:
-const chart = calculateChart(birth, { deltaT: deltaTAt });
-// A numeric deltaT (seconds TT−UT) can also supply an external model.
+// birth contains civil date/time, timezone, latitude and longitude; ΔT is applied for you:
+const chart = calculateChart(birth); // bodies at TT = UT + deltaTAt(jd), houses at UT
+const external = calculateChart(birth, { deltaT: 69.2 }); // your own ΔT in seconds (or a function of jdUT)
+const asBefore = calculateChart(birth, { deltaT: 0 }); // opt out: 0.4.0 positions, or input that is already TT
 ```
 
-For compatibility, charts and `calculatePlanets` retain their historical UT input
-to ephemerides unless `deltaT` is supplied. The option corrects every body
-(planets, nodes, Lilith, Chiron and asteroids); houses, angles and sidereal time
-continue to use UT. `deltaT: 0` reproduces default positions. Individual position
-getters have no new option: use `getSunPosition(toTT(jdUT))`.
+> **Since 0.5.0, charts apply ΔT by default.** `calculateChart` and `calculatePlanets` treat the
+> birth time as civil UT and compute every body (planets, nodes, Lilith, Chiron and asteroids)
+> at TT = UT + ΔT, like Swiss Ephemeris' `swe_calc_ut`. Houses, angles and sidereal time stay
+> on UT. Compared with 0.4.0 the Moon moves by about 40″ today, the Sun by ~3″ and other
+> bodies by ≤2″ (over 1900–2100 up to ~1′ for the Moon and ~9″ for Mercury); houses do not move. Earlier centuries shift more as
+> ΔT grows. `deltaT: 0` restores the old positions. Individual position getters have no
+> option: use `getSunPosition(toTT(jdUT))`.
 
 The built-in ΔT model uses [USNO monthly observations](https://maia.usno.navy.mil/ser7/deltat.data)
 and [USNO historical observations](https://maia.usno.navy.mil/ser7/historic_deltat.data)
@@ -836,8 +839,8 @@ const voidPeriods = findVoidOfCourseMoon(start, start + 30);
   true }`, the 0.4.0 name on `findSignIngresses`, remains a deprecated alias on every event
   search (`EventFrameOptions`); `includeNutation` wins when both are given. At every returned instant the
   position API with matching options is on the cusp to within 1e-4″ (tested for every
-  body, nodes and Lilith included). Note that `calculateChart` takes UT; pass
-  `deltaT: deltaTAt` for TT positions that match event instants exactly.
+  body, nodes and Lilith included). `calculateChart` takes UT and applies ΔT by default,
+  so its positions match event instants (`jdUT`) exactly.
 - `findLunarPhases` finds Moon−Sun longitude 0/90/180/270°, with phase values
   `new-moon`, `first-quarter`, `full-moon`, `last-quarter`; nutation cancels.
   `getMoonPhase` provides elongation [0,360), Sun–Moon–Earth phase angle [0,180],

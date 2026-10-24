@@ -79,8 +79,8 @@
       "gzipBytes": 24960
     },
     "calculateChart": {
-      "minBytes": 86656,
-      "gzipBytes": 32704
+      "minBytes": 86784,
+      "gzipBytes": 33024
     },
     "getAllPositions": {
       "minBytes": 62848,
@@ -96,7 +96,7 @@
     },
     "subpath.realistic": {
       "minBytes": 100864,
-      "gzipBytes": 37952
+      "gzipBytes": 38400
     },
     "precise.getChironPosition": {
       "minBytes": 10176,

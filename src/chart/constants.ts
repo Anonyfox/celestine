@@ -122,7 +122,7 @@ export const DEFAULT_OPTIONS: Required<ChartOptions> = {
   aspectOrbs: {},
   includePatterns: true,
   minimumAspectStrength: 0,
-  // Leave deltaT absent to preserve the historical chart.options object.
+  // deltaT stays absent (chart.options unchanged); undefined means the deltaTAt default.
 } as Required<ChartOptions>;
 
 // =============================================================================
