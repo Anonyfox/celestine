@@ -6,6 +6,31 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+### Added
+
+- Runnable examples, executed in `npm run check` by `src/examples.test.ts`: `examples/node-cli.mjs`
+  (next station-retrograde per planet, current Moon phase), `examples/browser-natal-chart.html`
+  (no build step, ESM from a CDN) and `examples/cloudflare-worker.ts`. The README quickstart is
+  typechecked and executed by the same test. No new dependencies; root bundle unchanged.
+- `docs/COMPARISON.md` and `scripts/bench/compare.mjs`: measured comparison with astronomy-engine
+  2.1.19 and sweph 2.10.3-8 (Moshier mode) against the same JPL Horizons fixtures, plus bundle
+  size, license, runtime dependencies and native vs JS. Peers are not dependencies of this package.
+- `docs/GUIDE.md` (per-module usage, moved out of the README), CONTRIBUTING.md, SECURITY.md,
+  CITATION.cff, issue forms (bug report asks for a reproduction and the expected value with its
+  reference source, frame and time scale; feature request), a PR checklist that mirrors the
+  regression contract, and weekly grouped Dependabot updates for npm and GitHub Actions.
+
+### Changed
+
+- README, package description and TypeDoc footer state only what tests and measurements show:
+  per-body maximum error vs the committed JPL Horizons fixtures (e.g. Sun 0.31″, Mercury 1.12″,
+  Neptune 4.64″, Moon 7.58″) next to the limits CI enforces, zero runtime dependencies and gzip
+  size per entry. Removed the "byte-for-byte verified" and Swiss Ephemeris/NASA "verified" claims.
+  npm keywords trimmed from 97 to 20.
+- Contributor rules (AGENTS.md): regression contract, approval rules and release policy written
+  down; the ratchet now also fails any commit that carries an approval tag without an
+  `Approved-by:` trailer quoting the approving human.
+
 ## [0.5.0] - 2026-10-24
 
 ### Changed (output shift)
