@@ -127,6 +127,26 @@ console.log(calculateTransits([{ name: 'Natal Sun', longitude: 280, type: 'plane
 console.log(findStationPoints(CelestialBody.Mercury, start, start + 180));
 ```
 
+For separate orb passes over a long window, use `searchTransitPasses` from
+`celestine/events`. It takes the same parameters as `searchTransits` and returns one
+timing per continuous interval within orb, so a retrograde triple appears as one
+entry only while the planet stays in orb between hits. Boundaries are clipped to the
+search window. JDs and the transit calendar fields are TT; longitudes use the mean
+ecliptic/equinox of date. `searchTransits` itself is unchanged. For a single aspect,
+`findTransitPasses(body, natalLongitude, aspectAngle, orb, startJD, endJD)` returns
+the pass timings directly.
+
+```ts
+import { searchTransitPasses } from 'celestine/events';
+
+const passes = searchTransitPasses({
+  startJD: start, endJD: start + 730,
+  natalPoints: [{ name: 'Natal Sun', longitude: 345, type: 'luminary' }],
+  config: { transitingBodies: [CelestialBody.Saturn] },
+});
+console.log(passes.transits);
+```
+
 ## Progressions
 
 Progressions implement astrological time mappings. Their interpretation is

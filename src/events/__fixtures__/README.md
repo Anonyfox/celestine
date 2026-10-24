@@ -268,3 +268,24 @@ At the 56 NASA epochs, maximum apparent longitude errors against Horizons are
 2021-12-04 07:34:38 TT (JD 2459552.8157175924). That is above the 8 arcsec
 Moon budget, which is the maximum over the precision sample set, so the eclipse
 test bounds the Moon at 10 arcsec. The position API and its outputs are unchanged.
+
+## Transit passes
+
+Run `node --import tsx scripts/events/fetch-transit-passes.mjs` to reproduce
+`horizons-transit-passes.json` (retrieved 2026-10-24). Predictions select TT
+epochs at orb entry, exact hits and orb exit for the first three passes per case.
+Reference longitudes come from Horizons quantity 31 through the cached, sequential
+requests described above. The test subtracts nutation in longitude to compare in
+the mean ecliptic/equinox of date and enforces each body's longitude precision
+budget. These are longitude residuals at predicted times, not independent event times.
+
+| Body | Samples | Maximum residual (arcseconds) |
+|---|---:|---:|
+| Moon | 9 | 2.7687 |
+| Mars | 6 | 0.2000 |
+| Jupiter | 3 | 0.2878 |
+| Saturn | 9 | 0.2340 |
+
+The default `searchTransits` compatibility snapshot remains in
+`src/transits/__fixtures__/default-search.json`; its regression test runs against
+the unchanged transit search.

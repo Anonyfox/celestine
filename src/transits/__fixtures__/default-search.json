@@ -1,0 +1,759 @@
+{
+  "params": {
+    "startJD": 2460310.5,
+    "endJD": 2460400.5,
+    "natalPoints": [{ "name": "Sun", "longitude": 280, "type": "luminary" }],
+    "config": { "transitingBodies": ["Moon"], "aspectTypes": ["square"] }
+  },
+  "transits": [
+    {
+      "enterOrbJD": 2460313.039367676,
+      "enterOrbDate": {
+        "year": 2024,
+        "month": 1,
+        "day": 3,
+        "hour": 12,
+        "minute": 56,
+        "second": 41
+      },
+      "exactJDs": [
+        2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+        2460367.9509277344, 2460381.174682617, 2460395.203933716
+      ],
+      "exactDates": [
+        { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+        { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+        { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+        { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+        { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+        { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+        { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+      ],
+      "leaveOrbJD": 2460395.540359497,
+      "leaveOrbDate": { "year": 2024, "month": 3, "day": 26, "hour": 0, "minute": 58, "second": 7 },
+      "durationDays": 82.50099182128906,
+      "exactPasses": 7,
+      "hasRetrogradePass": false,
+      "transit": {
+        "transitingBody": "Moon",
+        "transitingBodyEnum": "Moon",
+        "natalPoint": "Sun",
+        "aspectType": "square",
+        "symbol": "□",
+        "aspectAngle": 90,
+        "separation": 90.0000777796813,
+        "deviation": 0.00007777968130540103,
+        "orb": 4,
+        "phase": "exact",
+        "strength": 100,
+        "isRetrograde": false,
+        "isOutOfSign": false,
+        "exactJD": 2460313.375305176,
+        "exactDate": { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 }
+      }
+    },
+    {
+      "enterOrbJD": 2460313.039367676,
+      "enterOrbDate": {
+        "year": 2024,
+        "month": 1,
+        "day": 3,
+        "hour": 12,
+        "minute": 56,
+        "second": 41
+      },
+      "exactJDs": [
+        2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+        2460367.9509277344, 2460381.174682617, 2460395.203933716
+      ],
+      "exactDates": [
+        { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+        { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+        { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+        { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+        { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+        { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+        { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+      ],
+      "leaveOrbJD": 2460395.540359497,
+      "leaveOrbDate": { "year": 2024, "month": 3, "day": 26, "hour": 0, "minute": 58, "second": 7 },
+      "durationDays": 82.50099182128906,
+      "exactPasses": 7,
+      "hasRetrogradePass": false,
+      "transit": {
+        "transitingBody": "Moon",
+        "transitingBodyEnum": "Moon",
+        "natalPoint": "Sun",
+        "aspectType": "square",
+        "symbol": "□",
+        "aspectAngle": 90,
+        "separation": 89.99991688672162,
+        "deviation": 0.0000831132783787325,
+        "orb": 4,
+        "phase": "exact",
+        "strength": 100,
+        "isRetrograde": false,
+        "isOutOfSign": false,
+        "exactJD": 2460326.40385437,
+        "exactDate": { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 }
+      }
+    },
+    {
+      "enterOrbJD": 2460313.039367676,
+      "enterOrbDate": {
+        "year": 2024,
+        "month": 1,
+        "day": 3,
+        "hour": 12,
+        "minute": 56,
+        "second": 41
+      },
+      "exactJDs": [
+        2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+        2460367.9509277344, 2460381.174682617, 2460395.203933716
+      ],
+      "exactDates": [
+        { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+        { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+        { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+        { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+        { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+        { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+        { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+      ],
+      "leaveOrbJD": 2460395.540359497,
+      "leaveOrbDate": { "year": 2024, "month": 3, "day": 26, "hour": 0, "minute": 58, "second": 7 },
+      "durationDays": 82.50099182128906,
+      "exactPasses": 7,
+      "hasRetrogradePass": false,
+      "transit": {
+        "transitingBody": "Moon",
+        "transitingBodyEnum": "Moon",
+        "natalPoint": "Sun",
+        "aspectType": "square",
+        "symbol": "□",
+        "aspectAngle": 90,
+        "separation": 90.00001284314203,
+        "deviation": 0.000012843142030760646,
+        "orb": 4,
+        "phase": "exact",
+        "strength": 100,
+        "isRetrograde": false,
+        "isOutOfSign": false,
+        "exactJD": 2460340.684173584,
+        "exactDate": { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 }
+      }
+    },
+    {
+      "enterOrbJD": 2460313.039367676,
+      "enterOrbDate": {
+        "year": 2024,
+        "month": 1,
+        "day": 3,
+        "hour": 12,
+        "minute": 56,
+        "second": 41
+      },
+      "exactJDs": [
+        2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+        2460367.9509277344, 2460381.174682617, 2460395.203933716
+      ],
+      "exactDates": [
+        { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+        { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+        { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+        { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+        { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+        { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+        { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+      ],
+      "leaveOrbJD": 2460395.540359497,
+      "leaveOrbDate": { "year": 2024, "month": 3, "day": 26, "hour": 0, "minute": 58, "second": 7 },
+      "durationDays": 82.50099182128906,
+      "exactPasses": 7,
+      "hasRetrogradePass": false,
+      "transit": {
+        "transitingBody": "Moon",
+        "transitingBodyEnum": "Moon",
+        "natalPoint": "Sun",
+        "aspectType": "square",
+        "symbol": "□",
+        "aspectAngle": 90,
+        "separation": 89.99997925314528,
+        "deviation": 0.00002074685471598059,
+        "orb": 4,
+        "phase": "exact",
+        "strength": 100,
+        "isRetrograde": false,
+        "isOutOfSign": false,
+        "exactJD": 2460353.7373657227,
+        "exactDate": { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 }
+      }
+    },
+    {
+      "enterOrbJD": 2460313.039367676,
+      "enterOrbDate": {
+        "year": 2024,
+        "month": 1,
+        "day": 3,
+        "hour": 12,
+        "minute": 56,
+        "second": 41
+      },
+      "exactJDs": [
+        2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+        2460367.9509277344, 2460381.174682617, 2460395.203933716
+      ],
+      "exactDates": [
+        { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+        { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+        { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+        { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+        { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+        { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+        { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+      ],
+      "leaveOrbJD": 2460395.540359497,
+      "leaveOrbDate": { "year": 2024, "month": 3, "day": 26, "hour": 0, "minute": 58, "second": 7 },
+      "durationDays": 82.50099182128906,
+      "exactPasses": 7,
+      "hasRetrogradePass": false,
+      "transit": {
+        "transitingBody": "Moon",
+        "transitingBodyEnum": "Moon",
+        "natalPoint": "Sun",
+        "aspectType": "square",
+        "symbol": "□",
+        "aspectAngle": 90,
+        "separation": 89.99993085458118,
+        "deviation": 0.00006914541881997138,
+        "orb": 4,
+        "phase": "exact",
+        "strength": 100,
+        "isRetrograde": false,
+        "isOutOfSign": false,
+        "exactJD": 2460367.9509277344,
+        "exactDate": { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 }
+      }
+    },
+    {
+      "enterOrbJD": 2460313.039367676,
+      "enterOrbDate": {
+        "year": 2024,
+        "month": 1,
+        "day": 3,
+        "hour": 12,
+        "minute": 56,
+        "second": 41
+      },
+      "exactJDs": [
+        2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+        2460367.9509277344, 2460381.174682617, 2460395.203933716
+      ],
+      "exactDates": [
+        { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+        { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+        { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+        { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+        { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+        { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+        { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+      ],
+      "leaveOrbJD": 2460395.540359497,
+      "leaveOrbDate": { "year": 2024, "month": 3, "day": 26, "hour": 0, "minute": 58, "second": 7 },
+      "durationDays": 82.50099182128906,
+      "exactPasses": 7,
+      "hasRetrogradePass": false,
+      "transit": {
+        "transitingBody": "Moon",
+        "transitingBodyEnum": "Moon",
+        "natalPoint": "Sun",
+        "aspectType": "square",
+        "symbol": "□",
+        "aspectAngle": 90,
+        "separation": 89.99992557353107,
+        "deviation": 0.00007442646892741323,
+        "orb": 4,
+        "phase": "exact",
+        "strength": 100,
+        "isRetrograde": false,
+        "isOutOfSign": false,
+        "exactJD": 2460381.174682617,
+        "exactDate": { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 }
+      }
+    },
+    {
+      "enterOrbJD": 2460313.039367676,
+      "enterOrbDate": {
+        "year": 2024,
+        "month": 1,
+        "day": 3,
+        "hour": 12,
+        "minute": 56,
+        "second": 41
+      },
+      "exactJDs": [
+        2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+        2460367.9509277344, 2460381.174682617, 2460395.203933716
+      ],
+      "exactDates": [
+        { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+        { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+        { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+        { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+        { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+        { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+        { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+      ],
+      "leaveOrbJD": 2460395.540359497,
+      "leaveOrbDate": { "year": 2024, "month": 3, "day": 26, "hour": 0, "minute": 58, "second": 7 },
+      "durationDays": 82.50099182128906,
+      "exactPasses": 7,
+      "hasRetrogradePass": false,
+      "transit": {
+        "transitingBody": "Moon",
+        "transitingBodyEnum": "Moon",
+        "natalPoint": "Sun",
+        "aspectType": "square",
+        "symbol": "□",
+        "aspectAngle": 90,
+        "separation": 90.00007670644845,
+        "deviation": 0.00007670644845347852,
+        "orb": 4,
+        "phase": "exact",
+        "strength": 100,
+        "isRetrograde": false,
+        "isOutOfSign": false,
+        "exactJD": 2460395.203933716,
+        "exactDate": { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+      }
+    }
+  ],
+  "byMonth": {
+    "2024-01": [
+      {
+        "enterOrbJD": 2460313.039367676,
+        "enterOrbDate": {
+          "year": 2024,
+          "month": 1,
+          "day": 3,
+          "hour": 12,
+          "minute": 56,
+          "second": 41
+        },
+        "exactJDs": [
+          2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+          2460367.9509277344, 2460381.174682617, 2460395.203933716
+        ],
+        "exactDates": [
+          { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+          { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+          { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+          { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+          { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+          { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+          { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+        ],
+        "leaveOrbJD": 2460395.540359497,
+        "leaveOrbDate": {
+          "year": 2024,
+          "month": 3,
+          "day": 26,
+          "hour": 0,
+          "minute": 58,
+          "second": 7
+        },
+        "durationDays": 82.50099182128906,
+        "exactPasses": 7,
+        "hasRetrogradePass": false,
+        "transit": {
+          "transitingBody": "Moon",
+          "transitingBodyEnum": "Moon",
+          "natalPoint": "Sun",
+          "aspectType": "square",
+          "symbol": "□",
+          "aspectAngle": 90,
+          "separation": 90.0000777796813,
+          "deviation": 0.00007777968130540103,
+          "orb": 4,
+          "phase": "exact",
+          "strength": 100,
+          "isRetrograde": false,
+          "isOutOfSign": false,
+          "exactJD": 2460313.375305176,
+          "exactDate": { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 }
+        }
+      },
+      {
+        "enterOrbJD": 2460313.039367676,
+        "enterOrbDate": {
+          "year": 2024,
+          "month": 1,
+          "day": 3,
+          "hour": 12,
+          "minute": 56,
+          "second": 41
+        },
+        "exactJDs": [
+          2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+          2460367.9509277344, 2460381.174682617, 2460395.203933716
+        ],
+        "exactDates": [
+          { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+          { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+          { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+          { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+          { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+          { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+          { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+        ],
+        "leaveOrbJD": 2460395.540359497,
+        "leaveOrbDate": {
+          "year": 2024,
+          "month": 3,
+          "day": 26,
+          "hour": 0,
+          "minute": 58,
+          "second": 7
+        },
+        "durationDays": 82.50099182128906,
+        "exactPasses": 7,
+        "hasRetrogradePass": false,
+        "transit": {
+          "transitingBody": "Moon",
+          "transitingBodyEnum": "Moon",
+          "natalPoint": "Sun",
+          "aspectType": "square",
+          "symbol": "□",
+          "aspectAngle": 90,
+          "separation": 89.99991688672162,
+          "deviation": 0.0000831132783787325,
+          "orb": 4,
+          "phase": "exact",
+          "strength": 100,
+          "isRetrograde": false,
+          "isOutOfSign": false,
+          "exactJD": 2460326.40385437,
+          "exactDate": {
+            "year": 2024,
+            "month": 1,
+            "day": 16,
+            "hour": 21,
+            "minute": 41,
+            "second": 33
+          }
+        }
+      },
+      {
+        "enterOrbJD": 2460313.039367676,
+        "enterOrbDate": {
+          "year": 2024,
+          "month": 1,
+          "day": 3,
+          "hour": 12,
+          "minute": 56,
+          "second": 41
+        },
+        "exactJDs": [
+          2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+          2460367.9509277344, 2460381.174682617, 2460395.203933716
+        ],
+        "exactDates": [
+          { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+          { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+          { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+          { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+          { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+          { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+          { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+        ],
+        "leaveOrbJD": 2460395.540359497,
+        "leaveOrbDate": {
+          "year": 2024,
+          "month": 3,
+          "day": 26,
+          "hour": 0,
+          "minute": 58,
+          "second": 7
+        },
+        "durationDays": 82.50099182128906,
+        "exactPasses": 7,
+        "hasRetrogradePass": false,
+        "transit": {
+          "transitingBody": "Moon",
+          "transitingBodyEnum": "Moon",
+          "natalPoint": "Sun",
+          "aspectType": "square",
+          "symbol": "□",
+          "aspectAngle": 90,
+          "separation": 90.00001284314203,
+          "deviation": 0.000012843142030760646,
+          "orb": 4,
+          "phase": "exact",
+          "strength": 100,
+          "isRetrograde": false,
+          "isOutOfSign": false,
+          "exactJD": 2460340.684173584,
+          "exactDate": {
+            "year": 2024,
+            "month": 1,
+            "day": 31,
+            "hour": 4,
+            "minute": 25,
+            "second": 12
+          }
+        }
+      },
+      {
+        "enterOrbJD": 2460313.039367676,
+        "enterOrbDate": {
+          "year": 2024,
+          "month": 1,
+          "day": 3,
+          "hour": 12,
+          "minute": 56,
+          "second": 41
+        },
+        "exactJDs": [
+          2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+          2460367.9509277344, 2460381.174682617, 2460395.203933716
+        ],
+        "exactDates": [
+          { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+          { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+          { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+          { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+          { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+          { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+          { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+        ],
+        "leaveOrbJD": 2460395.540359497,
+        "leaveOrbDate": {
+          "year": 2024,
+          "month": 3,
+          "day": 26,
+          "hour": 0,
+          "minute": 58,
+          "second": 7
+        },
+        "durationDays": 82.50099182128906,
+        "exactPasses": 7,
+        "hasRetrogradePass": false,
+        "transit": {
+          "transitingBody": "Moon",
+          "transitingBodyEnum": "Moon",
+          "natalPoint": "Sun",
+          "aspectType": "square",
+          "symbol": "□",
+          "aspectAngle": 90,
+          "separation": 89.99997925314528,
+          "deviation": 0.00002074685471598059,
+          "orb": 4,
+          "phase": "exact",
+          "strength": 100,
+          "isRetrograde": false,
+          "isOutOfSign": false,
+          "exactJD": 2460353.7373657227,
+          "exactDate": {
+            "year": 2024,
+            "month": 2,
+            "day": 13,
+            "hour": 5,
+            "minute": 41,
+            "second": 48
+          }
+        }
+      },
+      {
+        "enterOrbJD": 2460313.039367676,
+        "enterOrbDate": {
+          "year": 2024,
+          "month": 1,
+          "day": 3,
+          "hour": 12,
+          "minute": 56,
+          "second": 41
+        },
+        "exactJDs": [
+          2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+          2460367.9509277344, 2460381.174682617, 2460395.203933716
+        ],
+        "exactDates": [
+          { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+          { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+          { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+          { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+          { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+          { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+          { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+        ],
+        "leaveOrbJD": 2460395.540359497,
+        "leaveOrbDate": {
+          "year": 2024,
+          "month": 3,
+          "day": 26,
+          "hour": 0,
+          "minute": 58,
+          "second": 7
+        },
+        "durationDays": 82.50099182128906,
+        "exactPasses": 7,
+        "hasRetrogradePass": false,
+        "transit": {
+          "transitingBody": "Moon",
+          "transitingBodyEnum": "Moon",
+          "natalPoint": "Sun",
+          "aspectType": "square",
+          "symbol": "□",
+          "aspectAngle": 90,
+          "separation": 89.99993085458118,
+          "deviation": 0.00006914541881997138,
+          "orb": 4,
+          "phase": "exact",
+          "strength": 100,
+          "isRetrograde": false,
+          "isOutOfSign": false,
+          "exactJD": 2460367.9509277344,
+          "exactDate": {
+            "year": 2024,
+            "month": 2,
+            "day": 27,
+            "hour": 10,
+            "minute": 49,
+            "second": 20
+          }
+        }
+      },
+      {
+        "enterOrbJD": 2460313.039367676,
+        "enterOrbDate": {
+          "year": 2024,
+          "month": 1,
+          "day": 3,
+          "hour": 12,
+          "minute": 56,
+          "second": 41
+        },
+        "exactJDs": [
+          2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+          2460367.9509277344, 2460381.174682617, 2460395.203933716
+        ],
+        "exactDates": [
+          { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+          { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+          { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+          { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+          { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+          { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+          { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+        ],
+        "leaveOrbJD": 2460395.540359497,
+        "leaveOrbDate": {
+          "year": 2024,
+          "month": 3,
+          "day": 26,
+          "hour": 0,
+          "minute": 58,
+          "second": 7
+        },
+        "durationDays": 82.50099182128906,
+        "exactPasses": 7,
+        "hasRetrogradePass": false,
+        "transit": {
+          "transitingBody": "Moon",
+          "transitingBodyEnum": "Moon",
+          "natalPoint": "Sun",
+          "aspectType": "square",
+          "symbol": "□",
+          "aspectAngle": 90,
+          "separation": 89.99992557353107,
+          "deviation": 0.00007442646892741323,
+          "orb": 4,
+          "phase": "exact",
+          "strength": 100,
+          "isRetrograde": false,
+          "isOutOfSign": false,
+          "exactJD": 2460381.174682617,
+          "exactDate": {
+            "year": 2024,
+            "month": 3,
+            "day": 11,
+            "hour": 16,
+            "minute": 11,
+            "second": 32
+          }
+        }
+      },
+      {
+        "enterOrbJD": 2460313.039367676,
+        "enterOrbDate": {
+          "year": 2024,
+          "month": 1,
+          "day": 3,
+          "hour": 12,
+          "minute": 56,
+          "second": 41
+        },
+        "exactJDs": [
+          2460313.375305176, 2460326.40385437, 2460340.684173584, 2460353.7373657227,
+          2460367.9509277344, 2460381.174682617, 2460395.203933716
+        ],
+        "exactDates": [
+          { "year": 2024, "month": 1, "day": 3, "hour": 21, "minute": 0, "second": 26 },
+          { "year": 2024, "month": 1, "day": 16, "hour": 21, "minute": 41, "second": 33 },
+          { "year": 2024, "month": 1, "day": 31, "hour": 4, "minute": 25, "second": 12 },
+          { "year": 2024, "month": 2, "day": 13, "hour": 5, "minute": 41, "second": 48 },
+          { "year": 2024, "month": 2, "day": 27, "hour": 10, "minute": 49, "second": 20 },
+          { "year": 2024, "month": 3, "day": 11, "hour": 16, "minute": 11, "second": 32 },
+          { "year": 2024, "month": 3, "day": 25, "hour": 16, "minute": 53, "second": 39 }
+        ],
+        "leaveOrbJD": 2460395.540359497,
+        "leaveOrbDate": {
+          "year": 2024,
+          "month": 3,
+          "day": 26,
+          "hour": 0,
+          "minute": 58,
+          "second": 7
+        },
+        "durationDays": 82.50099182128906,
+        "exactPasses": 7,
+        "hasRetrogradePass": false,
+        "transit": {
+          "transitingBody": "Moon",
+          "transitingBodyEnum": "Moon",
+          "natalPoint": "Sun",
+          "aspectType": "square",
+          "symbol": "□",
+          "aspectAngle": 90,
+          "separation": 90.00007670644845,
+          "deviation": 0.00007670644845347852,
+          "orb": 4,
+          "phase": "exact",
+          "strength": 100,
+          "isRetrograde": false,
+          "isOutOfSign": false,
+          "exactJD": 2460395.203933716,
+          "exactDate": {
+            "year": 2024,
+            "month": 3,
+            "day": 25,
+            "hour": 16,
+            "minute": 53,
+            "second": 39
+          }
+        }
+      }
+    ]
+  },
+  "summary": {
+    "totalTransits": 7,
+    "byAspect": { "square": 7 },
+    "byBody": { "Moon": 7 },
+    "dateRange": {
+      "start": { "year": 2024, "month": 1, "day": 1, "hour": 0, "minute": 0, "second": 0 },
+      "end": { "year": 2024, "month": 3, "day": 31, "hour": 0, "minute": 0, "second": 0 },
+      "days": 90
+    }
+  }
+}

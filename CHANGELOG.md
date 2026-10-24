@@ -18,6 +18,10 @@ All notable changes to this project are documented here, following
   eclipses with TT/UT instants, NASA magnitudes, gamma and frame-selectable longitudes.
   NASA Canon 2020–2030 agreement: 50/50 types matched, maximum |Δt| 17.103 s.
 
+- `searchTransitPasses` and `findTransitPasses` from `celestine/events` separate
+  continuous orb passes, retaining retrograde hits together only while within orb.
+  `searchTransits` itself is unchanged.
+
 - Runnable examples, executed in `npm run check` by `src/examples.test.ts`: `examples/node-cli.mjs`
   (next station-retrograde per planet, current Moon phase), `examples/browser-natal-chart.html`
   (no build step, ESM from a CDN) and `examples/cloudflare-worker.ts`. The README quickstart is

@@ -1,0 +1,177 @@
+[
+  {
+    "body": "Moon",
+    "natalLongitude": 280,
+    "aspectAngle": 90,
+    "orb": 2,
+    "startJD": 2460310.5,
+    "endJD": 2460400.5,
+    "samples": [
+      {
+        "jd": 2460313.207480708,
+        "boundary": true,
+        "longitude": 187.9987664
+      },
+      {
+        "jd": 2460313.375311696,
+        "boundary": false,
+        "longitude": 189.9987655
+      },
+      {
+        "jd": 2460313.54277555,
+        "boundary": true,
+        "longitude": 191.9987596
+      },
+      {
+        "jd": 2460326.262450951,
+        "boundary": true,
+        "longitude": 7.9979322
+      },
+      {
+        "jd": 2460326.4038602556,
+        "boundary": false,
+        "longitude": 9.9979943
+      },
+      {
+        "jd": 2460326.5457037734,
+        "boundary": true,
+        "longitude": 11.9980643
+      },
+      {
+        "jd": 2460340.5150010157,
+        "boundary": true,
+        "longitude": 187.9986799
+      },
+      {
+        "jd": 2460340.68417467,
+        "boundary": false,
+        "longitude": 189.9987073
+      },
+      {
+        "jd": 2460340.8531483803,
+        "boundary": true,
+        "longitude": 191.9987322
+      }
+    ]
+  },
+  {
+    "body": "Mars",
+    "natalLongitude": 280,
+    "aspectAngle": 90,
+    "orb": 2,
+    "startJD": 2460310.5,
+    "endJD": 2461041.5,
+    "samples": [
+      {
+        "jd": 2460441.5585501846,
+        "boundary": true,
+        "longitude": 7.9985109
+      },
+      {
+        "jd": 2460444.174184319,
+        "boundary": false,
+        "longitude": 9.9985995
+      },
+      {
+        "jd": 2460446.795653616,
+        "boundary": true,
+        "longitude": 11.9986086
+      },
+      {
+        "jd": 2460907.192396626,
+        "boundary": true,
+        "longitude": 188.0011731
+      },
+      {
+        "jd": 2460910.327752785,
+        "boundary": false,
+        "longitude": 190.0012043
+      },
+      {
+        "jd": 2460913.4464141773,
+        "boundary": true,
+        "longitude": 192.0011088
+      }
+    ]
+  },
+  {
+    "body": "Jupiter",
+    "natalLongitude": 70,
+    "aspectAngle": 0,
+    "orb": 2,
+    "startJD": 2460310.5,
+    "endJD": 2461041.5,
+    "samples": [
+      {
+        "jd": 2460491.4981582155,
+        "boundary": true,
+        "longitude": 67.9990771
+      },
+      {
+        "jd": 2460500.878392546,
+        "boundary": false,
+        "longitude": 69.9993282
+      },
+      {
+        "jd": 2460510.735770624,
+        "boundary": true,
+        "longitude": 71.9993459
+      }
+    ]
+  },
+  {
+    "body": "Saturn",
+    "natalLongitude": 345,
+    "aspectAngle": 0,
+    "orb": 1,
+    "startJD": 2460310.5,
+    "endJD": 2461041.5,
+    "samples": [
+      {
+        "jd": 2460405.0787186055,
+        "boundary": true,
+        "longitude": 343.9985811
+      },
+      {
+        "jd": 2460414.4055992356,
+        "boundary": false,
+        "longitude": 344.9985171
+      },
+      {
+        "jd": 2460424.481129482,
+        "boundary": true,
+        "longitude": 345.9983806
+      },
+      {
+        "jd": 2460562.0579323843,
+        "boundary": true,
+        "longitude": 345.9993759
+      },
+      {
+        "jd": 2460575.332163403,
+        "boundary": false,
+        "longitude": 344.9993033
+      },
+      {
+        "jd": 2460590.142352285,
+        "boundary": true,
+        "longitude": 343.9991628
+      },
+      {
+        "jd": 2460669.056718637,
+        "boundary": true,
+        "longitude": 343.9998103
+      },
+      {
+        "jd": 2460682.4868200063,
+        "boundary": false,
+        "longitude": 345.0000289
+      },
+      {
+        "jd": 2460693.621554839,
+        "boundary": true,
+        "longitude": 346.0002728
+      }
+    ]
+  }
+]

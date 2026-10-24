@@ -6,6 +6,7 @@ export { findSignIngresses } from './ingresses.js';
 export { findLunarPhases, getMoonPhase } from './lunar.js';
 export { findSeasons } from './seasons.js';
 export { findStations } from './stations.js';
+export { findTransitPasses, searchTransitPasses } from './transit-passes.js';
 export type {
   AspectTimeEvent,
   EclipseEvent,
