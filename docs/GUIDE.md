@@ -222,6 +222,40 @@ console.log(findSeasons(start, end));
 console.log(findSignIngresses(CelestialBody.Mercury, start, end));
 ```
 
+### Day reports
+
+`findAscendantSigns` lists the rising sign intervals for a location across a TT
+interval, and `getSignsDuring` tells which bodies keep one sign and when the others
+change. For a local civil day, take the UT bounds from `localDayToUT` and convert
+them with `toTT`; DST days then keep their real length of 23 or 25 hours.
+
+```ts
+import { findAscendantSigns, getSignsDuring, localDayToUT } from 'celestine/events';
+import { toTT } from 'celestine/time';
+
+const day = localDayToUT({ year: 2026, month: 3, day: 29 }, 'Europe/Berlin');
+const rising = findAscendantSigns(toTT(day.startJD), toTT(day.endJD), 52.52, 13.405);
+const planets = getSignsDuring(toTT(day.startJD), toTT(day.endJD));
+```
+
+Latitude is degrees north; longitude is degrees east (west is negative).
+Ascendant intervals cover the inclusive TT bounds, with `startUT` and `endUT`
+computed using `toUT`. Interior boundaries belong to the following sign;
+a boundary at the final instant can produce a zero-duration final interval.
+A zero-length request returns one interval. Latitudes with absolute value at
+least 66 degrees are rejected with `RangeError`, excluding polar ascendant jumps.
+The ascendant uses the chart's mean sidereal time and mean obliquity on UT.
+Its boundaries are solved analytically and refined with the library ascendant.
+All 60 sign boundaries in five reference days agree with ERFA (`gmst82`, `obl80`)
+within 0.0001 seconds.
+
+`getSignsDuring` defaults to Sun through Pluto in `CelestialBody` order. Pass
+`{ bodies: [CelestialBody.Moon] }` to select bodies. Each report includes
+`startSign`, `endSign`, their names, `changesSign`, and all `ingresses` within
+the inclusive bounds. A return to the starting sign still sets `changesSign`.
+The default frame is mean ecliptic/equinox of date; `{ includeNutation: true }`
+selects true equinox for both functions. Ingress instants carry TT `jd` and UT `jdUT`.
+
 ### Lunations on natal points
 
 Every lunar phase event carries `moonLongitude` and `sunLongitude`: apparent geocentric

@@ -122,3 +122,27 @@ export interface LunarEclipseEvent extends EclipseGeometry {
 }
 /** Discriminated greatest-eclipse union, with TT/UT instants. @example event.kind */
 export type EclipseEvent = SolarEclipseEvent | LunarEclipseEvent;
+
+/** Ascendant sign span: TT and UT endpoints, mean equinox unless requested true. @example span.signName */
+export interface AscendantSignInterval {
+  sign: number;
+  signName: string;
+  start: number;
+  startUT: number;
+  end: number;
+  endUT: number;
+}
+/** Day report selection in the event longitude frame. @example { bodies: [CelestialBody.Moon] } */
+export interface SignsDuringOptions extends EventFrameOptions {
+  bodies?: CelestialBody[];
+}
+/** Signs and TT/UT ingresses over inclusive TT bounds in the selected frame. @example report.changesSign */
+export interface SignsDuring {
+  body: CelestialBody;
+  startSign: number;
+  startSignName: string;
+  endSign: number;
+  endSignName: string;
+  changesSign: boolean;
+  ingresses: SignIngress[];
+}

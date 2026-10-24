@@ -27,6 +27,10 @@ All notable changes to this project are documented here, following
   dates throw. The subpath-only export keeps the root bundle unchanged.
   Documented JD-only and legacy month-centre TT/UT conventions.
 
+- `celestine/events` day reports: `findAscendantSigns` for geographic ascendant sign intervals
+  and `getSignsDuring` for endpoint signs and all ingresses. TT inputs, UT endpoints,
+  optional true equinox; ascendant reports reject latitudes at or beyond 66 degrees.
+
 - Runnable examples, executed in `npm run check` by `src/examples.test.ts`: `examples/node-cli.mjs`
   (next station-retrograde per planet, current Moon phase), `examples/browser-natal-chart.html`
   (no build step, ESM from a CDN) and `examples/cloudflare-worker.ts`. The README quickstart is
