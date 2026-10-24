@@ -26,6 +26,7 @@ export {toJulianDate, fromJulianDate, eclipticToZodiac, findStationPoints, findA
   'events.full': `export * from 'celestine/events';`,
   'events.findSeasons': `export {findSeasons} from 'celestine/events';`,
   'events.findLunarPhases': `export {findLunarPhases} from 'celestine/events';`,
+  'events.findStations': `export {findStations} from 'celestine/events';`,
   // celestine/precise is subpath-only; a single body must bundle only its own model.
   'precise.getChironPosition': `export {getChironPosition} from 'celestine/precise';`,
   'precise.getCeresPosition': `export {getCeresPosition} from 'celestine/precise';`,

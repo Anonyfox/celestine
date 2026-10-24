@@ -8,6 +8,14 @@ All notable changes to this project are documented here, following
 
 ### Added
 
+- `findStations(body, startJD, endJD, options?)` in `celestine/events` finds retrograde and direct
+  stations for Mercury through Pluto. A station is a zero of the apparent geocentric longitude
+  rate, found with the shared events root finder. It uses the same positions and frame as the
+  other event searches: mean equinox of date by default, or the true equinox with
+  `{ nutation: true }`. Each result has `type`, `jd` (TT), `jdUT`, `longitude`, `sign` and
+  `signName` (`StationEvent`). Maximum error vs JPL Horizons over 1900–2100 (true equinox) is
+  0.7 min for Mercury, up to 76 min for Pluto, and ≤3.5″ in longitude for all bodies; see the README. The new
+  `events.findStations` size entry measures 23.2 KB gzip. The root bundle is unchanged.
 - `celestine/precise`, an opt-in subpath with `getChironPosition`, `getCeresPosition`,
   `getPallasPosition`, `getJunoPosition` and `getVestaPosition`. They have the same signatures
   and `PlanetPosition` return type as the `celestine/ephemeris` functions, so switching is a

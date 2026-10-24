@@ -11,6 +11,9 @@
   "events:exports.findSignIngresses": {
     "kind": "function"
   },
+  "events:exports.findStations": {
+    "kind": "function"
+  },
   "events:exports.findVoidOfCourseMoon": {
     "kind": "function"
   },
@@ -96,6 +99,14 @@
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
       "SignIngress": "events:public.SignIngress"
+    }
+  },
+  "events:public.findStations": {
+    "kind": "value",
+    "type": "(body: CelestialBody, startJD: number, endJD: number, options?: { nutation?: boolean; }) => StationEvent[]",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "StationEvent": "events:public.StationEvent"
     }
   },
   "events:public.findVoidOfCourseMoon": {
@@ -441,6 +452,45 @@
       }
     },
     "definition": "export interface SignIngress extends EventInstant { body: CelestialBody; sign: number; signName: string; previousSign: number; previousSignName: string; retrograde: boolean; }",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
+  "events:public.StationEvent": {
+    "kind": "type",
+    "type": "StationEvent",
+    "members": {
+      "body": {
+        "type": "CelestialBody",
+        "optional": false
+      },
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "longitude": {
+        "type": "number",
+        "optional": false
+      },
+      "sign": {
+        "type": "number",
+        "optional": false
+      },
+      "signName": {
+        "type": "string",
+        "optional": false
+      },
+      "type": {
+        "type": "\"direct\" | \"retrograde\"",
+        "optional": false
+      }
+    },
+    "definition": "export interface StationEvent extends EventInstant { body: CelestialBody; type: 'retrograde' | 'direct'; longitude: number; sign: number; signName: string; }",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
       "EventInstant": "events:public.EventInstant"

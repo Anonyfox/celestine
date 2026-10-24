@@ -3,6 +3,7 @@ export { findAspectTimes } from './aspects.js';
 export { findSignIngresses } from './ingresses.js';
 export { findLunarPhases, getMoonPhase } from './lunar.js';
 export { findSeasons } from './seasons.js';
+export { findStations } from './stations.js';
 export type {
   AspectTimeEvent,
   EventInstant,
@@ -11,6 +12,7 @@ export type {
   MoonPhaseInfo,
   SeasonEvent,
   SignIngress,
+  StationEvent,
   VoidOfCoursePeriod,
 } from './types.js';
 export { findVoidOfCourseMoon } from './void.js';

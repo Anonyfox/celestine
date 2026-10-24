@@ -52,6 +52,13 @@ Horizons caches requests by URL SHA-256 prefix; remove `requests/` to re-fetch t
   `[jdTT, illuminatedFraction]`. Same Horizons parameters except `COMMAND='301'`,
   `QUANTITIES='10'`; response column 3 is illuminated percent, divided by 100.
 
+`horizons-stations.json` comes from `node scripts/events/fetch-stations.mjs` (after
+`npm run build`). For each station it takes 17 Horizons samples (quantity 31: true ecliptic of
+date, TT) within ±1 day (Mercury), ±1.5 days (Venus) or ±2 days (other bodies). It then fits a quartic and
+records the vertex. The script recentres the window until the vertex lies within a quarter of the
+half-width. Short windows keep the monthly lunar reflex in geocentric longitude (≈0.16″ for
+Pluto) from biasing slow-planet stations by tens of minutes.
+
 ## Empirical frame check
 
 `frame.json` records three Sun epochs and independent Horizons longitude: TT JD 2415020,

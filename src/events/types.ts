@@ -55,3 +55,13 @@ export interface VoidOfCoursePeriod {
   nextSignName: string;
   lastAspect: ({ body: CelestialBody; angle: number } & EventInstant) | null;
 }
+/** Station: apparent longitude rate crosses zero; type is the motion that follows. TT/UT JD. @example station.type */
+export interface StationEvent extends EventInstant {
+  body: CelestialBody;
+  type: 'retrograde' | 'direct';
+  /** Apparent geocentric ecliptic longitude at the station, degrees [0,360). */
+  longitude: number;
+  /** Sign index Aries=0 through Pisces=11. */
+  sign: number;
+  signName: string;
+}

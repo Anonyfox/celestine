@@ -36,7 +36,7 @@ Built for practitioners who actually care about precision. 2400+ unit tests. Zer
 - ✅ **Aspects** - 14 aspect types (major, minor, Kepler), patterns, orbs, applying/separating
 - ✅ **Transits** - Predictive astrology with exact timing, house ingress, retrograde handling
 - ✅ **Progressions** - Secondary progressions, solar arc directions, Moon phases and sign transits
-- ✅ **Event Search** (`celestine/events`) - Sign ingresses, lunar phases, seasons, exact aspect times, void-of-course Moon, checked against JPL Horizons and USNO
+- ✅ **Event Search** (`celestine/events`) - Sign ingresses, lunar phases, seasons, exact aspect times, void-of-course Moon, retrograde/direct stations, checked against JPL Horizons and USNO
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
 - 🧪 **Well-tested** - 2400+ unit tests
 - 🚀 **Zero runtime dependencies** - Lightweight and fast
@@ -857,6 +857,55 @@ better than 1e-6 day. Sampling uses 0.5 days for the Moon/true node/Lilith, one 
 for Mercury, two days for other generic bodies, one day for phases and five days
 for seasons. It assumes successive stations are farther apart than one step;
 arbitrarily close degenerate relative stations have no completeness guarantee.
+
+### Retrograde and direct stations
+
+`findStations(body, startJD, endJD, options?)` (Mercury through Pluto) returns the instants
+where apparent geocentric ecliptic longitude stops moving: `type` is `retrograde` (speed turns
+negative) or `direct`, with `jd` (TT), `jdUT`, `longitude`, `sign` and `signName`. It uses the
+same positions and frame as the rest of `celestine/events`, so at every result
+`getPosition(body, jd).longitudeSpeed` changes sign. The default frame is the mean
+ecliptic/equinox of date; `{ nutation: true }` uses the true equinox (almanac/Horizons convention).
+For degree labels, take `Math.floor(longitude % 30)` or pass `longitude` to `eclipticToZodiac`.
+
+```ts
+import { findStations } from 'celestine/events';
+import { CelestialBody, toJulianDate, toTT } from 'celestine';
+
+const start = toTT(toJulianDate({ year: 2026, month: 10, day: 1, hour: 0, minute: 0, second: 0 }));
+for (const s of findStations(CelestialBody.Mercury, start, start + 455)) {
+  console.log(s.type, new Date((s.jdUT - 2440587.5) * 86400000).toISOString(), s.signName);
+}
+```
+
+Stations are ill-conditioned in time. Near a station the longitude changes by well under
+1″ in an hour (Mercury) or a day (Pluto), so the time error is roughly the longitude-rate error
+divided by the acceleration. A slowly varying positional error of a few arcseconds can move a
+slow planet's station by an hour, while the station longitude stays within a few arcseconds.
+The two frames also give different instants: nutation changes the longitude rate, which moves
+slow-planet stations by up to a few hours. Stations from symmetric speed differences of an
+accurate ephemeris need no threshold. Forward differences with a speed threshold
+(`findStationPoints` in `transits`) are coarser.
+
+Measured against JPL Horizons (apparent geocentric longitude, true ecliptic/equinox of date,
+TT). Reference instants come from quartic fits to 17 Horizons samples within ±1–2 days of each
+station, with fit residuals ≤0.003″. There are 16 stations per body spread over 1900–2100, plus all 48 Mercury
+stations in 2026–2030. Station types match one-to-one.
+
+| Body | Stations | Max Δt (`nutation: true`) | RMS Δt | Max Δλ | Max Δt (default mean frame) |
+|---|---:|---:|---:|---:|---:|
+| Mercury | 48 | 0.7 min | 0.3 min | 0.8″ | 1.3 min |
+| Venus | 16 | 0.4 min | 0.2 min | 1.2″ | 1.1 min |
+| Mars | 16 | 2.5 min | 1.1 min | 2.0″ | 4.3 min |
+| Jupiter | 16 | 6.4 min | 3.5 min | 1.3″ | 14 min |
+| Saturn | 16 | 17 min | 7.7 min | 1.3″ | 39 min |
+| Uranus | 16 | 24 min | 11 min | 2.1″ | 85 min |
+| Neptune | 16 | 37 min | 18 min | 2.8″ | 96 min |
+| Pluto | 16 | 76 min | 49 min | 3.5″ | 3.7 h |
+
+Chiron is not supported. Events use the root Keplerian Chiron, whose stations are off by up to
+5 days. Reproduce the reference with `npm run build && node scripts/events/fetch-stations.mjs`.
+Mercury over four years takes about 0.1 s; a slow planet over a century takes about 1 s.
 
 ## API Documentation
 
