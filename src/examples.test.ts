@@ -1,6 +1,14 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { closeSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  closeSync,
+  existsSync,
+  mkdtempSync,
+  openSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { describe, it } from 'node:test';
@@ -10,6 +18,11 @@ import { calculateChart } from './index.js';
 
 const root = resolve(import.meta.dirname, '..');
 const distURL = pathToFileURL(join(root, 'dist/index.js')).href;
+// The examples import the built package. On a fresh clone `npm test` runs before any build,
+// so skip with a reason instead of failing; `npm run check` builds first and runs them.
+const skip = existsSync(join(root, 'dist/index.js'))
+  ? false
+  : 'dist/ not built: run `npm run build` (npm run check builds before testing)';
 async function run(file: string) {
   const directory = mkdtempSync(join(tmpdir(), 'celestine-run-'));
   const output = join(directory, 'stdout');
@@ -35,7 +48,7 @@ async function run(file: string) {
   }
 }
 
-describe('runnable examples', () => {
+describe('runnable examples', { skip }, () => {
   it('prints future retrograde stations and lunar phase data', async () => {
     const output = await run(join(root, 'examples/node-cli.mjs'));
     assert.match(output, /station-retrograde/);
