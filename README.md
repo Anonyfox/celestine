@@ -47,6 +47,30 @@ Built for practitioners who actually care about precision. 2400+ unit tests. Zer
 npm install celestine
 ```
 
+## Entry points
+
+Everything is importable from the root `celestine`; the subpaths keep bundles small. Two
+subpaths are opt-in and **not** re-exported from the root: `celestine/events` and
+`celestine/precise`. Sizes are for `export * from '<entry>'`, bundled with esbuild and
+minified, before and after gzip (1 KB = 1000 bytes). A bundler that imports single functions ships less.
+
+| Entry | Contents | Min | Gzip |
+|---|---|---:|---:|
+| `celestine` | everything below except events and precise | 173.4 KB | 58.8 KB |
+| `celestine/ephemeris` | Sun, Moon, planets, nodes, Lilith, Part of Fortune, Chiron, asteroids | 62.1 KB | 24.6 KB |
+| `celestine/time` | Julian dates, ΔT, TT ↔ UT, sidereal time | 5.5 KB | 2.6 KB |
+| `celestine/zodiac` | signs, dignities, formatting | 5.9 KB | 2.2 KB |
+| `celestine/aspects` | aspect detection and patterns | 12.1 KB | 3.9 KB |
+| `celestine/houses` | house systems, angles | 9.2 KB | 3.6 KB |
+| `celestine/chart` | `calculateChart` | 95.0 KB | 35.3 KB |
+| `celestine/transits` | transits, ingresses, stations, retrograde periods | 78.6 KB | 30.3 KB |
+| `celestine/progressions` | secondary, tertiary and minor progressions, solar arc | 71.1 KB | 29.0 KB |
+| `celestine/events` | ingresses, lunar phases, seasons, aspect times, void-of-course Moon | 59.5 KB | 24.2 KB |
+| `celestine/precise` | arcsecond Chiron, Ceres, Pallas, Juno, Vesta (1800–2200) | 43.5 KB | 30.7 KB |
+
+API reference for the root, `celestine/events`, `celestine/precise` and `celestine/time`:
+`npm run docs` (TypeDoc).
+
 ## Quick Start
 
 ```typescript
@@ -156,9 +180,19 @@ console.log(pallas.longitude, pallas.isRetrograde);
 
 - **Bodies**: `getChironPosition`, `getCeresPosition`, `getPallasPosition`, `getJunoPosition`,
   `getVestaPosition` (`(jd, options?) => PlanetPosition`, same options as `celestine/ephemeris`).
-- **Accuracy**: under 1″ against JPL Horizons on held-out epochs, 1800–2200 (max 0.73″–0.95″
-  per body; mean ecliptic and equinox of date). Each body is a mean orbit plus a compact
-  piecewise Chebyshev fit to Horizons.
+- **Accuracy**: under 1″ against JPL Horizons on held-out epochs. Each body is a mean orbit
+  plus a compact piecewise Chebyshev fit to Horizons. The table gives the maximum apparent
+  angular error vs Horizons, with `includeNutation: true` to match Horizons' true equinox of
+  date. It covers 400 held-out epochs over 1800–2200 and 60 over 2020–2030
+  (`scripts/nutation/accuracy.mts`).
+
+  | Body | `celestine/precise` 1800–2200 | 2020–2030 | `celestine/ephemeris` 1800–2200 | 2020–2030 |
+  |---|---:|---:|---:|---:|
+  | Chiron | 0.74″ | 0.36″ | 24.9° | 47.9′ |
+  | Ceres | 0.93″ | 0.71″ | 1.33° | 35.6′ |
+  | Pallas | 0.78″ | 0.67″ | 4.45° | 2.77° |
+  | Juno | 0.83″ | 0.51″ | 2.61° | 30.6′ |
+  | Vesta | 0.85″ | 0.60″ | 56.6′ | 41.3′ |
 - **Range**: `PRECISE_RANGE` is JD 2378497–2524594 TT (1800-01-01T12:00 to 2200-01-01T12:00
   TT). Outside it, and for `NaN`, the functions throw a `RangeError`; they never fall back
   silently to the less accurate model. Use `celestine/ephemeris` for other dates.
@@ -765,7 +799,7 @@ middle of the supplied month. See the [reference data and measurements](src/time
 
 Event searches are available only from the `celestine/events` subpath; they are not
 re-exported from the root `celestine` entry, so the root bundle does not grow. Each function
-tree-shakes on its own (esbuild, minified + gzip: `findSeasons` ≈4.5 KB, `findLunarPhases` ≈5.5 KB,
+tree-shakes on its own (esbuild, minified + gzip: `findSeasons` ≈4.4 KB, `findLunarPhases` ≈5.4 KB,
 `getMoonPhase` ≈5.0 KB; body-generic searches such as `findSignIngresses` ≈23 KB because they pull
 in every ephemeris body). CommonJS `require('celestine/events')` works as well.
 Every input Julian Date is **TT**, just like the ephemeris API. `toJulianDate` returns UT,
