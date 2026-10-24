@@ -24,12 +24,8 @@ import {
   EXACT_TIME_TOLERANCE,
   MAX_BINARY_SEARCH_ITERATIONS,
 } from './constants.js';
-import {
-  angularSeparation,
-  jdToTransitDate,
-  normalizeAngle,
-  signedAngularDifference,
-} from './transit-detection.js';
+import { formatDate } from './format-date.js';
+import { angularSeparation, jdToTransitDate, normalizeAngle } from './transit-detection.js';
 import type { Transit, TransitDate, TransitTiming } from './types.js';
 
 // =============================================================================
@@ -54,37 +50,8 @@ export function calculateSignedDeviation(
   natalLongitude: number,
   aspectAngle: number,
 ): number {
-  // Get the signed difference (where the transiting body is relative to natal)
-  const signedDiff = signedAngularDifference(natalLongitude, transitLongitude);
-
-  // Normalize to 0-360 range for comparison
-  let normalizedDiff = signedDiff;
-  if (normalizedDiff < 0) normalizedDiff += 360;
-
-  // Calculate separation (0-180)
-  const separation = angularSeparation(transitLongitude, natalLongitude);
-
-  // Calculate deviation from aspect
-  let deviation = separation - aspectAngle;
-
-  // For aspects other than conjunction (0°) and opposition (180°),
-  // we need to determine the "direction" of approach
-  if (aspectAngle !== 0 && aspectAngle !== 180) {
-    // Check if we're approaching or past the aspect
-    // The sign depends on which "direction" would reach the aspect first
-    if (normalizedDiff < aspectAngle || normalizedDiff > 360 - aspectAngle) {
-      // Still approaching from one direction
-      deviation = separation - aspectAngle;
-    } else {
-      // May have passed, check the complement
-      const complementAspect = 360 - aspectAngle;
-      if (Math.abs(normalizedDiff - complementAspect) < Math.abs(normalizedDiff - aspectAngle)) {
-        deviation = separation - aspectAngle;
-      }
-    }
-  }
-
-  return deviation;
+  // Every former direction branch returned this same separation deviation.
+  return angularSeparation(transitLongitude, natalLongitude) - aspectAngle;
 }
 
 /**
@@ -406,21 +373,8 @@ function findBoundaryTime(
 
     const isWithinOrb = dev <= orb;
 
-    if (boundaryType === 'entry') {
-      // For entry: we want the moment when we go from outside to inside
-      if (isWithinOrb) {
-        hi = midJD;
-      } else {
-        lo = midJD;
-      }
-    } else {
-      // For exit: we want the moment when we go from inside to outside
-      if (isWithinOrb) {
-        lo = midJD;
-      } else {
-        hi = midJD;
-      }
-    }
+    if (isWithinOrb === (boundaryType === 'entry')) hi = midJD;
+    else lo = midJD;
 
     if (Math.abs(dev - orb) < tolerance) {
       return midJD;
@@ -633,28 +587,11 @@ export function estimateNextAspect(
   const target1 = normalizeAngle(natalLongitude + aspectAngle);
   const target2 = normalizeAngle(natalLongitude - aspectAngle);
 
-  // Choose target based on motion direction and current position
-  let targetLong: number;
-
-  if (speed >= 0) {
-    // Direct motion - find next target ahead
-    const dist1 = normalizeAngle(target1 - currentLong);
-    const dist2 = normalizeAngle(target2 - currentLong);
-    targetLong = dist1 < dist2 ? target1 : target2;
-  } else {
-    // Retrograde - find next target behind
-    const dist1 = normalizeAngle(currentLong - target1);
-    const dist2 = normalizeAngle(currentLong - target2);
-    targetLong = dist1 < dist2 ? target1 : target2;
-  }
-
-  // Calculate distance to target
-  let distance: number;
-  if (speed >= 0) {
-    distance = normalizeAngle(targetLong - currentLong);
-  } else {
-    distance = normalizeAngle(currentLong - targetLong);
-  }
+  // Keep the directed distances (including NaN and the original tie rule).
+  const direction = speed >= 0 ? 1 : -1;
+  const dist1 = normalizeAngle((target1 - currentLong) * direction);
+  const dist2 = normalizeAngle((target2 - currentLong) * direction);
+  const distance = dist1 < dist2 ? dist1 : dist2;
 
   // Estimate time based on average motion
   const avgMotion = Math.abs(AVERAGE_DAILY_MOTION[body] ?? speed);
@@ -678,7 +615,6 @@ export function getSearchStepForBody(body: CelestialBody): number {
   if (avgMotion > 5) return 0.25; // 6 hours for Moon
   if (avgMotion > 1) return 1; // Daily for Sun, Mercury, Venus
   if (avgMotion > 0.1) return 3; // Every 3 days for Mars
-  if (avgMotion > 0.01) return 7; // Weekly for Jupiter through Pluto
 
   return 7;
 }
@@ -696,21 +632,16 @@ export function formatTransitTiming(
   const exit = timing.leaveOrbDate;
 
   const lines: string[] = [
-    `Enters orb: ${enter.year}-${String(enter.month).padStart(2, '0')}-${String(enter.day).padStart(2, '0')}`,
+    `Enters orb: ${formatDate(enter)}`,
     `Exact passes: ${timing.exactPasses}`,
   ];
 
   for (let i = 0; i < timing.exactDates.length; i++) {
     const d = timing.exactDates[i];
-    lines.push(
-      `  Pass ${i + 1}: ${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`,
-    );
+    lines.push(`  Pass ${i + 1}: ${formatDate(d)}`);
   }
 
-  lines.push(
-    `Leaves orb: ${exit.year}-${String(exit.month).padStart(2, '0')}-${String(exit.day).padStart(2, '0')}`,
-    `Duration: ${timing.durationDays.toFixed(1)} days`,
-  );
+  lines.push(`Leaves orb: ${formatDate(exit)}`, `Duration: ${timing.durationDays.toFixed(1)} days`);
 
   if (timing.hasRetrogradePass) {
     lines.push('(Includes retrograde period)');

@@ -6,6 +6,25 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+### Changed (output shift)
+
+- `getRetrogradeShadow` (`celestine/transits`) now solves the real crossings instead of
+  estimating them from an average daily motion. The pre-shadow starts at the last crossing
+  of the station-direct longitude before the station retrograde; the post-shadow ends at the
+  first crossing of the station-retrograde longitude after the station direct. Zones that
+  contain 0° Aries are handled: `shadowZoneStart` is now always the station-direct longitude
+  and `shadowZoneEnd` the station-retrograde longitude (identical to the old min/max for every
+  zone that does not wrap). A new optional second argument takes the same frame options as
+  `findRetrogradePeriods`; pass the frame the period was computed in.
+- Examples (true equinox, UT): Mercury February 2026 moves from 16 Feb 02:34 / 31 Mar 23:47
+  to 11 Feb 22:12 / 9 Apr 11:42. Saturn 2025 (zone across 0° Aries) moves from
+  1 Feb 1997 / 9 May 2054 to 6 Apr 2025 14:50 / 2 Mar 2026 18:13. Pluto 2026 pre-shadow moves
+  from 3 Sep 2024 to 12 Jan 2026 07:41.
+- Against JPL Horizons (stations and crossings both taken from Horizons longitudes, 10 periods
+  of Mercury through Pluto in 2025–2027, `horizons-shadows.json`): crossing times within
+  0.41 min for Mercury through Mars, 0.62 min for Jupiter and Saturn, 2.3 min for Uranus,
+  Neptune and Pluto; at most 0.71″ of implied longitude error.
+
 ## [0.6.0] - 2026-10-24
 
 ### Added

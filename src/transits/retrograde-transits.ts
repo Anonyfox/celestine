@@ -22,8 +22,8 @@
  * @see KNOWLEDGE.md for astronomical background on retrograde
  */
 
-import { CelestialBody, getPosition } from '../ephemeris/positions.js';
-import { stationStep, stations } from '../events/search.js';
+import { type CelestialBody, getPosition } from '../ephemeris/positions.js';
+import { stationIn, stationStep, stations, wrap } from '../events/search.js';
 import type { EventFrameOptions } from '../events/types.js';
 import {
   AVERAGE_DAILY_MOTION,
@@ -32,6 +32,7 @@ import {
   RETROGRADE_PLANETS,
   STATIONARY_SPEED_THRESHOLD,
 } from './constants.js';
+import { formatDate } from './format-date.js';
 import { jdToTransitDate } from './transit-detection.js';
 import type { RetrogradePeriod, StationPoint, TransitDate } from './types.js';
 
@@ -148,13 +149,12 @@ export function findStationPoints(
   endJD: number,
   options?: EventFrameOptions,
 ): StationPoint[] {
-  // Bodies that don't retrograde have no stations
-  if (!canRetrograde(body)) {
+  // Empty/invalid ranges retain the legacy empty result; the shared solver throws.
+  if (
+    !canRetrograde(body) ||
+    !(Number.isFinite(startJD) && Number.isFinite(endJD) && startJD <= endJD)
+  )
     return [];
-  }
-
-  // Same contract as before for empty or invalid ranges (the shared solver throws on them).
-  if (!(Number.isFinite(startJD) && Number.isFinite(endJD) && startJD <= endJD)) return [];
 
   // The one station solver shared with celestine/events findStations: rate sign changes
   // over the whole inclusive range, solved to 1e-7 d on getPosition's centred speed.
@@ -233,24 +233,15 @@ export function findRetrogradePeriods(
   endJD: number,
   options?: EventFrameOptions,
 ): RetrogradePeriod[] {
-  if (!canRetrograde(body)) {
-    return [];
-  }
-
   const stations = findStationPoints(body, startJD, endJD, options);
   const periods: RetrogradePeriod[] = [];
 
-  // Pair up station-retrograde with following station-direct
+  // Pair each station retrograde with its immediately following station direct.
   for (let i = 0; i < stations.length; i++) {
-    if (stations[i].type === 'station-retrograde') {
-      // Find matching station-direct
-      const stationRetro = stations[i];
-      const stationDirect = stations[i + 1]?.type === 'station-direct' ? stations[i + 1] : null;
-
-      if (stationDirect) {
-        periods.push(period(body, stationRetro, stationDirect));
-      }
-    }
+    const r = stations[i];
+    const d = stations[i + 1];
+    if (r.type === 'station-retrograde' && d?.type === 'station-direct')
+      periods.push(period(body, r, d));
   }
 
   // Handle case where we start mid-retrograde
@@ -286,7 +277,7 @@ export function getCurrentRetrogradePeriod(
   if (stationRetro?.type !== 'station-retrograde') return null;
 
   // The station direct that ends this period
-  const stationDirect = findStationPoints(body, jd, jd + 180, options)[0];
+  const stationDirect = findNextStation(body, jd, 180, options);
   if (stationDirect?.type !== 'station-direct') return null;
 
   return period(body, stationRetro, stationDirect);
@@ -480,20 +471,8 @@ export function estimatePassCount(body: CelestialBody, transitDurationDays: numb
     return 1;
   }
 
-  // Approximate retrograde period lengths
-  const retroPeriodDays: Partial<Record<CelestialBody, number>> = {
-    [CelestialBody.Mercury]: 21,
-    [CelestialBody.Venus]: 42,
-    [CelestialBody.Mars]: 72,
-    [CelestialBody.Jupiter]: 121,
-    [CelestialBody.Saturn]: 140,
-    [CelestialBody.Uranus]: 150,
-    [CelestialBody.Neptune]: 158,
-    [CelestialBody.Pluto]: 160,
-    [CelestialBody.Chiron]: 140,
-  };
-
-  const retro = retroPeriodDays[body] ?? 60;
+  // In RETROGRADE_PLANETS order: Mercury through Pluto, then Chiron.
+  const retro = [21, 42, 72, 121, 140, 150, 158, 160, 140][RETROGRADE_PLANETS.indexOf(body)] ?? 60;
 
   // If transit is shorter than retrograde period, likely 1 pass
   if (transitDurationDays < retro * 0.5) {
@@ -514,36 +493,51 @@ export function estimatePassCount(body: CelestialBody, transitDurationDays: numb
 // =============================================================================
 
 /**
- * Get the "shadow" period before/after retrograde.
+ * Solve the longitude crossings bounding a retrograde shadow, in TT Julian Dates.
  *
- * @param period - Retrograde period
- * @returns Object with pre-shadow and post-shadow JDs
+ * The pre-shadow starts at the last crossing of the station-direct longitude before
+ * station retrograde; the post-shadow ends at the first crossing of the
+ * station-retrograde longitude after station direct. Roots are refined to within 1e-6 day.
  *
- * @remarks
- * The retrograde "shadow" is the zone the planet transits three times:
- * - Pre-shadow: From when planet first reaches the station-direct degree
- * - Post-shadow: Until planet passes the station-retrograde degree
+ * @param period - Period computed in the same frame as options
+ * @param options - Mean equinox of date by default; includeNutation selects the true
+ *   equinox of date (nutation is a deprecated alias), as in findStationPoints
+ * @returns Shadow times and the forward zodiac arc from station-direct longitude
+ *   (shadowZoneStart) to station-retrograde longitude (shadowZoneEnd). Start greater
+ *   than end means the zone crosses 0° Aries.
+ * @throws RangeError if no crossing is found within 800 days of either station
+ *   (longer than any planetary synodic period).
  */
-export function getRetrogradeShadow(period: RetrogradePeriod): {
+export function getRetrogradeShadow(
+  period: RetrogradePeriod,
+  options?: EventFrameOptions,
+): {
   preShadowStartJD: number;
   postShadowEndJD: number;
   shadowZoneStart: number;
   shadowZoneEnd: number;
 } {
-  // The shadow zone is between the two station longitudes
-  const shadowZoneStart = Math.min(period.stationRetroLongitude, period.stationDirectLongitude);
-  const shadowZoneEnd = Math.max(period.stationRetroLongitude, period.stationDirectLongitude);
-
-  // Estimate pre-shadow based on typical motion before retrograde
-  const avgMotion = Math.abs(AVERAGE_DAILY_MOTION[period.body] ?? 0.1);
-  const shadowDegrees = shadowZoneEnd - shadowZoneStart;
-  const shadowDays = shadowDegrees / avgMotion;
-
+  const frame = { includeNutation: options?.includeNutation ?? options?.nutation };
+  const crossing = (start: number, target: number, direction: number): number => {
+    const f = (offset: number) => ({
+      value: 0,
+      rate: wrap(getPosition(period.body, start + direction * offset, frame).longitude - target),
+    });
+    const step = stationStep(period.body);
+    let left = f(0).rate;
+    for (let b = step; b <= 800; b += step) {
+      const right = f(b).rate;
+      if (left * right <= 0 && Math.abs(left - right) < 180)
+        return start + direction * stationIn(f, b - step, b, left, right)[0];
+      left = right;
+    }
+    throw new RangeError();
+  };
   return {
-    preShadowStartJD: period.stationRetroJD - shadowDays,
-    postShadowEndJD: period.stationDirectJD + shadowDays,
-    shadowZoneStart,
-    shadowZoneEnd,
+    preShadowStartJD: crossing(period.stationRetroJD, period.stationDirectLongitude, -1),
+    postShadowEndJD: crossing(period.stationDirectJD, period.stationRetroLongitude, 1),
+    shadowZoneStart: period.stationDirectLongitude,
+    shadowZoneEnd: period.stationRetroLongitude,
   };
 }
 
@@ -557,14 +551,10 @@ export function formatRetrogradePeriod(period: RetrogradePeriod): string {
   const startDate = jdToTransitDate(period.stationRetroJD);
   const endDate = jdToTransitDate(period.stationDirectJD);
 
-  const startStr = `${startDate.year}-${String(startDate.month).padStart(2, '0')}-${String(startDate.day).padStart(2, '0')}`;
-  const endStr = `${endDate.year}-${String(endDate.month).padStart(2, '0')}-${String(endDate.day).padStart(2, '0')}`;
+  const startStr = formatDate(startDate);
+  const endStr = formatDate(endDate);
 
-  return (
-    `${BODY_NAMES[period.body]} Rx: ${startStr} to ${endStr} (${period.durationDays.toFixed(0)} days)\n` +
-    `  Station Rx at ${period.stationRetroLongitude.toFixed(2)}°\n` +
-    `  Station Direct at ${period.stationDirectLongitude.toFixed(2)}°`
-  );
+  return `${BODY_NAMES[period.body]} Rx: ${startStr} to ${endStr} (${period.durationDays.toFixed(0)} days)\n  Station Rx at ${period.stationRetroLongitude.toFixed(2)}°\n  Station Direct at ${period.stationDirectLongitude.toFixed(2)}°`;
 }
 
 /**
@@ -575,7 +565,7 @@ export function formatRetrogradePeriod(period: RetrogradePeriod): string {
  */
 export function formatStationPoint(station: StationPoint): string {
   const date = station.date;
-  const dateStr = `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+  const dateStr = formatDate(date);
   const typeStr = station.type === 'station-retrograde' ? 'Stations Retrograde' : 'Stations Direct';
 
   return `${BODY_NAMES[station.body]} ${typeStr} at ${station.longitude.toFixed(2)}° on ${dateStr}`;

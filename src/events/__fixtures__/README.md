@@ -289,3 +289,25 @@ budget. These are longitude residuals at predicted times, not independent event 
 The default `searchTransits` compatibility snapshot remains in
 `src/transits/__fixtures__/default-search.json`; its regression test runs against
 the unchanged transit search.
+
+## Retrograde shadows
+
+Retrieved **2026-10-24**. After building, run `node scripts/events/fetch-shadows.mjs`. It uses
+the same Horizons parameters and cached `query()` requests described above: quantity 31,
+TT, apparent geocentric longitude in the true ecliptic/equinox of date.
+
+The script writes `horizons-shadows.json` for all three Mercury 2026 periods,
+Venus 2026, Mars/Jupiter 2026–27, Saturn/Neptune 2025, Uranus 2026 and Pluto 2026.
+Seventeen Horizons longitudes around each station are fitted with the same
+quartic normal-equation fit as `fetch-stations.mjs` (in `shadow-fit.mjs`); the
+derivative root determines station TT JD and longitude. Source grids recenter
+until the derivative root is within one quarter of the half-window. Half-windows
+are 1 day (Mercury), 1.5 days (Venus), 2 days (others).
+
+Library predictions choose request windows only. Crossings use 17 Horizons
+longitudes with spacing 3 arcseconds divided by predicted speed, capped at 0.1 day.
+Only Horizons residuals recenter an unbracketed grid. Linear interpolation to the
+Horizons station longitude yields each crossing. Each row records `retro`/`direct`
+station JD, longitude and fit residual, and `pre`/`post` crossing JD, source speed
+and `[t0,t1,residual0,residual1]` bracket (days and degrees). The script prints
+signed timing errors in minutes and absolute implied longitude errors in arcseconds.

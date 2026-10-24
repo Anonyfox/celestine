@@ -22,6 +22,7 @@
 import { type CelestialBody, getPosition } from '../ephemeris/positions.js';
 import { getHousePosition } from '../houses/house-utils.js';
 import { AVERAGE_DAILY_MOTION, BODY_NAMES, MAX_BINARY_SEARCH_ITERATIONS } from './constants.js';
+import { formatDate } from './format-date.js';
 import { jdToTransitDate, normalizeAngle } from './transit-detection.js';
 import type { HouseIngress } from './types.js';
 
@@ -525,9 +526,7 @@ export function getBodyHouses(
  */
 export function formatHouseIngress(ingress: HouseIngress): string {
   const date = ingress.ingressDate;
-  const dateStr = date
-    ? `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`
-    : 'unknown date';
+  const dateStr = date ? formatDate(date) : 'unknown date';
 
   const retro = ingress.isRetrograde ? ' ℞' : '';
   const direction = ingress.direction === 'entering' ? '→' : '←';

@@ -25,13 +25,13 @@ import {
   DEFAULT_TRANSITING_BODIES,
   FAST_PLANETS,
 } from './constants.js';
+import { formatDate } from './format-date.js';
 import { angularSeparation, getEffectiveOrb, jdToTransitDate } from './transit-detection.js';
 import { findAllExactTimes, findTransitTiming, getSearchStepForBody } from './transit-timing.js';
 import type {
   NatalPoint,
   Transit,
   TransitConfig,
-  TransitDate,
   TransitSearchParams,
   TransitSearchResult,
   TransitTiming,
@@ -522,9 +522,6 @@ export function formatTransitTimingDetail(timing: TransitTiming): string {
  *
  * @internal
  */
-function formatDate(date: TransitDate): string {
-  return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
-}
 
 /**
  * Get aspect angle from type.

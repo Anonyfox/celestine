@@ -166,6 +166,15 @@ console.log(calculateTransits([{ name: 'Natal Sun', longitude: 280, type: 'plane
 console.log(findStationPoints(CelestialBody.Mercury, start, start + 180));
 ```
 
+`getRetrogradeShadow(period, options?)` in `celestine/transits` solves the last crossing
+of the station-direct longitude before retrograde and the first crossing of the
+station-retrograde longitude after direct motion resumes. Pass the same frame options
+used by `findRetrogradePeriods`: mean equinox of date by default, or
+`{ includeNutation: true }` for the true equinox (`nutation` is a deprecated alias).
+All input and returned JDs are TT. The zone runs forward from `shadowZoneStart`
+(station direct) to `shadowZoneEnd` (station retrograde); start greater than end means
+it crosses 0° Aries. A missing crossing within 800 days throws `RangeError`.
+
 For separate orb passes over a long window, use `searchTransitPasses` from
 `celestine/events`. It takes the same parameters as `searchTransits` and returns one
 timing per continuous interval within orb, so a retrograde triple appears as one
