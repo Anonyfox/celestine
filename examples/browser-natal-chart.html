@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celestine natal chart</title>
+<style>
+  body { font: 1rem system-ui; max-width: 55rem; margin: 2rem auto; padding: 1rem; }
+  form { display: flex; flex-wrap: wrap; gap: 1rem; } label { display: grid; gap: .3rem; }
+  table { border-collapse: collapse; } td, th { padding: .4rem; text-align: left; }
+  svg { width: 100%; max-width: 28rem; } input, button { font: inherit; }
+</style>
+<h1>Natal chart</h1>
+<form id="birth">
+  <label>Date <input name="date" type="date" value="2000-01-01" required></label>
+  <label>Local time <input name="time" type="time" value="12:00" required></label>
+  <label>UTC offset (hours east) <input name="timezone" type="number" step="any" min="-14" max="14" value="0" required></label>
+  <label>Latitude <input name="latitude" type="number" step="any" min="-90" max="90" value="51.5074" required></label>
+  <label>Longitude (east) <input name="longitude" type="number" step="any" min="-180" max="180" value="-0.1278" required></label>
+  <button type="submit">Calculate</button>
+</form>
+<p>Civil local birth time; default mean ecliptic/equinox of date. Wheel uses absolute zodiac longitude.</p>
+<p id="angles" aria-live="polite"></p>
+<table><thead><tr><th>Planet</th><th>Sign</th><th>Position</th><th>Retrograde</th></tr></thead><tbody id="planets"></tbody></table>
+<svg id="wheel" viewBox="-150 -150 300 300" role="img" aria-label="Planet longitude wheel"></svg>
+<script type="module">
+  import { calculateChart } from 'https://esm.sh/celestine@0.5.0';
+  // When served from the repo root after building, use '../dist/index.js' instead.
+  export function computeChart(birth) {
+    return calculateChart(birth, { houseSystem: 'placidus' });
+  }
+  if (typeof document !== 'undefined') {
+    const form = document.querySelector('#birth');
+    const svg = document.querySelector('#wheel');
+    function draw(tag, attributes, text = '') {
+      const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, String(value));
+      node.textContent = text;
+      svg.append(node);
+    }
+    function render() {
+      try {
+        const fields = new FormData(form);
+        const [year, month, day] = fields.get('date').split('-').map(Number);
+        const [hour, minute] = fields.get('time').split(':').map(Number);
+        const result = computeChart({ year, month, day, hour, minute, second: 0,
+          timezone: Number(fields.get('timezone')), latitude: Number(fields.get('latitude')),
+          longitude: Number(fields.get('longitude')) });
+        document.querySelector('#angles').textContent =
+          `Ascendant: ${result.angles.ascendant.formatted}; MC: ${result.angles.midheaven.formatted}`;
+        const table = document.querySelector('#planets');
+        table.replaceChildren();
+        svg.replaceChildren();
+        draw('circle', { r: 130, fill: 'none', stroke: 'currentColor' });
+        for (let sign = 0; sign < 12; sign++) {
+          const angle = sign * Math.PI / 6;
+          draw('line', { x1: 110 * Math.cos(angle), y1: -110 * Math.sin(angle),
+            x2: 130 * Math.cos(angle), y2: -130 * Math.sin(angle), stroke: 'currentColor' });
+        }
+        for (const planet of result.planets) {
+          const row = table.insertRow();
+          for (const value of [planet.name, planet.signName, planet.formatted, planet.isRetrograde ? 'Yes' : 'No']) {
+            row.insertCell().textContent = value;
+          }
+          const angle = planet.longitude * Math.PI / 180;
+          draw('text', { x: 100 * Math.cos(angle), y: -100 * Math.sin(angle),
+            'text-anchor': 'middle', 'font-size': 8 }, planet.name);
+        }
+      } catch (error) {
+        document.querySelector('#angles').textContent = error.message;
+      }
+    }
+    form.addEventListener('submit', (event) => { event.preventDefault(); render(); });
+    render();
+  }
+</script>
+</html>
