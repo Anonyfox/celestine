@@ -8,6 +8,11 @@ All notable changes to this project are documented here, following
 
 ### Added
 
+- `findLunarPhases` events carry `moonLongitude` and `sunLongitude` at the exact instant
+  (mean equinox of date by default, true equinox with the new `includeNutation` option), for
+  matching lunations against natal points. Phase names also accept `'new'`, `'first'`, `'full'`
+  and `'last'`, and an unknown name now throws a `RangeError` listing the valid names. Checked
+  against JPL Horizons at all 148 phases of 2025–2027 (Moon ≤ 7.46″, Sun ≤ 0.28″).
 - Runnable examples, executed in `npm run check` by `src/examples.test.ts`: `examples/node-cli.mjs`
   (next station-retrograde per planet, current Moon phase), `examples/browser-natal-chart.html`
   (no build step, ESM from a CDN) and `examples/cloudflare-worker.ts`. The README quickstart is

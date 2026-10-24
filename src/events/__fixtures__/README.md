@@ -222,3 +222,12 @@ Before the longitude-only lunar optimization, year scans were approximately
 358.6 ms (VOC). Lunar-phase bundles fell from 13,819/6,322 min/gzip bytes to the
 values above. Existing ephemeris implementation and performance entries are
 unchanged; the normalized performance gate passes.
+
+## Lunar phase longitudes
+
+`horizons-phase-longitudes.json`: rows `[jd, phase, moon, sun]` for all **148** principal phases
+of 2025–2027. `jd` is the library's TT phase instant (it only chooses the request times);
+`moon` and `sun` are Horizons apparent ObsEcLon (quantity 31, true ecliptic and equinox of date)
+of the Moon (301) and Sun (10) at that TT instant, same request parameters as above. Produced by
+`npm run build && node scripts/events/fetch-phase-longitudes.mjs` (retrieved 2026-10-24).
+Measured maxima: Moon 7.46″, Sun 0.28″.

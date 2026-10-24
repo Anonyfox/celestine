@@ -163,5 +163,23 @@ console.log(findSeasons(start, end));
 console.log(findSignIngresses(CelestialBody.Mercury, start, end));
 ```
 
+### Lunations on natal points
+
+Every lunar phase event carries `moonLongitude` and `sunLongitude`: apparent geocentric
+ecliptic longitudes at the exact instant, in degrees, mean equinox of date by default (the
+same frame as `calculateChart` and the position getters) or true equinox with
+`includeNutation: true`. Phase names also accept the short forms `'new'`, `'first'`,
+`'full'` and `'last'`; an unknown name throws a `RangeError` that lists the valid ones.
+
+```ts
+const natalSun = 280.37;
+const hits = findLunarPhases(start, end, { phases: ['new', 'full'] }).filter(
+  (e) => Math.abs(((e.moonLongitude - natalSun + 540) % 360) - 180) <= 3,
+);
+```
+
+Checked against JPL Horizons at all 148 phases of 2025–2027: Moon within 7.5″, Sun
+within 0.3″ (true equinox of date).
+
 For integrations, see [examples](../examples/). For signatures and option types,
 see the [API documentation](https://anonyfox.github.io/celestine).

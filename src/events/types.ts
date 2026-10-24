@@ -18,9 +18,18 @@ export interface SignIngress extends EventInstant {
 }
 /** Principal geocentric longitude phase. TT inputs, TT/UT event outputs. @example 'full-moon' */
 export type LunarPhase = 'new-moon' | 'first-quarter' | 'full-moon' | 'last-quarter';
-/** Exact Moon−Sun longitude phase; times are TT/UT JD. @example event.phase */
+/** Short phase names accepted by findLunarPhases ('new' = 'new-moon', and so on). @example 'full' */
+export type LunarPhaseAlias = 'new' | 'first' | 'full' | 'last';
+/** Exact Moon−Sun longitude phase; times are TT/UT JD. @example event.moonLongitude */
 export interface LunarPhaseEvent extends EventInstant {
   phase: LunarPhase;
+  /**
+   * Apparent geocentric ecliptic longitude of the Moon at jd, degrees [0,360): mean equinox of
+   * date by default (as getMoonPosition), true equinox with includeNutation.
+   */
+  moonLongitude: number;
+  /** Apparent geocentric ecliptic longitude of the Sun at jd, degrees [0,360), same frame. */
+  sunLongitude: number;
 }
 /** Lunar geometry at a TT JD; angles in degrees, distances used internally in AU. @example info.illumination */
 export interface MoonPhaseInfo {

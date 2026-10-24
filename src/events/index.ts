@@ -9,6 +9,7 @@ export type {
   EventFrameOptions,
   EventInstant,
   LunarPhase,
+  LunarPhaseAlias,
   LunarPhaseEvent,
   MoonPhaseInfo,
   SeasonEvent,

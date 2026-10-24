@@ -1,32 +1,58 @@
 import { getMoonPosition } from '../ephemeris/moon.js';
 import { getSunPosition } from '../ephemeris/sun.js';
 import { toUT } from '../time/delta-t.js';
-import { moon } from './luminaries.js';
+import { trueEquinox } from './bodies.js';
+import { moon, nutation } from './luminaries.js';
 import { crossings, normalize } from './search.js';
-import type { LunarPhase, LunarPhaseEvent, MoonPhaseInfo } from './types.js';
+import type {
+  EventFrameOptions,
+  LunarPhase,
+  LunarPhaseAlias,
+  LunarPhaseEvent,
+  MoonPhaseInfo,
+} from './types.js';
 
 const phases: readonly LunarPhase[] = ['new-moon', 'first-quarter', 'full-moon', 'last-quarter'];
+const aliases: readonly LunarPhaseAlias[] = ['new', 'first', 'full', 'last'];
 /**
  * Find principal apparent geocentric Moon−Sun longitude phases in an inclusive TT JD interval.
- * Nutation cancels in the difference; jd is TT, jdUT uses time.toUT. One-day sampling
- * is well below half a lunation; neither luminary reverses geocentric motion.
+ * The phase instants do not depend on the frame (nutation cancels in the difference); jd is
+ * TT, jdUT uses time.toUT. One-day sampling is well below half a lunation; neither luminary
+ * reverses geocentric motion.
+ *
+ * Each event also carries the apparent geocentric ecliptic longitudes of the Moon and the Sun
+ * at that instant, in the same frame as the position API: mean equinox of date by default (as
+ * getMoonPosition, getSunPosition and calculateChart), true equinox of date with
+ * includeNutation. Use them to match lunations against natal points.
  * @param startJD - Inclusive start, TT Julian Date.
  * @param endJD - Inclusive end, TT Julian Date.
- * @param options - Optional principal phases to include; duplicates are ignored.
- * @returns Ordered exact phases, carrying TT jd and UT jdUT.
- * @example findLunarPhases(2451545, 2451910, { phases: ['full-moon'] })
+ * @param options - Optional principal phases to include (duplicates are ignored; the short
+ *   names 'new', 'first', 'full', 'last' are accepted too) and the longitude frame.
+ * @returns Ordered exact phases with TT jd, UT jdUT and both longitudes in degrees [0,360).
+ * @throws RangeError listing the valid names for an unknown phase.
+ * @example findLunarPhases(2451545, 2451910, { phases: ['full'] })[0].moonLongitude
  */
 export function findLunarPhases(
   startJD: number,
   endJD: number,
-  options: { phases?: LunarPhase[] } = {},
+  options: EventFrameOptions & { phases?: (LunarPhase | LunarPhaseAlias)[] } = {},
 ): LunarPhaseEvent[] {
-  const selected = [...new Set(options.phases ?? phases)];
-  const targets = selected.map((phase) => {
-    const index = phases.indexOf(phase);
-    if (index < 0) throw new RangeError('Unknown lunar phase');
-    return index * 90;
-  });
+  const frame = trueEquinox(options);
+  const targets = [
+    ...new Set(
+      (options.phases ?? phases).map((phase) => {
+        const index = Math.max(
+          phases.indexOf(phase as LunarPhase),
+          aliases.indexOf(phase as LunarPhaseAlias),
+        );
+        if (index < 0)
+          throw new RangeError(
+            `Unknown lunar phase ${JSON.stringify(phase)}; use ${[...phases, ...aliases].join(', ')}`,
+          );
+        return index * 90;
+      }),
+    ),
+  ];
   return crossings(
     (jd) => {
       const m = moon(jd);
@@ -37,7 +63,16 @@ export function findLunarPhases(
     startJD,
     endJD,
     1,
-  ).map(({ jd, target }) => ({ jd, jdUT: toUT(jd), phase: phases[target / 90]! }));
+  ).map(({ jd, target }) => {
+    const shift = frame ? nutation(jd) : 0;
+    return {
+      jd,
+      jdUT: toUT(jd),
+      phase: phases[target / 90]!,
+      moonLongitude: normalize(moon(jd).longitude + shift),
+      sunLongitude: normalize(getSunPosition(jd, { includeSpeed: false }).longitude + shift),
+    };
+  });
 }
 /**
  * Lunar geometry at a TT Julian Date. Elongation is apparent longitude Moon−Sun [0,360).
