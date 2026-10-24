@@ -6,8 +6,9 @@ library predictions choose the request windows; independent source longitudes de
 
 ## Reproduction and provenance
 
-Run `node scripts/events/fetch-usno.mjs`, then `npm run build` and
-`node scripts/events/fetch-horizons.mjs`. Retrieval is sequential, with 250 ms (USNO)
+Run `node scripts/events/fetch-usno.mjs`, then `npm run build`,
+`node scripts/events/fetch-horizons.mjs` and `scripts/events/derive-frames.py` (pyerfa; see
+its docstring). Retrieval is sequential, with 250 ms (USNO)
 or 300 ms (Horizons) pauses, curl retries including transient TLS errors, and persisted caches.
 USNO resumes completed years; remove the **new events** fixture files to force fresh retrieval.
 Horizons caches requests by URL SHA-256 prefix; remove `requests/` to re-fetch them.
@@ -34,10 +35,12 @@ Horizons caches requests by URL SHA-256 prefix; remove `requests/` to re-fetch t
   apparent ObsEcLon/ObsEcLat in degrees, trailing blank.
 - `horizons-events.json`: **64 phases, 44 seasons, 120 distinct sign ingresses (12 per
   classic body), 48 distinct aspects**. Fields: `predicted` (library TT JD used ONLY to
-  center the grid), `jd` (independent linearly interpolated Horizons TT JD), `step` (TT days),
-  `bracket=[t0,t1,residual0,residual1]` (TT JDs and signed degrees), `angle` (oriented
-  degrees), `body`, optional `targetBody` or `fixed` (fixed mean-equinox longitude), and
-  event metadata. Seventeen evenly spaced epochs surround each prediction. Tests and `measure.mjs` search ±0.2 day around each reference `jd`. Steps are
+  center the grid), `frame`, `jd` (independent linearly interpolated Horizons TT JD in
+  Horizons' native frame), `step` (TT days), `bracket=[t0,t1,residual0,residual1]` (TT JDs
+  and signed degrees), `angle` (oriented degrees), `body`, optional `targetBody` or `fixed`
+  (fixed longitude), and event metadata. Frame-dependent rows (`frame: "true"`: seasons,
+  ingresses, fixed-longitude aspects) also carry `jdMean`/`bracketMean`, the same crossing
+  in the mean equinox of date (see **Frames**). Seventeen evenly spaced epochs surround each prediction. Tests and `measure.mjs` search ±0.2 day around each reference `jd`. Steps are
   one minute for Sun/Moon, otherwise 3 arcseconds divided by speed, capped at 0.1 day.
   Linear interpolation of the bracketing *source* residuals determines `jd`.
   Phases sample four successive events in 16 years spread across 1900–2100;
@@ -46,29 +49,49 @@ Horizons caches requests by URL SHA-256 prefix; remove `requests/` to re-fetch t
   Moon–Jupiter, Sun–Saturn, Mars–Saturn, Jupiter–Saturn Mercury–Saturn, and Mercury to fixed 45°;
   three additional Mercury passes at 45° in April–May 2023 are marked `triplePass`. Three Mercury–Saturn sextiles across the same retrograde
   are marked `triplePassMoving`.
-  Both moving-body Horizons longitudes have the same nutation, which cancels;
-  fixed mean-equinox comparisons subtract library nutation from Horizons longitude.
+  Phases and moving-body aspects are `frame: "relative"`: both Horizons longitudes carry
+  the same nutation, which cancels.
 - `illumination.json`: 51 uniformly spaced TT epochs over 1900–2100, rows
   `[jdTT, illuminatedFraction]`. Same Horizons parameters except `COMMAND='301'`,
   `QUANTITIES='10'`; response column 3 is illuminated percent, divided by 100.
 
-## Empirical frame check
+## Frames
 
-`frame.json` records three Sun epochs and independent Horizons longitude: TT JD 2415020,
-2451545 and 2488070. Mean-equinox residuals were −17.258, +14.087, −3.031 arcseconds;
-adding the dominant nutation term reduced these to −0.363, +0.005, −0.314 arcseconds,
-the four-term series events used until 0.4 to +0.156, +0.056, +0.232, and the shared
-13-term IAU 2000B series (`nutationInLongitude`, within 0.05″ of IAU 2000A for 1800–2200,
-used everywhere since 0.5) to +0.084, +0.170, +0.239; the residual is mostly the Sun model.
-The four-term series halved season errors (19.5 → 9.3 s) and Sun ingress errors
-(35 → 9 s); the IAU 2000B series took them to 7.5 s and 7.1 s. Jupiter and Saturn ingress
-maxima rose (266 → 333 s, 586 → 642 s): their worst crossings are near stations, where a
-≈0.1″ frame shift moves the time by minutes. Their position errors at the crossing stay
-within 0.52″ and 0.73″, inside the planetary model's own error.
-Thus ObsEcLon is empirically **true-equinox of date**. Ingress references use
-`nutation:true`; season searches always use true-equinox longitude. Default ingress
-longitudes remain the library's mean-equinox values. The existing independent
-vector/frame cross-check in the ephemeris tests remains unchanged.
+The library default for positions, charts and events is apparent longitude in the **mean**
+equinox of date; `includeNutation: true` (positions) and `nutation: true` (ingresses) give
+the **true** equinox of date. Every reference is compared with the library in its own frame:
+
+| Event | Reference | Library call |
+|---|---|---|
+| Ingress, true | `jd` | `findSignIngresses(body, a, b, { nutation: true })` |
+| Ingress, mean | `jdMean` | `findSignIngresses(body, a, b)` |
+| Season (true, the USNO/Meeus definition) | `jd` | `findSeasons` |
+| Season, mean | `jdMean` | default Sun ingress at 0/90/180/270° |
+| Aspect to a fixed (mean-equinox) longitude | `jdMean` | `findAspectTimes(body, fixed, …)` |
+| Phase, aspect between bodies | `jd` (frame cancels) | `findLunarPhases`, `findAspectTimes` |
+
+Horizons quantity 31 (ObsEcLon) is the true ecliptic and equinox of date and has no
+mean-of-date setting. `frame.json` confirms this empirically: three Sun epochs (TT JD
+2415020, 2451545, 2488070) have mean-equinox residuals −17.258, +14.087, −3.031″, and
++0.084, +0.170, +0.239″ after adding the library's nutation (`nutationInLongitude`, 13
+IAU 2000B terms, within 0.05″ of IAU 2000A for 1800–2200); the rest is the Sun model.
+`derive-frames.py` therefore derives `jdMean` from the same cached Horizons samples
+minus IAU 2000A nutation in longitude (ERFA `nut00a`, independent of the library), then
+re-brackets and interpolates exactly like `jd`. Horizons' own of-date model (IAU 1980
+with pole offsets) and IAU 2000A differ by at most 0.018″ in Δψ over 1900–2100 (computed
+by the script), negligible against every limit. One Pluto retrograde re-entry needed a
+wider grid in the mean frame (cached request added). Until 0.4 the fixed-longitude
+aspect references subtracted the library's own (then 4-term) nutation, which was not
+independent; they now use `jdMean` and dropped from 89.9 s to 28.8 s max error.
+
+Ingress tests bound the implied longitude error |Δt|·|speed| per body (arcseconds), not
+the time: time error is position error divided by speed and is unbounded near a station.
+The 0.4.0 time limits for Jupiter/Saturn (300/620 s) passed only through partial
+cancellation between the old 4-term nutation's ≈0.35″ error and the planet models: the
+unchanged mean-frame output measured like for like gives 320/631 s. The position bounds
+(Jupiter 1.35″, Saturn 0.8″, all inside the bodies' position budgets) hold in both frames.
+`frames.test.ts` checks that at every found ingress, aspect, season and void-of-course
+boundary the position API with matching options is on target to within 1e-4″.
 
 ## Measured timing errors
 
@@ -76,27 +99,39 @@ Seconds; max is absolute; RMS uses all samples. USNO is compared using `jdUT`;
 Horizons uses `jd` on **TT**, never UTC. Limits in tests are rounded upward from these
 measurements, not limits borrowed from a different time scale or positional budget.
 
-| Source / event / scale | Samples | Max (s) | RMS (s) |
-|---|---:|---:|---:|
-| USNO phases UT | 9945 | 59.657 | 21.411 |
-| USNO seasons UT | 804 | 42.479 | 18.929 |
-| Horizons phase Moon TT | 64 | 14.531 | 5.551 |
-| Horizons season Sun TT | 44 | 7.506 | 3.913 |
-| Horizons ingress Sun TT | 12 | 7.121 | 4.045 |
-| Horizons ingress Moon TT | 12 | 10.925 | 5.881 |
-| Horizons ingress Mercury TT | 12 | 6.069 | 3.092 |
-| Horizons ingress Venus TT | 12 | 133.884 | 49.254 |
-| Horizons ingress Mars TT | 12 | 94.222 | 29.095 |
-| Horizons ingress Jupiter TT | 12 | 333.455 | 135.901 |
-| Horizons ingress Saturn TT | 12 | 642.367 | 207.322 |
-| Horizons ingress Uranus TT | 12 | 1300.786 | 580.075 |
-| Horizons ingress Neptune TT | 12 | 2496.650 | 1376.983 |
-| Horizons ingress Pluto TT | 12 | 10699.601 | 3842.188 |
-| Horizons aspect Moon TT | 14 | 7.982 | 3.735 |
-| Horizons aspect Sun TT | 7 | 17.167 | 12.165 |
-| Horizons aspect Mars TT | 7 | 65.333 | 31.415 |
-| Horizons aspect Jupiter TT | 7 | 369.214 | 157.592 |
-| Horizons aspect Mercury TT | 13 | 89.890 | 38.333 |
+| Source / event / frame / scale | Samples | Max (s) | RMS (s) | Max implied (″) |
+|---|---:|---:|---:|---:|
+| USNO phases UT | 9945 | 59.657 | 21.411 | |
+| USNO seasons UT | 804 | 42.479 | 18.929 | |
+| Horizons phase Moon TT | 64 | 14.531 | 5.551 | |
+| Horizons season Sun true TT | 44 | 7.506 | 3.913 | |
+| Horizons season Sun mean TT | 44 | 7.724 | 3.854 | |
+| Horizons ingress Sun true TT | 12 | 7.121 | 4.045 | 0.290 |
+| Horizons ingress Sun mean TT | 12 | 6.805 | 4.015 | 0.277 |
+| Horizons ingress Moon true TT | 12 | 10.925 | 5.881 | 6.770 |
+| Horizons ingress Moon mean TT | 12 | 10.945 | 5.890 | 6.782 |
+| Horizons ingress Mercury true TT | 12 | 6.069 | 3.092 | 0.347 |
+| Horizons ingress Mercury mean TT | 12 | 6.018 | 3.172 | 0.363 |
+| Horizons ingress Venus true TT | 12 | 133.884 | 49.254 | 0.486 |
+| Horizons ingress Venus mean TT | 12 | 138.926 | 50.793 | 0.495 |
+| Horizons ingress Mars true TT | 12 | 94.222 | 29.095 | 1.256 |
+| Horizons ingress Mars mean TT | 12 | 93.328 | 29.005 | 1.245 |
+| Horizons ingress Jupiter true TT | 12 | 333.455 | 135.901 | 1.275 |
+| Horizons ingress Jupiter mean TT | 12 | 319.651 | 133.034 | 1.263 |
+| Horizons ingress Saturn true TT | 12 | 642.367 | 207.322 | 0.728 |
+| Horizons ingress Saturn mean TT | 12 | 630.625 | 205.334 | 0.714 |
+| Horizons ingress Uranus true TT | 12 | 1300.786 | 580.075 | 2.178 |
+| Horizons ingress Uranus mean TT | 12 | 1293.956 | 577.405 | 2.141 |
+| Horizons ingress Neptune true TT | 12 | 2496.650 | 1376.983 | 2.663 |
+| Horizons ingress Neptune mean TT | 12 | 2496.507 | 1372.985 | 2.659 |
+| Horizons ingress Pluto true TT | 12 | 10699.601 | 3842.188 | 3.229 |
+| Horizons ingress Pluto mean TT | 12 | 11707.795 | 4077.408 | 3.223 |
+| Horizons aspect Moon TT | 14 | 7.982 | 3.735 | |
+| Horizons aspect Sun TT | 7 | 17.167 | 12.165 | |
+| Horizons aspect Mars TT | 7 | 65.333 | 31.415 | |
+| Horizons aspect Jupiter TT | 7 | 369.214 | 157.592 | |
+| Horizons aspect Mercury mean fixed TT | 10 | 28.776 | 11.740 | |
+| Horizons aspect Mercury TT | 3 | 54.144 | 36.187 | |
 
 Illumination fraction max/RMS: **0.000036798 / 0.000017788** (51 epochs; unitless).
 This is disk illumination, not a longitude-only approximation.

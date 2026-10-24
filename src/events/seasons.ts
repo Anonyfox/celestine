@@ -12,8 +12,10 @@ const seasons: readonly SeasonEvent['type'][] = [
 ];
 /**
  * Seasons at apparent geocentric solar longitude 0/90/180/270 degrees from the TRUE
- * equinox of date (USNO/IAU convention, nutation included). Unlike default Sun ingresses,
- * these use the true equinox. Inclusive TT JD inputs; jd is TT and jdUT is UT via toUT.
+ * equinox of date: the definition used by USNO and the Astronomical Almanac and by Meeus
+ * (ch. 27, nutation and aberration included). They equal the Sun's cardinal ingresses with
+ * nutation:true; the default (mean-equinox) Sun ingresses differ by Δψ/speed, up to about
+ * 19 minutes. Inclusive TT JD inputs; jd is TT and jdUT is UT via toUT.
  * Five-day sampling is safe for the always-direct Sun.
  * @param startJD - Inclusive start, TT Julian Date.
  * @param endJD - Inclusive end, TT Julian Date.

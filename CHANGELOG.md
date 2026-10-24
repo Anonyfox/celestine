@@ -43,9 +43,18 @@ All notable changes to this project are documented here, following
   (1800–2200) improve from 1.98–2.60″ to 0.74–0.93″.
 - True-equinox event times (seasons, `nutation: true` ingresses) move by up to a few seconds
   for the inner bodies. Measured against Horizons, seasons improve from 9.3 s to 7.5 s max and
-  Sun ingresses from 9.1 s to 7.1 s. Jupiter and Saturn ingress maxima rise from 266 s to
-  333 s and from 586 s to 642 s. Those are near-station crossings, where a 0.1″ frame shift
-  moves the time by minutes. Mean-equinox events (the default) are unchanged.
+  Sun ingresses from 9.1 s to 7.1 s. Mean-equinox events (the default) are unchanged.
+- Event frames are explicit and tested against the position API: default events use the
+  same mean equinox of date as `getPosition` and `calculateChart`, and `nutation: true`
+  matches `includeNutation: true`. At every found ingress, aspect, season and void-of-course
+  boundary the position API is on target to within 1e-4″. Seasons stay on the true
+  equinox (USNO, Meeus); lunar phases and aspects between bodies are frame-free.
+- Horizons event references are labelled by frame, and each test compares like with like.
+  Mean-equinox references (`jdMean`) are derived from the same Horizons samples with IAU
+  2000A nutation (ERFA), independent of the library. Ingress tests now bound the implied
+  longitude error per body, in both frames (for example Jupiter 1.35″ and Saturn 0.8″,
+  inside their position budgets), instead of a time that is unbounded near a station; the
+  Mercury aspect time limit tightens from 100 s to 60 s.
 - Planet, Sun and precise-body positions are about 8–22% faster: the apparent-place pipeline no
   longer builds intermediate objects by spreading them. Output is bit-identical.
 
@@ -53,6 +62,9 @@ All notable changes to this project are documented here, following
 
 - `getMoonPosition` now honours `includeNutation`. Before, it silently returned the
   mean-equinox longitude.
+- `getPosition` now honours `includeNutation` for the lunar nodes and Lilith (mean and true).
+  Before, they stayed mean-equinox, so a `nutation: true` node or Lilith ingress was up to
+  about 18″ off the cusp in the position API. Default output is unchanged.
 - `calculateChart` now computes the aspect types requested in `options.aspectTypes`, including
   minor and Kepler aspects. Before, it detected only the major aspects and then filtered them, so
   a requested quincunx (and any pattern that needs one, such as a Yod) never appeared.

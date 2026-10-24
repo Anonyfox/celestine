@@ -5,9 +5,10 @@ import { crossings, normalize } from './search.js';
 import type { AspectTimeEvent } from './types.js';
 
 /**
- * Exact apparent geocentric longitude aspects in inclusive TT JD bounds (mean equinox
- * of date). Default angles are 0,60,90,120,180 degrees; both orientations are searched.
- * target is a moving body or fixed longitude in degrees in that same frame. Relative
+ * Exact apparent geocentric longitude aspects in inclusive TT JD bounds, in the position
+ * API's default frame (mean equinox of date). Between two bodies the frame cancels; a fixed
+ * target longitude is a mean-equinox longitude, like a natal position from calculateChart.
+ * Default angles are 0,60,90,120,180 degrees; both orientations are searched. Relative
  * stations are split to recover retrograde multiple passes. jd is TT; jdUT is UT via toUT.
  * increasing describes unsigned separation [0,180], false at the 0/180 cusps; together
  * with the requested angle it distinguishes approach from departure on either branch.

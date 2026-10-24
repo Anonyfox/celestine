@@ -1,7 +1,7 @@
 // Measured errors only: never updates limits or writes fixtures.
 import { readFile } from 'node:fs/promises';
 import * as events from '../../dist/events/index.js';
-import { time } from '../../dist/index.js';
+import { ephemeris, time } from '../../dist/index.js';
 
 const dir = new URL('../../src/events/__fixtures__/', import.meta.url);
 const stats = new Map();
@@ -26,21 +26,42 @@ for (const kind of ['phases', 'seasons']) {
   }
 }
 const references = JSON.parse(await readFile(new URL('horizons-events.json', dir)));
+const wrap = (x) => (((x % 360) + 540) % 360) - 180;
+const speed = (body, jd) =>
+  wrap(
+    ephemeris.getPosition(body, jd + 0.01).longitude -
+      ephemeris.getPosition(body, jd - 0.01).longitude,
+  ) / 0.02;
+// Each reference in its own frame: jd is Horizons-native (true equinox or frame-free),
+// jdMean the derived mean-equinox crossing (the library default).
 for (const r of references) {
-  let actual;
-  // ±0.2 d around the independent reference; narrower than any repeat crossing.
-  const a = r.jd - 0.2,
-    b = r.jd + 0.2;
-  if (r.kind === 'phase') actual = events.findLunarPhases(a, b, { phases: [r.phase] });
-  else if (r.kind === 'season') actual = events.findSeasons(a, b);
-  else if (r.kind === 'ingress')
-    actual = events.findSignIngresses(r.body, a, b, { nutation: true });
-  else
-    actual = events.findAspectTimes(r.body, r.targetBody ?? r.fixed, a, b, {
-      angles: [Math.min(r.angle, 360 - r.angle)],
-    });
-  if (actual.length !== 1) throw Error(`Expected one event: ${JSON.stringify(r)}`);
-  record(`Horizons ${r.kind} ${r.body} TT`, (actual[0].jd - r.jd) * 86400);
+  const runs = [];
+  if (r.kind === 'phase')
+    runs.push(['', r.jd, (a, b) => events.findLunarPhases(a, b, { phases: [r.phase] })]);
+  else if (r.kind === 'season') {
+    runs.push(['true', r.jd, (a, b) => events.findSeasons(a, b)]);
+    runs.push(['mean', r.jdMean, (a, b) => events.findSignIngresses('Sun', a, b)]);
+  } else if (r.kind === 'ingress') {
+    runs.push(['true', r.jd, (a, b) => events.findSignIngresses(r.body, a, b, { nutation: true })]);
+    runs.push(['mean', r.jdMean, (a, b) => events.findSignIngresses(r.body, a, b)]);
+  } else {
+    const angles = [Math.min(r.angle, 360 - r.angle)];
+    const fixed = r.fixed !== undefined;
+    runs.push([
+      fixed ? 'mean fixed' : '',
+      fixed ? r.jdMean : r.jd,
+      (a, b) => events.findAspectTimes(r.body, r.targetBody ?? r.fixed, a, b, { angles }),
+    ]);
+  }
+  for (const [frame, ref, find] of runs) {
+    // ±0.2 d around the independent reference; narrower than any repeat crossing.
+    const actual = find(ref - 0.2, ref + 0.2);
+    if (actual.length !== 1) throw Error(`Expected one event: ${JSON.stringify(r)}`);
+    const name = `Horizons ${r.kind} ${r.body}${frame ? ` ${frame}` : ''} TT`;
+    record(name, (actual[0].jd - ref) * 86400);
+    if (r.kind === 'ingress')
+      record(`${name} implied arcsec`, (actual[0].jd - ref) * speed(r.body, ref) * 3600);
+  }
 }
 const illumination = JSON.parse(await readFile(new URL('illumination.json', dir)));
 for (const [jd, fraction] of illumination)

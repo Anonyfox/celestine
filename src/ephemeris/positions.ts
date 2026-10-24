@@ -28,6 +28,7 @@ import { getChironPosition } from './chiron.js';
 import { getMeanLilith, getTrueLilith } from './lilith.js';
 import { getMoonPosition } from './moon.js';
 import { getMeanNode, getTrueNode } from './nodes.js';
+import { nutationInLongitude } from './nutation.js';
 import { getJupiterPosition } from './planets/jupiter.js';
 import { getMarsPosition } from './planets/mars.js';
 import { getMercuryPosition } from './planets/mercury.js';
@@ -84,6 +85,29 @@ export enum CelestialBody {
 // =============================================================================
 // Single Body Position
 // =============================================================================
+
+/**
+ * A lunar node or Lilith as a position. Their longitudes are referred to the mean equinox of
+ * date; includeNutation adds nutation in longitude, as for every other body, so
+ * the true-equinox option means the same frame for all bodies.
+ */
+function point(
+  longitude: number,
+  longitudeSpeed: number,
+  isRetrograde: boolean,
+  jd: number,
+  options: EphemerisOptions,
+): PlanetPosition {
+  return {
+    longitude: options.includeNutation
+      ? (((longitude + nutationInLongitude((jd - 2451545) / 36525)) % 360) + 360) % 360
+      : longitude,
+    latitude: 0,
+    distance: 0,
+    longitudeSpeed,
+    isRetrograde,
+  };
+}
 
 /**
  * Get the position of any celestial body.
@@ -149,70 +173,34 @@ export function getPosition(
     case Planet.NorthNode:
     case CelestialBody.NorthNode: {
       const node = getMeanNode(jd);
-      return {
-        longitude: node.northNode,
-        latitude: 0,
-        distance: 0,
-        longitudeSpeed: node.speed,
-        isRetrograde: node.isRetrograde,
-      };
+      return point(node.northNode, node.speed, node.isRetrograde, jd, options);
     }
 
     case CelestialBody.TrueNorthNode: {
       const node = getTrueNode(jd);
-      return {
-        longitude: node.northNode,
-        latitude: 0,
-        distance: 0,
-        longitudeSpeed: node.speed,
-        isRetrograde: node.isRetrograde,
-      };
+      return point(node.northNode, node.speed, node.isRetrograde, jd, options);
     }
 
     case Planet.SouthNode:
     case CelestialBody.SouthNode: {
       const node = getMeanNode(jd);
-      return {
-        longitude: node.southNode,
-        latitude: 0,
-        distance: 0,
-        longitudeSpeed: node.speed,
-        isRetrograde: node.isRetrograde,
-      };
+      return point(node.southNode, node.speed, node.isRetrograde, jd, options);
     }
 
     case CelestialBody.TrueSouthNode: {
       const node = getTrueNode(jd);
-      return {
-        longitude: node.southNode,
-        latitude: 0,
-        distance: 0,
-        longitudeSpeed: node.speed,
-        isRetrograde: node.isRetrograde,
-      };
+      return point(node.southNode, node.speed, node.isRetrograde, jd, options);
     }
 
     case Planet.Lilith:
     case CelestialBody.Lilith: {
       const lilith = getMeanLilith(jd);
-      return {
-        longitude: lilith.longitude,
-        latitude: 0,
-        distance: 0,
-        longitudeSpeed: lilith.speed,
-        isRetrograde: lilith.isRetrograde,
-      };
+      return point(lilith.longitude, lilith.speed, lilith.isRetrograde, jd, options);
     }
 
     case CelestialBody.TrueLilith: {
       const lilith = getTrueLilith(jd);
-      return {
-        longitude: lilith.longitude,
-        latitude: 0,
-        distance: 0,
-        longitudeSpeed: lilith.speed,
-        isRetrograde: lilith.isRetrograde,
-      };
+      return point(lilith.longitude, lilith.speed, lilith.isRetrograde, jd, options);
     }
 
     case Planet.Chiron:

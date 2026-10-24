@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import type { CelestialBody } from '../ephemeris/positions.js';
+import { getPosition } from '../ephemeris/positions.js';
 import { getSunPosition } from '../ephemeris/sun.js';
 import { toTT } from '../time/delta-t.js';
 import type { LunarPhase } from './index.js';
@@ -18,25 +19,31 @@ import { wrap } from './search.js';
 const fixture = (name: string) =>
   JSON.parse(readFileSync(new URL(`__fixtures__/${name}.json`, import.meta.url), 'utf8'));
 
-// Limits follow measured maxima (README), with a small explicit rounding margin.
+// Ingress limits are on the implied longitude error |Δt|·|speed| (arcseconds), rounded up
+// from measured maxima in either frame (README), each inside the body's position budget.
+// A time limit is ill-conditioned for slow planets (time error = position error / speed,
+// unbounded at a station); this bounds every crossing by the ephemeris error instead.
 const ingressLimits: Record<string, number> = {
-  Sun: 12,
-  Moon: 12,
-  Mercury: 12,
-  Venus: 150,
-  Mars: 100,
-  // Jupiter/Saturn: IAU 2000B nutation (0.4.x used a 4-term series) moved the worst
-  // near-station crossings from 0.42″/0.66″ to 0.52″/0.73″ position error (334 s / 642 s).
-  Jupiter: 350,
-  Saturn: 680,
-  Uranus: 1450,
-  Neptune: 2600,
-  Pluto: 11500,
+  Sun: 0.32,
+  Moon: 7,
+  Mercury: 0.4,
+  Venus: 0.55,
+  Mars: 1.3,
+  Jupiter: 1.35,
+  Saturn: 0.8,
+  Uranus: 2.25,
+  Neptune: 2.75,
+  Pluto: 3.3,
 };
+/** Degrees per day from the position API (central difference, frame-independent). */
+const speed = (body: CelestialBody, jd: number) =>
+  wrap(getPosition(body, jd + 0.01).longitude - getPosition(body, jd - 0.01).longitude) / 0.02;
 const aspectLimits: Record<string, number> = {
   Moon: 10,
   Sun: 20,
-  Mercury: 100,
+  // Was 100 s while fixed-longitude references used the library's own 4-term nutation;
+  // now 54 s (moving) and 29 s (fixed, mean frame via IAU 2000A).
+  Mercury: 60,
   Mars: 75,
   Jupiter: 410,
 };
@@ -67,49 +74,81 @@ test('USNO: one-to-one phases and seasons over every year 1900–2100, compared 
   }
 });
 
-test('Horizons: independent fine-grid crossing times on TT, including retrograde passes', () => {
-  const rows = fixture('horizons-events') as {
-    kind: string;
-    body: CelestialBody;
-    targetBody?: CelestialBody;
-    fixed?: number;
-    angle: number;
-    phase: LunarPhase;
-    predicted: number;
-    jd: number;
-    triplePass?: boolean;
-    triplePassMoving?: boolean;
-    retrograde?: boolean;
-  }[];
+// Every reference is compared in its own frame (fixture `frame`, README): `jd` is Horizons'
+// native true equinox of date (or frame-free for phases and moving aspects); `jdMean` is the
+// same crossing in the mean equinox of date, the library default, derived with IAU 2000A.
+type Reference = {
+  kind: string;
+  frame: 'true' | 'relative';
+  body: CelestialBody;
+  targetBody?: CelestialBody;
+  fixed?: number;
+  angle: number;
+  phase: LunarPhase;
+  predicted: number;
+  jd: number;
+  jdMean?: number;
+  triplePass?: boolean;
+  triplePassMoving?: boolean;
+  retrograde?: boolean;
+};
+/** One event in ±0.2 d around a reference: wide for every limit, narrower than any repeat. */
+function only<T extends { jd: number }>(events: T[], label: string): T {
+  assert.equal(events.length, 1, label);
+  return events[0]!;
+}
+
+test('Horizons: independent fine-grid crossing times on TT, each in its own frame', () => {
+  const rows = fixture('horizons-events') as Reference[];
   const counts = { phase: 0, season: 0, ingress: 0, aspect: 0 };
   const unique = new Set<string>();
   for (const r of rows) {
     unique.add(`${r.kind}/${r.body}/${r.jd}`);
     counts[r.kind as keyof typeof counts]++;
-    // Search ±0.2 d around the independent reference, not the old prediction:
-    // wide enough for every limit, far narrower than any repeat crossing.
-    const a = r.jd - 0.2,
-      b = r.jd + 0.2;
-    let actual: { jd: number }[];
+    assert.equal(
+      r.frame,
+      r.kind === 'season' || r.kind === 'ingress' || 'fixed' in r ? 'true' : 'relative',
+    );
+    assert.equal(r.jdMean !== undefined, r.frame === 'true');
+    const label = `${r.kind} ${r.body} ${r.jd}`;
+    const near = (jd: number) => [jd - 0.2, jd + 0.2] as const;
+    if (r.kind === 'ingress') {
+      for (const [ref, nutation] of [
+        [r.jdMean!, false],
+        [r.jd, true],
+      ] as const) {
+        const e = only(findSignIngresses(r.body, ...near(ref), { nutation }), label);
+        const arcsec = Math.abs(e.jd - ref) * Math.abs(speed(r.body, ref)) * 3600;
+        assert.ok(
+          arcsec < ingressLimits[r.body]!,
+          `${label} nutation:${nutation}: ${arcsec.toFixed(3)}″ > ${ingressLimits[r.body]}″`,
+        );
+      }
+      continue;
+    }
+    let error: number;
     let limit: number;
     if (r.kind === 'phase') {
-      actual = findLunarPhases(a, b, { phases: [r.phase] });
+      error = only(findLunarPhases(...near(r.jd), { phases: [r.phase] }), label).jd - r.jd;
       limit = 17;
     } else if (r.kind === 'season') {
-      actual = findSeasons(a, b);
+      // Seasons are defined on the true equinox (USNO, Meeus ch. 27); the same crossing in
+      // the default mean frame is the Sun's cardinal ingress.
+      error = only(findSeasons(...near(r.jd)), label).jd - r.jd;
+      const mean = only(findSignIngresses('Sun' as CelestialBody, ...near(r.jdMean!)), label);
+      assert.ok(Math.abs(mean.jd - r.jdMean!) * 86400 < 11, `${label} mean`);
       limit = 11;
-    } else if (r.kind === 'ingress') {
-      actual = findSignIngresses(r.body, a, b, { nutation: true });
-      limit = ingressLimits[r.body]!;
     } else {
-      actual = findAspectTimes(r.body, r.targetBody ?? r.fixed!, a, b, {
-        angles: [Math.min(r.angle, 360 - r.angle)],
-      });
+      // A fixed longitude is in the default mean frame, so it is compared with jdMean.
+      const ref = r.fixed === undefined ? r.jd : r.jdMean!;
+      const angles = [Math.min(r.angle, 360 - r.angle)];
+      error =
+        only(findAspectTimes(r.body, r.targetBody ?? r.fixed!, ...near(ref), { angles }), label)
+          .jd - ref;
       limit = aspectLimits[r.body]!;
     }
-    assert.equal(actual.length, 1);
-    const error = Math.abs(actual[0]!.jd - r.jd) * 86400;
-    assert.ok(error < limit, `${r.kind} ${r.body}: ${error.toFixed(3)} s TT > ${limit}`);
+    error = Math.abs(error) * 86400;
+    assert.ok(error < limit, `${label}: ${error.toFixed(3)} s TT > ${limit}`);
   }
   assert.equal(unique.size, rows.length, 'Reference events must be distinct');
   assert.ok(

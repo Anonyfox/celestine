@@ -1,4 +1,5 @@
 // Run after npm run build. Sequential, cached, polite retrieval; no external libraries.
+// Then run scripts/events/derive-frames.py to add frame labels and mean-equinox references.
 import { mkdir, writeFile } from 'node:fs/promises';
 import { CelestialBody, ephemeris, events } from '../../dist/index.js';
 import { query } from './horizons.mjs';
@@ -179,10 +180,9 @@ const references = requests.map((r) => {
   const values = r.dates.map((jd) => {
     const p = positions.get(r.body).get(jd);
     const q = r.targetBody ? positions.get(r.targetBody).get(jd) : (r.fixed ?? 0);
-    // Fixed natal points are mean-equinox; subtract nutation from Horizons.
-    const correction =
-      r.fixed !== undefined ? ephemeris.nutationInLongitude((jd - 2451545) / 36525) : 0;
-    return wrap(p - q - correction - r.angle);
+    // Horizons-native true equinox of date. derive-frames.py adds mean-frame references
+    // (jdMean) independently of the library, and labels every row's frame.
+    return wrap(p - q - r.angle);
   });
   let index = -1;
   for (let i = 0; i < values.length - 1; i++)

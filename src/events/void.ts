@@ -18,7 +18,7 @@ const traditional = [
  * aspect (0,60,90,120,180; no orbs) within a sign to Sun/Mercury/Venus/Mars/Jupiter/Saturn,
  * until the next Moon ingress. Pass bodies to use e.g. the modern outer-planet convention.
  * With no aspect, the whole sign stay is void. The Moon itself is ignored in bodies.
- * Uses default mean-equinox longitudes. TT JD inputs; returns complete periods overlapping
+ * Uses the position API's default mean-equinox longitudes (ingresses and aspects). TT JD inputs; returns complete periods overlapping
  * the inclusive interval (unclipped), with start/end TT and startUT/endUT via toUT.
  * Searches four days beyond each bound to bracket full sign stays (Moon stays <3 days).
  * @param startJD - Inclusive overlap window start, TT Julian Date.

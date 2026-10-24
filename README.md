@@ -827,20 +827,26 @@ const voidPeriods = findVoidOfCourseMoon(start, start + 30);
 ```
 
 - `findSignIngresses` includes retrograde re-entries, entered/previous sign indices
-  (Aries=0) and names. Defaults exactly match library apparent longitudes in the
-  **mean ecliptic/equinox of date**. `{ nutation: true }` adds longitude nutation,
-  giving true-equinox crossings for almanac comparisons. All supported bodies,
-  including nodes and Lilith, are accepted.
+  (Aries=0) and names. Events use the position API's frame: by default apparent
+  longitude in the **mean ecliptic/equinox of date**, like `getPosition` and
+  `calculateChart`; `{ nutation: true }` gives true-equinox crossings, like
+  `getPosition(body, jd, { includeNutation: true })`. At every returned instant the
+  position API with matching options is on the cusp to within 1e-4″ (tested for every
+  body, nodes and Lilith included). Note that `calculateChart` takes UT; pass
+  `deltaT: deltaTAt` for TT positions that match event instants exactly.
 - `findLunarPhases` finds Moon−Sun longitude 0/90/180/270°, with phase values
   `new-moon`, `first-quarter`, `full-moon`, `last-quarter`; nutation cancels.
   `getMoonPhase` provides elongation [0,360), Sun–Moon–Earth phase angle [0,180],
   illuminated fraction using latitude and distances, waxing, and the nearest
   principal phase bucket (boundaries 45/135/225/315°).
-- `findSeasons` uses apparent solar longitude 0/90/180/270° from the **true equinox**
-  (USNO/IAU convention). It differs from default Sun sign ingresses.
+- `findSeasons` uses apparent solar longitude 0/90/180/270° from the **true equinox**,
+  the definition used by USNO, the Astronomical Almanac and Meeus (ch. 27). It equals
+  the Sun's cardinal ingresses with `{ nutation: true }`; default (mean-equinox) Sun
+  ingresses differ by Δψ/speed, up to about 19 minutes.
 - `findAspectTimes` finds exact unsigned longitude separations; default angles
   are 0/60/90/120/180°. Intermediate angles search both orientations. Target may
-  be a moving body or a fixed mean-equinox longitude. Relative stations yield
+  be a moving body (the frame cancels) or a fixed mean-equinox longitude, such as a
+  natal position from `calculateChart`. Relative stations yield
   multiple passes. `increasing` describes unsigned separation in [0,180]; it is
   false at the conjunction/opposition cusps. Identical bodies have no isolated events.
 - **Void-of-course convention:** `findVoidOfCourseMoon` returns the interval from
