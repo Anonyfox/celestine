@@ -8,7 +8,7 @@ export { localDayToUT } from './local-day.js';
 export { findLunarPhases, getMoonPhase } from './lunar.js';
 export { findSeasons } from './seasons.js';
 export { findStations } from './stations.js';
-export { findTransitPasses, searchTransitPasses } from './transit-passes.js';
+export { chartToNatalPoints, findTransitPasses, searchTransitPasses } from './transit-passes.js';
 export type {
   AscendantSignInterval,
   AspectTimeEvent,

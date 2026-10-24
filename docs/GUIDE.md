@@ -227,6 +227,24 @@ number for every aspect or a map per aspect type. An override replaces the compu
 orb, including the luminary, angle and outer-planet extensions; aspects without one keep
 the computed orb. `findTransitPasses` takes the same frame option as its last argument.
 
+`chartToNatalPoints(chart)` builds the natal points from a `calculateChart` result: all
+chart bodies (Sun and Moon as luminaries, Chiron and the asteroids as asteroids), the
+lunar nodes, and the Ascendant and Midheaven as `'ASC'` and `'MC'`, with house and sign.
+
+```ts
+import { calculateChart } from 'celestine';
+import { chartToNatalPoints, searchTransitPasses } from 'celestine/events';
+
+const chart = calculateChart({
+  year: 1990, month: 4, day: 26, hour: 11, minute: 50,
+  timezone: 2, latitude: 52.52, longitude: 13.405,
+});
+const scan = searchTransitPasses(
+  { startJD: start, endJD: start + 365, natalPoints: chartToNatalPoints(chart) },
+  { bodyOrbs: { [CelestialBody.Mars]: 1, [CelestialBody.Saturn]: 1.5 } },
+);
+```
+
 ## Progressions
 
 Progressions implement astrological time mappings. Their interpretation is

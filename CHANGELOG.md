@@ -14,6 +14,8 @@ All notable changes to this project are documented here, following
   108 JPL Horizons sign ingresses within 3.3″ of implied longitude.
 - `searchTransitPasses` accepts `bodyOrbs` in that options argument: an orb per
   transiting body, as one number or per aspect type.
+- `chartToNatalPoints(chart)` (`celestine/events`) turns a `calculateChart` result into
+  natal points for transit searches.
 - `findStationPoints` results carry `jdUT`, and `findRetrogradePeriods` /
   `getAllRetrogradePeriods` results carry `stationRetroJDUT` and `stationDirectJDUT`,
   matching `jdUT` on `findStations` events. The fields are optional in the types so

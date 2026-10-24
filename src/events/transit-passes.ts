@@ -1,4 +1,5 @@
 import { ASPECT_DEFINITIONS } from '../aspects/constants.js';
+import type { Chart } from '../chart/types.js';
 import type { CelestialBody } from '../ephemeris/positions.js';
 import {
   AVERAGE_DAILY_MOTION,
@@ -12,7 +13,12 @@ import {
   jdToTransitDate,
 } from '../transits/transit-detection.js';
 import { generateSearchSummary, groupTransitsByMonth } from '../transits/transit-search.js';
-import type { TransitSearchParams, TransitSearchResult, TransitTiming } from '../transits/types.js';
+import type {
+  NatalPoint,
+  TransitSearchParams,
+  TransitSearchResult,
+  TransitTiming,
+} from '../transits/types.js';
 import { findAspectTimes } from './aspects.js';
 import { eventPosition, trueEquinox } from './bodies.js';
 import { nutation } from './luminaries.js';
@@ -187,4 +193,54 @@ export function searchTransitPasses(
     byMonth: groupTransitsByMonth(transits),
     summary: generateSearchSummary(transits, startJD, endJD),
   };
+}
+
+const ASTEROIDS = ['Chiron', 'Ceres', 'Pallas', 'Juno', 'Vesta'];
+/**
+ * Natal points for searchTransitPasses from a calculateChart result: every chart body
+ * (Sun and Moon as luminaries, Chiron and asteroids as asteroids), the lunar nodes and the
+ * Ascendant and Midheaven as 'ASC' and 'MC', with house and sign index. Longitudes are the
+ * chart's (mean equinox of date unless the chart was computed otherwise), so search with
+ * the matching frame option.
+ * @param chart - Chart from calculateChart (only planets, nodes and angles are read).
+ * @returns Natal points in chart order.
+ * @example searchTransitPasses({ startJD, endJD, natalPoints: chartToNatalPoints(chart) })
+ */
+export function chartToNatalPoints(
+  chart: Pick<Chart, 'planets' | 'nodes' | 'angles'>,
+): NatalPoint[] {
+  const { ascendant, midheaven } = chart.angles;
+  return [
+    ...chart.planets.map(
+      (p): NatalPoint => ({
+        name: p.name,
+        longitude: p.longitude,
+        type:
+          p.body === 'Sun' || p.body === 'Moon'
+            ? 'luminary'
+            : ASTEROIDS.includes(p.body)
+              ? 'asteroid'
+              : 'planet',
+        house: p.house,
+        signIndex: p.sign,
+      }),
+    ),
+    ...chart.nodes.map(
+      (n): NatalPoint => ({
+        name: n.name,
+        longitude: n.longitude,
+        type: 'node',
+        house: n.house,
+        signIndex: n.sign,
+      }),
+    ),
+    ...[ascendant, midheaven].map(
+      (a): NatalPoint => ({
+        name: a.abbrev,
+        longitude: a.longitude,
+        type: 'angle',
+        signIndex: a.sign,
+      }),
+    ),
+  ];
 }

@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { AspectType } from '../aspects/types.js';
+import { calculateChart } from '../chart/chart.js';
 import { CelestialBody, getPosition } from '../ephemeris/positions.js';
-import { findTransitPasses, searchTransitPasses } from './index.js';
+import { chartToNatalPoints, findTransitPasses, searchTransitPasses } from './index.js';
 
 const refs = (
   JSON.parse(
@@ -88,4 +89,33 @@ test('searchTransitPasses bodyOrbs override the computed orb per body and aspect
   assert.ok(result.transits.some((t) => t.transit.transitingBody === 'Mars'));
   assert.ok(result.transits.some((t) => t.transit.transitingBody === 'Jupiter'));
   assert.ok(result.transits.some((t) => t.transit.orb === 1.5));
+});
+
+test('chartToNatalPoints turns a chart into typed natal points', () => {
+  const chart = calculateChart({
+    year: 2000,
+    month: 11,
+    day: 1,
+    hour: 12,
+    minute: 0,
+    timezone: 0,
+    latitude: 51.5,
+    longitude: -0.12,
+  });
+  const points = chartToNatalPoints(chart);
+  assert.equal(points.length, chart.planets.length + chart.nodes.length + 2);
+  const by = (name: string) => points.find((p) => p.name === name)!;
+  assert.equal(by('Sun').type, 'luminary');
+  assert.equal(by('Moon').type, 'luminary');
+  assert.equal(by('Mars').type, 'planet');
+  assert.equal(by('Chiron').type, 'asteroid');
+  assert.equal(by('ASC').type, 'angle');
+  assert.equal(by('ASC').longitude, chart.angles.ascendant.longitude);
+  assert.equal(by('MC').longitude, chart.angles.midheaven.longitude);
+  assert.equal(by('Sun').longitude, chart.planets[0]!.longitude);
+  assert.equal(by('Sun').house, chart.planets[0]!.house);
+  assert.equal(by('Sun').signIndex, chart.planets[0]!.sign);
+  assert.ok(points.some((p) => p.type === 'node'));
+  const result = searchTransitPasses({ startJD: 2461041.5, endJD: 2461200, natalPoints: points });
+  assert.ok(result.transits.length > 0);
 });
