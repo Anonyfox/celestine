@@ -26,7 +26,7 @@ Built for practitioners who actually care about precision. 2400+ unit tests. Zer
 - ✅ **Birth Charts** - Complete chart calculation combining all modules into a cohesive API
 - ✅ **Ephemeris** - Sun, Moon, all planets, Chiron, 4 major asteroids, lunar nodes, Lilith, lots
 - ✅ **JPL/Swiss Ephemeris Verified** - Positions validated against authoritative astronomical data
-- ✅ **Time Calculations** - Julian dates, Julian centuries, sidereal time, ΔT corrections
+- ✅ **Time Calculations** - Julian dates, Julian centuries, sidereal time, ΔT (USNO-based) and UT↔TT conversion
 - ✅ **NASA Verified** - Time calculations tested against official NASA reference data
 - ✅ **House Systems** - 7 systems (Placidus, Koch, Equal, Whole Sign, Porphyry, Regiomontanus, Campanus)
 - ✅ **Astronomically Verified** - House calculations verified against fundamental astronomical principles
@@ -36,6 +36,7 @@ Built for practitioners who actually care about precision. 2400+ unit tests. Zer
 - ✅ **Aspects** - 14 aspect types (major, minor, Kepler), patterns, orbs, applying/separating
 - ✅ **Transits** - Predictive astrology with exact timing, house ingress, retrograde handling
 - ✅ **Progressions** - Secondary progressions, solar arc directions, Moon phases and sign transits
+- ✅ **Event Search** (`celestine/events`) - Sign ingresses, lunar phases, seasons, exact aspect times, void-of-course Moon, checked against JPL Horizons and USNO
 - 🔒 **Type-safe** - Full TypeScript support with comprehensive types
 - 🧪 **Well-tested** - 2400+ unit tests
 - 🚀 **Zero runtime dependencies** - Lightweight and fast
@@ -683,6 +684,149 @@ console.log(formatProgressedChart(result));
 - Multiple progression type support
 - Configurable orbs and aspect types
 - Beautiful formatted output
+
+## Time scales (UT vs TT)
+
+`time.toJulianDate` returns a UT Julian Date. Ephemeris position functions take
+**TT** Julian Dates; their default coordinate frame is mean ecliptic/equinox of date.
+Convert explicitly when starting from civil time:
+
+```typescript
+import { toJulianDate, toTT, toUT, deltaTAt } from 'celestine/time';
+import { getSunPosition } from 'celestine/ephemeris';
+import { calculateChart } from 'celestine/chart';
+
+const jdUT = toJulianDate({ year: 2026, month: 10, day: 24, hour: 12 });
+const sun = getSunPosition(toTT(jdUT));
+const restoredUT = toUT(toTT(jdUT));
+// birth contains civil date/time, timezone, latitude and longitude:
+const chart = calculateChart(birth, { deltaT: deltaTAt });
+// A numeric deltaT (seconds TT−UT) can also supply an external model.
+```
+
+For compatibility, charts and `calculatePlanets` retain their historical UT input
+to ephemerides unless `deltaT` is supplied. The option corrects every body
+(planets, nodes, Lilith, Chiron and asteroids); houses, angles and sidereal time
+continue to use UT. `deltaT: 0` reproduces default positions. Individual position
+getters have no new option: use `getSunPosition(toTT(jdUT))`.
+
+The built-in ΔT model uses [USNO monthly observations](https://maia.usno.navy.mil/ser7/deltat.data)
+and [USNO historical observations](https://maia.usno.navy.mil/ser7/historic_deltat.data)
+from 1800 (a bridge reaches the first retained USNO knot at 1804).
+Measured maximum/RMS approximation errors are 1.347/0.462 seconds (1800–1899),
+0.320/0.104 seconds (1900–1954), and 0.104/0.034 seconds (1955–October 2026).
+These fitting errors do not include uncertainty in historical observations.
+Before 1800 we follow NASA/Morrison & Stephenson (2004), rather than the
+older USNO historic tabulation, using [Espenak–Meeus polynomials](https://eclipse.gsfc.nasa.gov/SEcat5/deltatpoly.html),
+with uncertainties reaching hundreds of seconds in antiquity. Beyond October
+2026, a cubic extrapolation continues the last observed value and slope (0.2 s/yr, close to
+the ~0.18 s/yr of IERS Bulletin A's one-year prediction) and joins the Stephenson–Morrison–Hohenkerk
+(2016) long-term parabola `−320 + 32.5((y−1825)/100)²` at 2800, matching value and slope
+(the approach Skyfield uses). It gives about 70.8 s in 2033.75, 76.5 s in 2050 and 110 s in 2100;
+it is within 0.12 s of Bulletin A's predictions (to October 2027) and 0.43 s of USNO's
+`deltat.preds` (to 2033.75). Allow several seconds per decade of uncertainty,
+growing to tens/hundreds of seconds over centuries; it is not a forecast.
+`deltaTAt` uses decimal year `2000 + (jd - 2451545) / 365.25`. Passing TT instead
+of UT changes its result by less than 0.001 seconds in the observed era.
+Legacy `deltaT(year, month)`, `utToTT` and `ttToUT` share this model and use the
+middle of the supplied month. See the [reference data and measurements](src/time/__fixtures__/delta-t/README.md).
+
+## Event search
+
+Event searches are available only from the `celestine/events` subpath; they are not
+re-exported from the root `celestine` entry, so the root bundle does not grow. Each function
+tree-shakes on its own (esbuild, minified + gzip: `findSeasons` ≈4.5 KB, `findLunarPhases` ≈5.5 KB,
+`getMoonPhase` ≈5.0 KB; body-generic searches such as `findSignIngresses` ≈23 KB because they pull
+in every ephemeris body). CommonJS `require('celestine/events')` works as well.
+Every input Julian Date is **TT**, just like the ephemeris API. `toJulianDate` returns UT,
+so convert with `toTT(jdUT)` (root or `celestine/time`) before searching; returned instants include
+`jd` (TT) and `jdUT` (UT via `toUT`). Convert a TT result back yourself with `toUT(jd)`, or use
+`deltaTAt(jdUT)` for ΔT = TT − UT in seconds.
+Search bounds are inclusive; results are chronological and duplicate-free.
+
+```ts
+import { findLunarPhases, findSignIngresses, findSeasons, getMoonPhase,
+  findAspectTimes, findVoidOfCourseMoon } from 'celestine/events';
+import { CelestialBody, toJulianDate, toTT } from 'celestine';
+
+const start = toTT(toJulianDate({
+  year: 2026, month: 1, day: 1, hour: 0, minute: 0, second: 0,
+}));
+const end = start + 365;
+const fullMoons = findLunarPhases(start, end, { phases: ['full-moon'] });
+const ingresses = findSignIngresses(CelestialBody.Mercury, start, end);
+const seasons = findSeasons(start, end);
+const illumination = getMoonPhase(start).illumination;
+const aspects = findAspectTimes(CelestialBody.Mars, CelestialBody.Saturn, start, end);
+const natalPasses = findAspectTimes(CelestialBody.Mercury, 45, start, end, { angles: [0] });
+const voidPeriods = findVoidOfCourseMoon(start, start + 30);
+```
+
+- `findSignIngresses` includes retrograde re-entries, entered/previous sign indices
+  (Aries=0) and names. Defaults exactly match library apparent longitudes in the
+  **mean ecliptic/equinox of date**. `{ nutation: true }` adds longitude nutation,
+  giving true-equinox crossings for almanac comparisons. All supported bodies,
+  including nodes and Lilith, are accepted.
+- `findLunarPhases` finds Moon−Sun longitude 0/90/180/270°, with phase values
+  `new-moon`, `first-quarter`, `full-moon`, `last-quarter`; nutation cancels.
+  `getMoonPhase` provides elongation [0,360), Sun–Moon–Earth phase angle [0,180],
+  illuminated fraction using latitude and distances, waxing, and the nearest
+  principal phase bucket (boundaries 45/135/225/315°).
+- `findSeasons` uses apparent solar longitude 0/90/180/270° from the **true equinox**
+  (USNO/IAU convention). It differs from default Sun sign ingresses.
+- `findAspectTimes` finds exact unsigned longitude separations; default angles
+  are 0/60/90/120/180°. Intermediate angles search both orientations. Target may
+  be a moving body or a fixed mean-equinox longitude. Relative stations yield
+  multiple passes. `increasing` describes unsigned separation in [0,180]; it is
+  false at the conjunction/opposition cusps. Identical bodies have no isolated events.
+- **Void-of-course convention:** `findVoidOfCourseMoon` returns the interval from
+  the Moon's last exact major Ptolemaic aspect in its current sign to the next
+  sign ingress: geocentric ecliptic longitude, no orbs, default partners Sun,
+  Mercury, Venus, Mars, Jupiter, Saturn. `{ bodies: [...] }` can include outer
+  planets for the modern convention. With no aspect, the whole sign stay is void.
+  Results are complete periods overlapping the requested interval, potentially
+  starting earlier or ending later; `start`/`end` are TT and `startUT`/`endUT` UT.
+
+Measured errors against independent references over 1900–2100 (seconds):
+
+| Reference / event | Samples | Max | RMS |
+|---|---:|---:|---:|
+| Horizons TT / lunar phases | 64 | 14.53 | 5.55 |
+| Horizons TT / seasons | 44 | 9.25 | 4.62 |
+| Horizons TT / Sun ingresses | 12 | 9.14 | 5.21 |
+| Horizons TT / Moon ingresses | 12 | 10.83 | 5.96 |
+| USNO UT / lunar phases | 9,945 | 59.66 | 21.41 |
+| USNO UT / seasons | 804 | 46.69 | 19.11 |
+
+USNO UT error by era (max / RMS / mean, seconds; USNO rounds to the minute, so
+±30 s and ~17 s RMS come from the source alone):
+
+| Years | ΔT | Phases | Seasons |
+|---|---|---:|---:|
+| 1900–1949 | observed | 49.2 / 18.9 / +0.8 | 39.6 / 19.2 / +1.8 |
+| 1950–2025 | observed | 50.0 / 18.8 / +1.6 | 36.5 / 17.7 / −0.7 |
+| 2026–2050 | extrapolated | 55.4 / 24.8 / +17.2 | 46.7 / 20.9 / +10.3 |
+| 2051–2075 | extrapolated | 59.7 / 27.4 / +20.6 | 45.7 / 21.3 / +13.9 |
+| 2076–2100 | extrapolated | 56.6 / 23.1 / +14.3 | 41.5 / 18.8 / +6.2 |
+
+All USNO counts and chronological event types match one-to-one, with no missed
+or extra events. Wherever ΔT is observed, every event is within 50 s of USNO's
+minute-rounded time with no bias. After 2026 a small positive bias (+6 to +21 s) remains:
+TT times stay within 15 s of Horizons, so it comes from ΔT alone. USNO's tables imply a
+larger ΔT (≈95 s in 2050, ≈115 s in 2100) than our extrapolation (76 s and 110 s). Nobody knows 2100's
+ΔT to better than about a minute; every event also returns TT `jd`, so apply your own ΔT if needed.
+TT accuracy does not imply equal UT accuracy. Planet ingress maxima range from
+8 s (Mercury) to about 3 hours (Pluto, near a station): time uncertainty is
+positional error divided by speed. Pluto's ≤3.4″ longitude error at 0.005°/day
+is 0.7 hours per arcsecond. See the [full reference report](src/events/__fixtures__/README.md) for
+per-body limits, RMS errors, provenance, frame confirmation and reproduction.
+
+One shared angular root finder reuses samples, rejects wrap jumps, splits brackets
+at relative-motion stations, and refines with safeguarded Newton/bisection to
+better than 1e-6 day. Sampling uses 0.5 days for the Moon/true node/Lilith, one day
+for Mercury, two days for other generic bodies, one day for phases and five days
+for seasons. It assumes successive stations are farther apart than one step;
+arbitrarily close degenerate relative stations have no completeness guarantee.
 
 ## API Documentation
 

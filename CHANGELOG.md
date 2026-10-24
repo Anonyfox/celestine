@@ -6,6 +6,39 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-24
+
+### Added
+
+- `celestine/events` subpath (subpath-only; not re-exported from the root, so root bundles are
+  unchanged): `findSignIngresses`, `findLunarPhases`, `getMoonPhase`, `findSeasons`,
+  `findAspectTimes` and `findVoidOfCourseMoon` — sign ingresses, principal lunar
+  phases, lunar illumination, true-equinox seasons, exact aspects and traditional
+  void-of-course Moon periods. Inputs are TT Julian Dates (convert with `toTT`). Single imports
+  tree-shake (esbuild, gzip: `findSeasons` ~4.5 KB, `findLunarPhases` ~5.5 KB); CommonJS
+  `require('celestine/events')` is supported. Shared station-aware angular search, TT/UT outputs,
+  independent USNO/Horizons reference fixtures and reproducible benchmarks.
+  True-equinox searches use a four-term nutation series; TT error vs Horizons is
+  ≤14.6 s for phases, seasons and Sun/Moon ingresses, and ≤50 s vs USNO UT wherever ΔT is observed.
+- `time.deltaTAt`, `toTT` and `toUT` (also root named exports; ΔT = TT − UT seconds for a UT
+  Julian Date). JD-based UT/TT conversion includes an iterative inverse. Ephemeris and event
+  inputs are TT: use `getSunPosition(toTT(toJulianDate(...)))`.
+- Opt-in chart and `calculatePlanets` `deltaT` correction (seconds or a function
+  of UT JD), with houses and angles remaining on UT. Defaults are unchanged.
+
+### Changed
+
+- ΔT now interpolates USNO observations from 1800 through October 2026,
+  retaining the original pre-1800 NASA/Espenak–Meeus polynomials with a minimal
+  continuity taper. After October 2026 a cubic continues the last observed value and
+  slope (0.2 s/yr; IERS Bulletin A predicts ~0.18 s/yr) to the Stephenson–Morrison–Hohenkerk
+  (2016) parabola at 2800 (Skyfield's approach): ~76.5 s in 2050 and ~110 s in 2100.
+  Within 0.12 s of IERS Bulletin A (to 2027-10) and 0.43 s of USNO `deltat.preds`
+  (to 2033.75); event UT vs USNO tables stays ≤60 s through 2100.
+  Max/RMS errors against USNO rows (seconds): 1800–1899: 1.347/0.462;
+  1900–1954: 0.320/0.104; 1955–2026: 0.104/0.034. Before 1800, the older
+  USNO authority disagrees with NASA/Morrison & Stephenson (2004); we follow NASA.
+
 ## [0.3.0] - 2026-10-24
 
 ### Fixed
