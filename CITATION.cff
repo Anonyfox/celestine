@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: Please cite this software if you use it in research.
+title: celestine
+authors:
+  - family-names: Stroh
+    given-names: Maximilian
+    alias: Anonyfox
+version: 0.5.0
+date-released: 2026-10-24
+license: MIT
+repository-code: https://github.com/Anonyfox/celestine
+url: https://anonyfox.github.io/celestine
+abstract: "Astrology and astronomy engine in TypeScript: charts, houses, aspects, transits, stations and progressions. Positions checked against JPL Horizons in CI. Zero runtime dependencies; browser and Node."
+keywords:
+  - astrology
+  - astronomy
+  - ephemeris
+  - typescript

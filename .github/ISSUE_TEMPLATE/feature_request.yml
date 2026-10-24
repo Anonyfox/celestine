@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose a focused addition
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: Proposed API
+      render: typescript
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: production
+    attributes:
+      label: Would you use this in production?
+      options:
+        - "Yes"
+        - "No"
+        - "Unsure"

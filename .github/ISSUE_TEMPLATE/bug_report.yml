@@ -1,0 +1,47 @@
+name: Bug report
+description: Report incorrect results or integration problems
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Celestine version
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Node or browser version, operating system, and bundler.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction code
+      render: typescript
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual value or behavior
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected value and reference source
+      description: Include JPL Horizons settings, Swiss Ephemeris version and flags, or details of another reference.
+    validations:
+      required: true
+  - type: textarea
+    id: frame
+    attributes:
+      label: Coordinate frame and time scale
+      description: Specify UT or TT, mean or true equinox, and other relevant coordinate settings.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
