@@ -104,3 +104,76 @@ diff = max(abs(erfa.nut80(2400000.5, j - 2400000.5)[0] - erfa.nut00a(2400000.5, 
            for j in range(2415020, 2488435, 5))
 print(f'{sum("jdMean" in r for r in events)} mean-frame references; '
       f'max |nut80 - nut00a| dpsi 1900-2100 = {math.degrees(diff) * 3600:.4f} arcsec')
+
+# Stations (horizons-stations.json, written by fetch-stations.mjs): the same quartic vertex
+# fit, refitted on the cached 17-sample window minus nut00a, gives jdMean/longitudeMean.
+HALF = {'Mercury': 1, 'Venus': 1.5}
+
+
+def fit(xs, ys, degree):  # mirror of fetch-stations.mjs fit()
+    n = degree + 1
+    m = [[0.0] * (n + 1) for _ in range(n)]
+    for k in range(len(xs)):
+        for i in range(n):
+            for j in range(n):
+                m[i][j] += xs[k] ** (i + j)
+            m[i][n] += ys[k] * xs[k] ** i
+    for i in range(n):
+        p = max(range(i, n), key=lambda r: abs(m[r][i]))
+        m[i], m[p] = m[p], m[i]
+        for r in range(n):
+            if r != i:
+                f = m[r][i] / m[i][i]
+                for c in range(i, n + 1):
+                    m[r][c] -= f * m[i][c]
+    return [m[i][n] / m[i][i] for i in range(n)]
+
+
+def vertex(xs, lon):
+    c = fit(xs, lon, 4)
+    d = [v * (i + 1) for i, v in enumerate(c[1:])]
+    dd = [v * (i + 1) for i, v in enumerate(d[1:])]
+    ev = lambda p, x: sum(v * x ** i for i, v in enumerate(p))
+    x = 0.0
+    for _ in range(50):
+        x -= ev(d, x) / ev(dd, x)
+    return x, ev(c, x) % 360, ev(dd, x) > 0
+
+
+windows = {}
+for f in glob.glob(DIR + 'requests/*.json'):
+    d = json.load(open(f))
+    p = d['params']
+    if p['QUANTITIES'] == '31' and p['TIME_TYPE'] == 'TT':
+        dates = p['TLIST'].split('\n')
+        for i in range(0, len(dates) - 16, 17):
+            w = dates[i:i + 17]
+            windows.setdefault(BODY[p['COMMAND']], []).append(w)
+stations = json.load(open(DIR + 'horizons-stations.json'))
+worst = 0
+for s in stations:
+    half = HALF.get(s['body'], 2)
+    xs = [(k - 8) / 8 for k in range(17)]
+    best = None
+    for w in windows[s['body']]:
+        center = float(w[8])
+        if abs(float(w[16]) - float(w[0]) - 2 * half) > 1e-6 or abs(center - s['jd']) > half / 4:
+            continue
+        lon = [pos[s['body']][k] for k in w]
+        lon = [v + 360 * round((lon[0] - v) / 360) for v in lon]
+        x, _, _ = vertex(xs, lon)
+        if abs(round(center + x * half, 7) - s['jd']) < 2e-7:
+            best = (w, center, lon)
+            break
+    if not best:
+        raise SystemExit(f'No cached window for {s}')
+    w, center, lon = best
+    mean = [v - dpsi(float(k)) for v, k in zip(lon, w)]
+    x, l, direct = vertex(xs, mean)
+    if abs(x) >= 0.5 or direct != (s['type'] == 'direct'):
+        raise SystemExit(f'Mean vertex outside the window for {s}')
+    s['jdMean'] = round(center + x * half, 7)
+    s['longitudeMean'] = round(l, 7)
+    worst = max(worst, abs(s['jdMean'] - s['jd']) * 24)
+open(DIR + 'horizons-stations.json', 'w').write(json.dumps(stations, indent=1) + '\n')
+print(f'{len(stations)} mean-frame stations; max |jdMean - jd| = {worst:.2f} h')

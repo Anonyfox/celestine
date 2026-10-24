@@ -24,6 +24,7 @@
 
 import { CelestialBody, getPosition } from '../ephemeris/positions.js';
 import { stationStep, stations } from '../events/search.js';
+import type { EventFrameOptions } from '../events/types.js';
 import {
   AVERAGE_DAILY_MOTION,
   BODY_NAMES,
@@ -33,6 +34,16 @@ import {
 } from './constants.js';
 import { jdToTransitDate } from './transit-detection.js';
 import type { RetrogradePeriod, StationPoint, TransitDate } from './types.js';
+
+/** Retrograde period between a station retrograde and the following station direct. */
+const period = (body: CelestialBody, r: StationPoint, d: StationPoint): RetrogradePeriod => ({
+  body,
+  stationRetroJD: r.jd,
+  stationDirectJD: d.jd,
+  stationRetroLongitude: r.longitude,
+  stationDirectLongitude: d.longitude,
+  durationDays: d.jd - r.jd,
+});
 
 // =============================================================================
 // MOTION CLASSIFICATION
@@ -114,6 +125,8 @@ export function isRetrograde(body: CelestialBody, jd: number): boolean {
  * @param body - Celestial body
  * @param startJD - Start of search range
  * @param endJD - End of search range
+ * @param options - Frame: mean equinox of date (default) or `{ includeNutation: true }` for
+ *   the true equinox, as in `celestine/events` (`nutation` is a deprecated alias)
  * @returns Array of station points
  *
  * @remarks
@@ -133,6 +146,7 @@ export function findStationPoints(
   body: CelestialBody,
   startJD: number,
   endJD: number,
+  options?: EventFrameOptions,
 ): StationPoint[] {
   // Bodies that don't retrograde have no stations
   if (!canRetrograde(body)) {
@@ -144,9 +158,11 @@ export function findStationPoints(
 
   // The one station solver shared with celestine/events findStations: rate sign changes
   // over the whole inclusive range, solved to 1e-7 d on getPosition's centred speed.
+  // Same frame rule as the event searches (`nutation` is the deprecated alias).
+  const frame = { includeNutation: options?.includeNutation ?? options?.nutation };
   return stations(
     (jd) => {
-      const p = getPosition(body, jd);
+      const p = getPosition(body, jd, frame);
       return { value: p.longitude, rate: p.longitudeSpeed };
     },
     startJD,
@@ -167,15 +183,16 @@ export function findStationPoints(
  * @param body - Celestial body
  * @param fromJD - Starting Julian Date
  * @param maxSearchDays - Maximum days to search
+ * @param options - Frame, as in {@link findStationPoints}
  * @returns Next station point, or null if not found
  */
 export function findNextStation(
   body: CelestialBody,
   fromJD: number,
   maxSearchDays: number = 365,
+  options?: EventFrameOptions,
 ): StationPoint | null {
-  const stations = findStationPoints(body, fromJD, fromJD + maxSearchDays);
-  return stations.length > 0 ? stations[0] : null;
+  return findStationPoints(body, fromJD, fromJD + maxSearchDays, options)[0] ?? null;
 }
 
 // =============================================================================
@@ -188,12 +205,18 @@ export function findNextStation(
  * @param body - Celestial body
  * @param startJD - Start of search range
  * @param endJD - End of search range
+ * @param options - Frame, as in {@link findStationPoints}
  * @returns Array of retrograde periods
  *
  * @remarks
  * Each retrograde period is defined by:
  * - Station Retrograde: When retrograde begins
  * - Station Direct: When direct motion resumes
+ *
+ * Stations come from the shared station solver (the same instants as `findStations` in
+ * `celestine/events` for the same frame). A period whose station direct lies in the range
+ * is included even if its station retrograde precedes `startJD`; one still open at `endJD`
+ * is not.
  *
  * @example
  * ```ts
@@ -208,12 +231,13 @@ export function findRetrogradePeriods(
   body: CelestialBody,
   startJD: number,
   endJD: number,
+  options?: EventFrameOptions,
 ): RetrogradePeriod[] {
   if (!canRetrograde(body)) {
     return [];
   }
 
-  const stations = findStationPoints(body, startJD, endJD);
+  const stations = findStationPoints(body, startJD, endJD, options);
   const periods: RetrogradePeriod[] = [];
 
   // Pair up station-retrograde with following station-direct
@@ -224,14 +248,7 @@ export function findRetrogradePeriods(
       const stationDirect = stations[i + 1]?.type === 'station-direct' ? stations[i + 1] : null;
 
       if (stationDirect) {
-        periods.push({
-          body,
-          stationRetroJD: stationRetro.jd,
-          stationDirectJD: stationDirect.jd,
-          stationRetroLongitude: stationRetro.longitude,
-          stationDirectLongitude: stationDirect.longitude,
-          durationDays: stationDirect.jd - stationRetro.jd,
-        });
+        periods.push(period(body, stationRetro, stationDirect));
       }
     }
   }
@@ -239,18 +256,11 @@ export function findRetrogradePeriods(
   // Handle case where we start mid-retrograde
   if (stations.length > 0 && stations[0].type === 'station-direct') {
     // Currently in retrograde - find when it started
-    const beforeStart = findStationPoints(body, startJD - 180, startJD);
+    const beforeStart = findStationPoints(body, startJD - 180, startJD, options);
     const prevStationRetro = beforeStart.filter((s) => s.type === 'station-retrograde').pop();
 
     if (prevStationRetro) {
-      periods.unshift({
-        body,
-        stationRetroJD: prevStationRetro.jd,
-        stationDirectJD: stations[0].jd,
-        stationRetroLongitude: prevStationRetro.longitude,
-        stationDirectLongitude: stations[0].longitude,
-        durationDays: stations[0].jd - prevStationRetro.jd,
-      });
+      periods.unshift(period(body, prevStationRetro, stations[0]));
     }
   }
 
@@ -262,36 +272,24 @@ export function findRetrogradePeriods(
  *
  * @param body - Celestial body
  * @param jd - Julian Date
+ * @param options - Frame, as in {@link findStationPoints}
  * @returns The retrograde period if currently retrograde, null otherwise
  */
 export function getCurrentRetrogradePeriod(
   body: CelestialBody,
   jd: number,
+  options?: EventFrameOptions,
 ): RetrogradePeriod | null {
-  if (!isRetrograde(body, jd)) {
-    return null;
-  }
+  // Retrograde exactly when the latest station before jd is a station retrograde; deciding
+  // from the same solved stations keeps the answer consistent with findRetrogradePeriods.
+  const stationRetro = findStationPoints(body, jd - 180, jd, options).pop();
+  if (stationRetro?.type !== 'station-retrograde') return null;
 
-  // Find the station retrograde that started this period
-  const beforeStations = findStationPoints(body, jd - 180, jd);
-  const stationRetro = beforeStations.filter((s) => s.type === 'station-retrograde').pop();
+  // The station direct that ends this period
+  const stationDirect = findStationPoints(body, jd, jd + 180, options)[0];
+  if (stationDirect?.type !== 'station-direct') return null;
 
-  // Find the station direct that will end this period
-  const afterStations = findStationPoints(body, jd, jd + 180);
-  const stationDirect = afterStations.find((s) => s.type === 'station-direct');
-
-  if (!stationRetro || !stationDirect) {
-    return null;
-  }
-
-  return {
-    body,
-    stationRetroJD: stationRetro.jd,
-    stationDirectJD: stationDirect.jd,
-    stationRetroLongitude: stationRetro.longitude,
-    stationDirectLongitude: stationDirect.longitude,
-    durationDays: stationDirect.jd - stationRetro.jd,
-  };
+  return period(body, stationRetro, stationDirect);
 }
 
 // =============================================================================
@@ -589,17 +587,19 @@ export function formatStationPoint(station: StationPoint): string {
  * @param bodies - Array of celestial bodies
  * @param startJD - Start of search range
  * @param endJD - End of search range
+ * @param options - Frame, as in {@link findStationPoints}
  * @returns Object mapping body name to its retrograde periods
  */
 export function getAllRetrogradePeriods(
   bodies: CelestialBody[],
   startJD: number,
   endJD: number,
+  options?: EventFrameOptions,
 ): Map<string, RetrogradePeriod[]> {
   const result = new Map<string, RetrogradePeriod[]>();
 
   for (const body of bodies) {
-    const periods = findRetrogradePeriods(body, startJD, endJD);
+    const periods = findRetrogradePeriods(body, startJD, endJD, options);
     if (periods.length > 0) {
       result.set(BODY_NAMES[body], periods);
     }

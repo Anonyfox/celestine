@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import * as esm from 'celestine';
 import { build } from 'esbuild';
@@ -104,3 +105,12 @@ assert.deepEqual(precise.getPallasPosition(2460000.5), preciseCjs.getPallasPosit
 assert.deepEqual(precise.PRECISE_RANGE, preciseCjs.PRECISE_RANGE);
 assert.throws(() => precise.getChironPosition(precise.PRECISE_RANGE.endJD + 1), RangeError);
 console.log('Consumer: subpath-only celestine/precise matches across ESM and CJS.');
+const manifest = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
+const pkgCjs = createRequire(import.meta.url)('celestine/package.json');
+const { default: pkgEsm } = await import('celestine/package.json', { with: { type: 'json' } });
+assert.equal(pkgCjs.version, manifest.version);
+assert.equal(pkgEsm.version, manifest.version);
+assert.equal(pkgCjs.name, 'celestine');
+console.log(
+  `Consumer: celestine/package.json resolves in CJS and ESM (version ${manifest.version}).`,
+);

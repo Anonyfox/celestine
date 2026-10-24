@@ -4,25 +4,37 @@ import { test } from 'node:test';
 import type { CelestialBody } from '../ephemeris/positions.js';
 import { getPosition } from '../ephemeris/positions.js';
 import { toTT, toUT } from '../time/delta-t.js';
-import { findStationPoints } from '../transits/index.js';
+import {
+  findNextStation,
+  findRetrogradePeriods,
+  findStationPoints,
+  getCurrentRetrogradePeriod,
+} from '../transits/index.js';
 import { findStations } from './index.js';
 import { wrap } from './search.js';
 
-type Reference = { body: CelestialBody; type: string; jd: number; longitude: number };
+type Reference = {
+  body: CelestialBody;
+  type: string;
+  jd: number;
+  longitude: number;
+  jdMean: number;
+  longitudeMean: number;
+};
 const references = JSON.parse(
   readFileSync(new URL('__fixtures__/horizons-stations.json', import.meta.url), 'utf8'),
 ) as Reference[];
 
-// Seconds; measured maxima with includeNutation (README) plus a small rounding margin.
+// Seconds; measured maxima with includeNutation (README) plus a margin.
 const timeLimits: Record<string, number> = {
   Mercury: 60,
-  Venus: 40,
-  Mars: 180,
-  Jupiter: 420,
-  Saturn: 1080,
-  Uranus: 1500,
-  Neptune: 2400,
-  Pluto: 4800,
+  Venus: 30,
+  Mars: 150,
+  Jupiter: 400,
+  Saturn: 480,
+  Uranus: 360,
+  Neptune: 600,
+  Pluto: 4200,
 };
 const BODIES = Object.keys(timeLimits) as CelestialBody[];
 const jd = (year: number, month = 1, day = 1) =>
@@ -151,4 +163,101 @@ test('rejects unsupported bodies and invalid intervals; empty when no station', 
   assert.throws(() => findStations('Mars' as CelestialBody, jd(2027), jd(2026)), RangeError);
   assert.throws(() => findStations('Mars' as CelestialBody, Number.NaN, jd(2026)), RangeError);
   assert.deepEqual(findStations('Mercury' as CelestialBody, jd(2026, 1, 1), jd(2026, 1, 2)), []);
+});
+
+// Retrograde periods: the same shared solver, so the same instants, in either frame.
+const periodStations = (body: CelestialBody, a: number, b: number, includeNutation = false) =>
+  findRetrogradePeriods(body, a, b, { includeNutation }).flatMap((p) => [
+    { type: 'retrograde', jd: p.stationRetroJD, longitude: p.stationRetroLongitude },
+    { type: 'direct', jd: p.stationDirectJD, longitude: p.stationDirectLongitude },
+  ]);
+const nearest = (list: { type: string; jd: number }[], type: string, at: number) =>
+  Math.min(...list.filter((s) => s.type === type).map((s) => Math.abs(s.jd - at)));
+
+// Seconds; measured maxima of the mean-frame references (jdMean, README) plus a margin.
+const meanLimits: Record<string, number> = {
+  Mercury: 60,
+  Venus: 40,
+  Mars: 150,
+  Jupiter: 360,
+  Saturn: 360,
+  Uranus: 150,
+  Neptune: 330,
+  Pluto: 4200,
+};
+
+test('Horizons, both frames: findStations and findRetrogradePeriods within per-body limits', () => {
+  for (const ref of references) {
+    const [a, b] = [ref.jd - 200, ref.jd + 200];
+    const [mean] = findStations(ref.body, ref.jdMean - 10, ref.jdMean + 10);
+    assert.equal(mean!.type, ref.type);
+    assert.ok(Math.abs(mean!.jd - ref.jdMean) * 86400 < meanLimits[ref.body]!, `${ref.body} mean`);
+    assert.ok(Math.abs(wrap(mean!.longitude - ref.longitudeMean)) * 3600 < 4);
+    const dm = nearest(periodStations(ref.body, a, b), ref.type, ref.jdMean) * 86400;
+    assert.ok(
+      dm < meanLimits[ref.body]!,
+      `${ref.body} ${ref.jdMean}: mean period ${dm.toFixed(0)} s`,
+    );
+    const dt = nearest(periodStations(ref.body, a, b, true), ref.type, ref.jd) * 86400;
+    assert.ok(dt < timeLimits[ref.body]!, `${ref.body} ${ref.jd}: true period ${dt.toFixed(0)} s`);
+  }
+});
+
+test('findRetrogradePeriods, findNextStation and getCurrentRetrogradePeriod use the station solver in both frames', () => {
+  const [a, b] = [jd(2026), jd(2031)];
+  for (const body of BODIES)
+    for (const includeNutation of [false, true]) {
+      const solved = findStations(body, a, b, { includeNutation });
+      const periods = findRetrogradePeriods(body, a, b, { includeNutation });
+      assert.ok(periods.length >= 2, body);
+      for (const p of periods) {
+        // Exact in the default frame; with nutation the rate samples come from getPosition
+        // rather than the events' position(), so equal to within 1e-6 day (0.09 s).
+        const tol = includeNutation ? 1e-6 : 0;
+        const at = (type: string, t: number) =>
+          solved.find((s) => s.type === type && Math.abs(s.jd - t) <= tol);
+        const retro = at('retrograde', p.stationRetroJD);
+        const direct = at('direct', p.stationDirectJD);
+        // A period that began before the range comes from the 180-day look-back.
+        assert.ok(retro || p.stationRetroJD < a, `${body} ${includeNutation}`);
+        assert.ok(direct, `${body} ${includeNutation}`);
+        assert.equal(p.durationDays, p.stationDirectJD - p.stationRetroJD);
+        const mid = (p.stationRetroJD + p.stationDirectJD) / 2;
+        // Its own search window and scan grid: the same stations to within 1e-6 day (0.09 s).
+        const current = getCurrentRetrogradePeriod(body, mid, { includeNutation })!;
+        assert.ok(Math.abs(current.stationRetroJD - p.stationRetroJD) < 1e-6);
+        assert.ok(Math.abs(current.stationDirectJD - p.stationDirectJD) < 1e-6);
+      }
+      const next = findNextStation(body, a, 400, { includeNutation })!;
+      assert.ok(Math.abs(next.jd - solved[0]!.jd) <= (includeNutation ? 1e-6 : 0));
+    }
+  // Default and deprecated alias.
+  const m = findRetrogradePeriods('Saturn' as CelestialBody, a, b);
+  assert.deepEqual(m, findRetrogradePeriods('Saturn' as CelestialBody, a, b, {}));
+  assert.deepEqual(
+    findRetrogradePeriods('Saturn' as CelestialBody, a, b, { nutation: true }),
+    findRetrogradePeriods('Saturn' as CelestialBody, a, b, { includeNutation: true }),
+  );
+});
+
+test('consumer reference: 17 Horizons stations 2026–2027 (true of date, UT to the minute)', () => {
+  const consumer = JSON.parse(
+    readFileSync(new URL('__fixtures__/consumer-stations-2026-2027.json', import.meta.url), 'utf8'),
+  ) as { stations: { body: CelestialBody; type: string; utc: string }[] };
+  assert.equal(consumer.stations.length, 17);
+  const [a, b] = [jd(2026, 6), jd(2028, 6)];
+  // Measured maxima (minutes): Mercury 0.67, Venus 0.86, Mars 0.41, Jupiter 2.45, Saturn
+  // 4.27, including ±0.5 min reference rounding. The consumer's symmetric-difference method
+  // on mean-equinox longitudes: Jupiter 12.3, Saturn 32.9.
+  for (const s of consumer.stations) {
+    const ut = Date.parse(s.utc) / 86400000 + 2440587.5;
+    const minutes = nearest(
+      periodStations(s.body, a, b, true).map((p) => ({ ...p, jd: toUT(p.jd) })),
+      s.type,
+      ut,
+    );
+    assert.ok(minutes * 1440 < 5, `${s.body} ${s.utc}: ${(minutes * 1440).toFixed(2)} min`);
+    const [event] = findStations(s.body, toTT(ut) - 5, toTT(ut) + 5, { includeNutation: true });
+    assert.ok(Math.abs(event!.jdUT - ut) * 1440 < 5);
+  }
 });

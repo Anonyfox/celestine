@@ -95,8 +95,8 @@
       "gzipBytes": 4224
     },
     "subpath.realistic": {
-      "minBytes": 100864,
-      "gzipBytes": 38400
+      "minBytes": 100928,
+      "gzipBytes": 38464
     },
     "precise.getChironPosition": {
       "minBytes": 10176,

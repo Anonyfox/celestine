@@ -6,6 +6,8 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-24
+
 ### Changed (output shift)
 
 - **`calculateChart` and `calculatePlanets` now apply ΔT by default.** The birth date and time
@@ -39,9 +41,17 @@ All notable changes to this project are documented here, following
   stations for Mercury through Pluto. A station is a zero of the apparent geocentric longitude
   rate. It uses the same positions and frame as the other event searches: mean equinox of date
   by default, or the true equinox with `{ includeNutation: true }`. Each result has `type`, `jd` (TT), `jdUT`, `longitude`, `sign` and
-  `signName` (`StationEvent`). Maximum error vs JPL Horizons over 1900–2100 (true equinox) is
-  0.7 min for Mercury, up to 76 min for Pluto, and ≤3.5″ in longitude for all bodies; see the
-  README. It shares one station solver with `findStationPoints` (see Changed).
+  `signName` (`StationEvent`). Maximum error vs JPL Horizons over 1900–2100, in either frame
+  against a reference in that frame: under 1 min for Mercury and Venus, 1.8–8.1 min for Mars
+  through Neptune, 66 min for Pluto, and ≤3.4″ in longitude for all bodies; see the README.
+  It shares one station solver with `findStationPoints` (see Changed).
+- The station and retrograde-period helpers in `celestine/transits` (`findStationPoints`,
+  `findNextStation`, `findRetrogradePeriods`, `getCurrentRetrogradePeriod`,
+  `getAllRetrogradePeriods`) take the same optional frame argument (`EventFrameOptions`,
+  `{ includeNutation: true }` for the true equinox; `nutation` is the deprecated alias).
+  Omitting it keeps the mean equinox of date.
+- `celestine/package.json` is exported, so `require('celestine/package.json').version` (or an
+  ESM JSON import) reads the installed version.
 - `celestine/precise`, an opt-in subpath with `getChironPosition`, `getCeresPosition`,
   `getPallasPosition`, `getJunoPosition` and `getVestaPosition`. They have the same signatures
   and `PlanetPosition` return type as the `celestine/ephemeris` functions, so switching is a
@@ -91,6 +101,8 @@ All notable changes to this project are documented here, following
   all of them; `includeNutation` wins when both are given. Fixed-longitude aspects measured against
   Horizons: 28.8 s max (mean) and 28.2 s (true).
 - Horizons event references are labelled by frame, and each test compares like with like.
+  The station references gain `jdMean`/`longitudeMean`, derived the same way (up to 2.7 h from
+  the true-equinox instant), so stations are tested in both frames.
   Mean-equinox references (`jdMean`) are derived from the same Horizons samples with IAU
   2000A nutation (ERFA), independent of the library. Ingress tests now bound the implied
   longitude error per body, in both frames (for example Jupiter 1.35″ and Saturn 0.8″,
@@ -108,13 +120,24 @@ All notable changes to this project are documented here, following
   Over 1900–2100 that put instants up to 18 min (Mercury), 37 min (Venus), 1.9 h (Mars) and
   0.3–2.8 days (Jupiter 0.3, Saturn 0.6, Pluto 2.8; Chiron 1.1) from its own speed's zero.
   Now the residual rate is below 1e-4″/day for every body.
-  Against the Horizons stations, the maximum error falls from 2.0 to 1.3 min (Mercury), 15.5 to
-  4.3 min (Mars) and 12 h to 3.7 h (Pluto). Pluto's 3.7 h is mostly the frame
-  difference (mean versus Horizons' true equinox; 76 min with `includeNutation`), not the solver. It also no longer misses a station in the last partial step
-  of the range: one Uranus station on 2100-12-26 was missing in 1900–2100.
-  Retrograde-period helpers built on it (`findRetrogradePeriods`, `findNextStation`,
-  `getCurrentRetrogradePeriod`) inherit the accuracy. The perf-gated 180-day Mercury search
-  costs about the same as before.
+  Against mean-equinox Horizons references (`jdMean`; searching ±200 days around each of the
+  160 stations, since the old result depended on the search window), the maximum error falls
+  from 2.3 to 0.8 min (Mercury), 23 to 0.4 min (Venus), 1.9 h to 1.9 min (Mars), 1.7 h to
+  4.8 min (Jupiter), 12.6 h to 4.6 min (Saturn), 13.4 h to 1.8 min (Uranus), 13.4 h to
+  4.3 min (Neptune) and 13.8 h to 63 min (Pluto). It also no longer misses a station in the
+  last partial step of the range: one Uranus station on 2100-12-26 was missing in 1900–2100.
+  The perf-gated 180-day Mercury search costs about the same as before.
+- `findRetrogradePeriods`, `findNextStation`, `getCurrentRetrogradePeriod` and
+  `getAllRetrogradePeriods` use these stations, so they return the `findStations` instants in
+  either frame. `getCurrentRetrogradePeriod` decides "retrograde now" from the same stations
+  (the latest one before `jd` is a station retrograde) instead of a separate speed sign, so it
+  agrees with `findRetrogradePeriods` right up to the station instants. On Cosmolytic Studio's 17 Horizons stations for 2026–2027 (true equinox, UT to
+  the minute), `findRetrogradePeriods` was off by up to 18 min (Mercury), 33 min (Venus),
+  93 min (Mars), 4.3 h (Jupiter) and 6.5 h (Saturn) in 0.4.0. With `{ includeNutation: true }`
+  it is now within 0.7, 0.9, 0.4, 2.5 and 4.3 min. That beats symmetric differences of
+  mean-equinox longitudes (12 and 33 min for Jupiter and Saturn), because the frame dominates
+  for slow planets. The default mean frame gives the same 12 and 33 min, which is correct for
+  that frame. These references are now a test fixture.
 - Planet, Sun and precise-body positions are about 8–22% faster: the apparent-place pipeline no
   longer builds intermediate objects by spreading them. Output is bit-identical.
 

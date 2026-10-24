@@ -91,7 +91,7 @@
     "references": {
       "AspectTimeEvent": "events:public.AspectTimeEvent",
       "CelestialBody": "public.ephemeris.CelestialBody",
-      "EventFrameOptions": "events:public.EventFrameOptions"
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions"
     }
   },
   "events:public.findLunarPhases": {
@@ -114,7 +114,7 @@
     "type": "(body: CelestialBody, startJD: number, endJD: number, options?: EventFrameOptions) => SignIngress[]",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
-      "EventFrameOptions": "events:public.EventFrameOptions",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "SignIngress": "events:public.SignIngress"
     }
   },
@@ -123,7 +123,7 @@
     "type": "(body: CelestialBody, startJD: number, endJD: number, options?: EventFrameOptions) => StationEvent[]",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
-      "EventFrameOptions": "events:public.EventFrameOptions",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "StationEvent": "events:public.StationEvent"
     }
   },
@@ -132,7 +132,7 @@
     "type": "(startJD: number, endJD: number, options?: EventFrameOptions & { bodies?: CelestialBody[]; }) => VoidOfCoursePeriod[]",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
-      "EventFrameOptions": "events:public.EventFrameOptions",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "VoidOfCoursePeriod": "events:public.VoidOfCoursePeriod"
     }
   },
@@ -14719,11 +14719,27 @@
   },
   "public.transits.findNextStation": {
     "kind": "value",
-    "type": "(body: CelestialBody, fromJD: number, maxSearchDays?: number) => StationPoint | null",
+    "type": "(body: CelestialBody, fromJD: number, maxSearchDays?: number, options?: EventFrameOptions) => StationPoint | null",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "StationPoint": "public.transits.StationPoint"
     }
+  },
+  "public.transits.findNextStation.types.EventFrameOptions": {
+    "kind": "type",
+    "type": "EventFrameOptions",
+    "members": {
+      "includeNutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      },
+      "nutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      }
+    },
+    "definition": "export interface EventFrameOptions { includeNutation?: boolean; nutation?: boolean; }"
   },
   "public.transits.findOrbEntry": {
     "kind": "value",
@@ -14741,17 +14757,19 @@
   },
   "public.transits.findRetrogradePeriods": {
     "kind": "value",
-    "type": "(body: CelestialBody, startJD: number, endJD: number) => RetrogradePeriod[]",
+    "type": "(body: CelestialBody, startJD: number, endJD: number, options?: EventFrameOptions) => RetrogradePeriod[]",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "RetrogradePeriod": "public.transits.RetrogradePeriod"
     }
   },
   "public.transits.findStationPoints": {
     "kind": "value",
-    "type": "(body: CelestialBody, startJD: number, endJD: number) => StationPoint[]",
+    "type": "(body: CelestialBody, startJD: number, endJD: number, options?: EventFrameOptions) => StationPoint[]",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "StationPoint": "public.transits.StationPoint"
     }
   },
@@ -14830,9 +14848,10 @@
   },
   "public.transits.getAllRetrogradePeriods": {
     "kind": "value",
-    "type": "(bodies: CelestialBody[], startJD: number, endJD: number) => Map<string, RetrogradePeriod[]>",
+    "type": "(bodies: CelestialBody[], startJD: number, endJD: number, options?: EventFrameOptions) => Map<string, RetrogradePeriod[]>",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "RetrogradePeriod": "public.transits.RetrogradePeriod"
     }
   },
@@ -14859,9 +14878,10 @@
   },
   "public.transits.getCurrentRetrogradePeriod": {
     "kind": "value",
-    "type": "(body: CelestialBody, jd: number) => RetrogradePeriod | null",
+    "type": "(body: CelestialBody, jd: number, options?: EventFrameOptions) => RetrogradePeriod | null",
     "references": {
       "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
       "RetrogradePeriod": "public.transits.RetrogradePeriod"
     }
   },

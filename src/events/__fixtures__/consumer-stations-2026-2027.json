@@ -1,0 +1,90 @@
+{
+  "source": "Cosmolytic Studio consumer reference, 2026-10-24: JPL Horizons API, geocentric apparent ecliptic longitude of date (QUANTITIES=31), 10-min UT samples, cubic fit; fetched 2026-10-24; UT rounded to the minute, true ecliptic and equinox of date",
+  "stations": [
+    {
+      "body": "Venus",
+      "type": "retrograde",
+      "utc": "2026-10-03T07:15Z"
+    },
+    {
+      "body": "Mercury",
+      "type": "retrograde",
+      "utc": "2026-10-24T07:12Z"
+    },
+    {
+      "body": "Mercury",
+      "type": "direct",
+      "utc": "2026-11-13T15:53Z"
+    },
+    {
+      "body": "Venus",
+      "type": "direct",
+      "utc": "2026-11-14T00:27Z"
+    },
+    {
+      "body": "Saturn",
+      "type": "direct",
+      "utc": "2026-12-10T23:27Z"
+    },
+    {
+      "body": "Jupiter",
+      "type": "retrograde",
+      "utc": "2026-12-13T00:54Z"
+    },
+    {
+      "body": "Mars",
+      "type": "retrograde",
+      "utc": "2027-01-10T12:59Z"
+    },
+    {
+      "body": "Mercury",
+      "type": "retrograde",
+      "utc": "2027-02-09T17:36Z"
+    },
+    {
+      "body": "Mercury",
+      "type": "direct",
+      "utc": "2027-03-03T12:32Z"
+    },
+    {
+      "body": "Mars",
+      "type": "direct",
+      "utc": "2027-04-01T14:08Z"
+    },
+    {
+      "body": "Jupiter",
+      "type": "direct",
+      "utc": "2027-04-13T02:13Z"
+    },
+    {
+      "body": "Mercury",
+      "type": "retrograde",
+      "utc": "2027-06-10T18:15Z"
+    },
+    {
+      "body": "Mercury",
+      "type": "direct",
+      "utc": "2027-07-04T19:39Z"
+    },
+    {
+      "body": "Saturn",
+      "type": "retrograde",
+      "utc": "2027-08-09T18:09Z"
+    },
+    {
+      "body": "Mercury",
+      "type": "retrograde",
+      "utc": "2027-10-07T14:37Z"
+    },
+    {
+      "body": "Mercury",
+      "type": "direct",
+      "utc": "2027-10-28T14:10Z"
+    },
+    {
+      "body": "Saturn",
+      "type": "direct",
+      "utc": "2027-12-24T02:48Z"
+    }
+  ]
+}

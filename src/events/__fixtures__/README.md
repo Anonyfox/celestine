@@ -60,7 +60,13 @@ Horizons caches requests by URL SHA-256 prefix; remove `requests/` to re-fetch t
 date, TT) within ±1 day (Mercury), ±1.5 days (Venus) or ±2 days (other bodies). It then fits a quartic and
 records the vertex. The script recentres the window until the vertex lies within a quarter of the
 half-width. Short windows keep the monthly lunar reflex in geocentric longitude (≈0.16″ for
-Pluto) from biasing slow-planet stations by tens of minutes.
+Pluto) from biasing slow-planet stations by tens of minutes. `derive-frames.py` then adds
+`jdMean`/`longitudeMean`: the same quartic refitted on the same cached window minus ERFA
+`nut00a` (up to 2.7 h from `jd`).
+
+`consumer-stations-2026-2027.json`: 17 Mercury–Saturn stations from Cosmolytic Studio's own
+Horizons fit (quantity 31, 10-minute UT samples, cubic fit; UT rounded to the minute), kept
+verbatim apart from English body names and types. It is independent of our fetch scripts.
 
 ## Frames
 
@@ -76,7 +82,8 @@ the **true** equinox of date. Every reference is compared with the library in it
 | Season, mean | `jdMean` | default Sun ingress at 0/90/180/270° |
 | Aspect to a fixed longitude, mean | `jdMean` | `findAspectTimes(body, fixed, …)` |
 | Aspect to a fixed longitude, true | `jd` | `findAspectTimes(body, fixed, a, b, { includeNutation: true })` |
-| Station, true | `jd` (`horizons-stations.json`) | `findStations(body, a, b, { includeNutation: true })` |
+| Station, true | `jd` (`horizons-stations.json`) | `findStations(body, a, b, { includeNutation: true })`, `findRetrogradePeriods(…, { includeNutation: true })` |
+| Station, mean | `jdMean` (`horizons-stations.json`) | `findStations(body, a, b)`, `findRetrogradePeriods(body, a, b)` |
 | Phase, aspect between bodies | `jd` (frame cancels) | `findLunarPhases`, `findAspectTimes` |
 
 Horizons quantity 31 (ObsEcLon) is the true ecliptic and equinox of date and has no

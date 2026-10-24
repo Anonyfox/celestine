@@ -941,21 +941,30 @@ about a fifth of the shortest gap between stations, and each sign change is solv
 1e-7 day by regula falsi alternating with bisection. For Mercury through Pluto the two functions
 return identical instants and longitudes in the default frame.
 
-Measured against JPL Horizons (apparent geocentric longitude, true ecliptic/equinox of date,
-TT). Reference instants come from quartic fits to 17 Horizons samples within ±1–2 days of each
-station, with fit residuals ≤0.003″. There are 16 stations per body spread over 1900–2100, plus all 48 Mercury
-stations in 2026–2030. Station types match one-to-one.
+Measured against JPL Horizons (apparent geocentric longitude, TT), each frame like for like.
+Reference instants come from quartic fits to 17 Horizons samples (true ecliptic/equinox of date)
+within ±1–2 days of each station, with fit residuals ≤0.003″; the mean-equinox reference
+(`jdMean`) refits the same samples minus IAU 2000A nutation (ERFA, independent of the library;
+it moves stations by up to 2.7 h). There are 16 stations per body spread over 1900–2100, plus
+all 48 Mercury stations in 2026–2030. Station types match one-to-one. `findRetrogradePeriods`
+(and `findNextStation`, `getCurrentRetrogradePeriod`) return the same instants in either frame.
 
-| Body | Stations | Max Δt (`includeNutation: true`) | RMS Δt | Max Δλ | Max Δt (default mean frame) |
-|---|---:|---:|---:|---:|---:|
-| Mercury | 48 | 0.7 min | 0.3 min | 0.8″ | 1.3 min |
-| Venus | 16 | 0.4 min | 0.2 min | 1.2″ | 1.1 min |
-| Mars | 16 | 2.5 min | 1.1 min | 2.0″ | 4.3 min |
-| Jupiter | 16 | 6.4 min | 3.5 min | 1.3″ | 14 min |
-| Saturn | 16 | 17 min | 7.7 min | 1.3″ | 39 min |
-| Uranus | 16 | 24 min | 11 min | 2.1″ | 85 min |
-| Neptune | 16 | 37 min | 18 min | 2.8″ | 96 min |
-| Pluto | 16 | 76 min | 49 min | 3.5″ | 3.7 h |
+| Body | Stations | Max Δt (`includeNutation: true` vs `jd`) | RMS Δt | Max Δλ | Max Δt (default vs `jdMean`) | RMS Δt |
+|---|---:|---:|---:|---:|---:|---:|
+| Mercury | 48 | 0.9 min | 0.3 min | 1.0″ | 0.8 min | 0.3 min |
+| Venus | 16 | 0.3 min | 0.2 min | 1.3″ | 0.4 min | 0.2 min |
+| Mars | 16 | 2.1 min | 0.8 min | 1.9″ | 1.9 min | 0.7 min |
+| Jupiter | 16 | 5.6 min | 2.6 min | 1.2″ | 4.8 min | 2.5 min |
+| Saturn | 16 | 6.7 min | 3.3 min | 1.3″ | 4.6 min | 3.0 min |
+| Uranus | 16 | 4.8 min | 2.3 min | 2.0″ | 1.8 min | 0.8 min |
+| Neptune | 16 | 8.1 min | 4.2 min | 2.7″ | 4.3 min | 2.1 min |
+| Pluto | 16 | 66 min | 41 min | 3.4″ | 63 min | 38 min |
+
+A consumer reference of 17 Horizons stations in 2026–2027 (Mercury–Saturn, true of date, UT
+to the minute) is matched within 0.9 min (Mercury, Venus, Mars), 2.5 min (Jupiter) and
+4.3 min (Saturn) with `includeNutation: true`. Symmetric differences of mean-equinox
+longitudes, the consumer's own method, give 12 and 33 min for Jupiter and Saturn: the frame,
+not the solver, dominates for slow planets.
 
 Chiron is not supported. Events use the root Keplerian Chiron, whose stations are off by up to
 5 days. Reproduce the reference with `npm run build && node scripts/events/fetch-stations.mjs`.

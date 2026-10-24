@@ -4,1119 +4,1439 @@
     "type": "retrograde",
     "jd": 2415094.0568979,
     "longitude": 9.166093,
-    "fitResidualArcsec": 0.00043
+    "fitResidualArcsec": 0.00043,
+    "jdMean": 2415094.0571869,
+    "longitudeMean": 9.1613106
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2419970.127545,
     "longitude": 138.2565242,
-    "fitResidualArcsec": 0.00036
+    "fitResidualArcsec": 0.00036,
+    "jdMean": 2419970.1277132,
+    "longitudeMean": 138.2559497
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2424835.1381058,
     "longitude": 251.3985828,
-    "fitResidualArcsec": 0.0018
+    "fitResidualArcsec": 0.0018,
+    "jdMean": 2424835.1382742,
+    "longitudeMean": 251.4036874
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2429694.730572,
     "longitude": 0.2508685,
-    "fitResidualArcsec": 0.00048
+    "fitResidualArcsec": 0.00048,
+    "jdMean": 2429694.7307003,
+    "longitudeMean": 0.248749
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2434570.226077,
     "longitude": 128.3753182,
-    "fitResidualArcsec": 0.00034
+    "fitResidualArcsec": 0.00034,
+    "jdMean": 2434570.2257756,
+    "longitudeMean": 128.371123
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2439436.2470483,
     "longitude": 243.2461192,
-    "fitResidualArcsec": 0.00149
+    "fitResidualArcsec": 0.00149,
+    "jdMean": 2439436.2470609,
+    "longitudeMean": 243.2498566
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2444295.5649591,
     "longitude": 351.5053235,
-    "fitResidualArcsec": 0.00067
+    "fitResidualArcsec": 0.00067,
+    "jdMean": 2444295.564913,
+    "longitudeMean": 351.5075039
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2449170.1455571,
     "longitude": 118.2573063,
-    "fitResidualArcsec": 0.00035
+    "fitResidualArcsec": 0.00035,
+    "jdMean": 2449170.1450817,
+    "longitudeMean": 118.2526564
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2453945.5281733,
     "longitude": 111.0630081,
-    "fitResidualArcsec": 0.00031
+    "fitResidualArcsec": 0.00031,
+    "jdMean": 2453945.5279327,
+    "longitudeMean": 111.0624946
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2458808.3005813,
     "longitude": 221.5864632,
-    "fitResidualArcsec": 0.00277
+    "fitResidualArcsec": 0.00277,
+    "jdMean": 2458808.3005133,
+    "longitudeMean": 221.5915025
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2461097.7842445,
     "longitude": 352.5653127,
-    "fitResidualArcsec": 0.00069
+    "fitResidualArcsec": 0.00069,
+    "jdMean": 2461097.7840205,
+    "longitudeMean": 352.5633454
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2461120.3152758,
     "longitude": 338.4907444,
-    "fitResidualArcsec": 0.00051
+    "fitResidualArcsec": 0.00051,
+    "jdMean": 2461120.3149781,
+    "longitudeMean": 338.489022
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2461221.234074,
     "longitude": 116.2573462,
-    "fitResidualArcsec": 0.00024
+    "fitResidualArcsec": 0.00024,
+    "jdMean": 2461221.2335887,
+    "longitudeMean": 116.2550834
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2461245.4576477,
     "longitude": 106.3165232,
-    "fitResidualArcsec": 0.00024
+    "fitResidualArcsec": 0.00024,
+    "jdMean": 2461245.4578524,
+    "longitudeMean": 106.3140227
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2461337.8012798,
     "longitude": 230.9789755,
-    "fitResidualArcsec": 0.00125
+    "fitResidualArcsec": 0.00125,
+    "jdMean": 2461337.8015405,
+    "longitudeMean": 230.9767972
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2461358.1632304,
     "longitude": 215.0334765,
-    "fitResidualArcsec": 0.00273
+    "fitResidualArcsec": 0.00273,
+    "jdMean": 2461358.1633803,
+    "longitudeMean": 215.0311872
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2461446.234184,
     "longitude": 335.9812452,
-    "fitResidualArcsec": 0.00142
+    "fitResidualArcsec": 0.00142,
+    "jdMean": 2461446.2343594,
+    "longitudeMean": 335.9779019
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2461468.0230449,
     "longitude": 320.9231411,
-    "fitResidualArcsec": 0.00069
+    "fitResidualArcsec": 0.00069,
+    "jdMean": 2461468.0231322,
+    "longitudeMean": 320.9198002
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2461567.2613763,
     "longitude": 96.3611373,
-    "fitResidualArcsec": 0.00028
+    "fitResidualArcsec": 0.00028,
+    "jdMean": 2461567.261564,
+    "longitudeMean": 96.3578294
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2461591.3198131,
     "longitude": 87.4691955,
-    "fitResidualArcsec": 0.00028
+    "fitResidualArcsec": 0.00028,
+    "jdMean": 2461591.3203833,
+    "longitudeMean": 87.4655513
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2461686.1098635,
     "longitude": 214.9277901,
-    "fitResidualArcsec": 0.00084
+    "fitResidualArcsec": 0.00084,
+    "jdMean": 2461686.109775,
+    "longitudeMean": 214.9242438
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2461707.0915306,
     "longitude": 199.3120557,
-    "fitResidualArcsec": 0.00218
+    "fitResidualArcsec": 0.00218,
+    "jdMean": 2461707.0914173,
+    "longitudeMean": 199.3087144
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2461794.960808,
     "longitude": 319.6984364,
-    "fitResidualArcsec": 0.00212
+    "fitResidualArcsec": 0.00212,
+    "jdMean": 2461794.9606513,
+    "longitudeMean": 319.6940446
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2461816.0270551,
     "longitude": 303.9853979,
-    "fitResidualArcsec": 0.00092
+    "fitResidualArcsec": 0.00092,
+    "jdMean": 2461816.0268626,
+    "longitudeMean": 303.9810121
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2461912.8639869,
     "longitude": 76.3145797,
-    "fitResidualArcsec": 0.00027
+    "fitResidualArcsec": 0.00027,
+    "jdMean": 2461912.8641194,
+    "longitudeMean": 76.3106789
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2461936.7549571,
     "longitude": 67.7568114,
-    "fitResidualArcsec": 0.00019
+    "fitResidualArcsec": 0.00019,
+    "jdMean": 2461936.7547423,
+    "longitudeMean": 67.7525572
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2462034.1909394,
     "longitude": 198.5940748,
-    "fitResidualArcsec": 0.00065
+    "fitResidualArcsec": 0.00065,
+    "jdMean": 2462034.1912982,
+    "longitudeMean": 198.5896413
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2462055.9365842,
     "longitude": 183.4805528,
-    "fitResidualArcsec": 0.00147
+    "fitResidualArcsec": 0.00147,
+    "jdMean": 2462055.9366749,
+    "longitudeMean": 183.4762868
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2462143.8317151,
     "longitude": 303.6339345,
-    "fitResidualArcsec": 0.00271
+    "fitResidualArcsec": 0.00271,
+    "jdMean": 2462143.8317774,
+    "longitudeMean": 303.6291426
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2462164.2787257,
     "longitude": 287.5412854,
-    "fitResidualArcsec": 0.00119
+    "fitResidualArcsec": 0.00119,
+    "jdMean": 2462164.2790064,
+    "longitudeMean": 287.5362612
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2462258.4629459,
     "longitude": 56.6722785,
-    "fitResidualArcsec": 0.00025
+    "fitResidualArcsec": 0.00025,
+    "jdMean": 2462258.4625555,
+    "longitudeMean": 56.6678469
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2462282.3068993,
     "longitude": 47.5609077,
-    "fitResidualArcsec": 0.00033
+    "fitResidualArcsec": 0.00033,
+    "jdMean": 2462282.3070251,
+    "longitudeMean": 47.556494
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2462382.0133335,
     "longitude": 181.8308851,
-    "fitResidualArcsec": 0.00052
+    "fitResidualArcsec": 0.00052,
+    "jdMean": 2462382.0131683,
+    "longitudeMean": 181.8259322
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2462404.5853896,
     "longitude": 167.4471657,
-    "fitResidualArcsec": 0.00079
+    "fitResidualArcsec": 0.00079,
+    "jdMean": 2462404.5852295,
+    "longitudeMean": 167.4425124
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2462492.744249,
     "longitude": 287.7077944,
-    "fitResidualArcsec": 0.00272
+    "fitResidualArcsec": 0.00272,
+    "jdMean": 2462492.744072,
+    "longitudeMean": 287.702993
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2462512.7407371,
     "longitude": 271.4371207,
-    "fitResidualArcsec": 0.00153
+    "fitResidualArcsec": 0.00153,
+    "jdMean": 2462512.7406565,
+    "longitudeMean": 271.4321274
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2462604.6073405,
     "longitude": 37.7992619,
-    "fitResidualArcsec": 0.00028
+    "fitResidualArcsec": 0.00028,
+    "jdMean": 2462604.6074919,
+    "longitudeMean": 37.7947248
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2462628.3444384,
     "longitude": 27.4364372,
-    "fitResidualArcsec": 0.00035
+    "fitResidualArcsec": 0.00035,
+    "jdMean": 2462628.3446852,
+    "longitudeMean": 27.4320617
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2462729.5564853,
     "longitude": 164.4956614,
-    "fitResidualArcsec": 0.00045
+    "fitResidualArcsec": 0.00045,
+    "jdMean": 2462729.5568574,
+    "longitudeMean": 164.4907284
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2462752.8949729,
     "longitude": 151.1077913,
-    "fitResidualArcsec": 0.00034
+    "fitResidualArcsec": 0.00034,
+    "jdMean": 2462752.8949667,
+    "longitudeMean": 151.1030168
   },
   {
     "body": "Mercury",
     "type": "retrograde",
     "jd": 2462841.6170383,
     "longitude": 271.8644779,
-    "fitResidualArcsec": 0.00246
+    "fitResidualArcsec": 0.00246,
+    "jdMean": 2462841.6170349,
+    "longitudeMean": 271.860301
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2462861.3858091,
     "longitude": 255.5573444,
-    "fitResidualArcsec": 0.00208
+    "fitResidualArcsec": 0.00208,
+    "jdMean": 2462861.386057,
+    "longitudeMean": 255.5528358
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2463669.6239715,
     "longitude": 331.0338515,
-    "fitResidualArcsec": 0.0006
+    "fitResidualArcsec": 0.0006,
+    "jdMean": 2463669.6237227,
+    "longitudeMean": 331.0317486
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2468545.3278483,
     "longitude": 101.5083096,
-    "fitResidualArcsec": 0.00036
+    "fitResidualArcsec": 0.00036,
+    "jdMean": 2468545.3279893,
+    "longitudeMean": 101.5040858
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2473409.5901105,
     "longitude": 213.5281718,
-    "fitResidualArcsec": 0.00273
+    "fitResidualArcsec": 0.00273,
+    "jdMean": 2473409.5902057,
+    "longitudeMean": 213.5319671
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2478270.2515782,
     "longitude": 321.9848675,
-    "fitResidualArcsec": 0.00068
+    "fitResidualArcsec": 0.00068,
+    "jdMean": 2478270.2516159,
+    "longitudeMean": 321.9870463
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2483144.8770207,
     "longitude": 91.6615739,
-    "fitResidualArcsec": 0.00034
+    "fitResidualArcsec": 0.00034,
+    "jdMean": 2483144.877472,
+    "longitudeMean": 91.656813
   },
   {
     "body": "Mercury",
     "type": "direct",
     "jd": 2488010.8740895,
     "longitude": 205.4503132,
-    "fitResidualArcsec": 0.00235
+    "fitResidualArcsec": 0.00235,
+    "jdMean": 2488010.8742661,
+    "longitudeMean": 205.450221
   },
   {
     "body": "Venus",
     "type": "retrograde",
     "jd": 2415187.4305029,
     "longitude": 114.0008497,
-    "fitResidualArcsec": 0.00029
+    "fitResidualArcsec": 0.00029,
+    "jdMean": 2415187.4302951,
+    "longitudeMean": 113.9963134
   },
   {
     "body": "Venus",
     "type": "direct",
     "jd": 2419903.9012846,
     "longitude": 26.0787501,
-    "fitResidualArcsec": 0.00026
+    "fitResidualArcsec": 0.00026,
+    "jdMean": 2419903.9006084,
+    "longitudeMean": 26.0791074
   },
   {
     "body": "Venus",
     "type": "direct",
     "jd": 2424574.6995619,
     "longitude": 310.3335796,
-    "fitResidualArcsec": 0.00043
+    "fitResidualArcsec": 0.00043,
+    "jdMean": 2424574.698756,
+    "longitudeMean": 310.3376964
   },
   {
     "body": "Venus",
     "type": "retrograde",
     "jd": 2429785.920315,
     "longitude": 103.3044061,
-    "fitResidualArcsec": 0.00033
+    "fitResidualArcsec": 0.00033,
+    "jdMean": 2429785.9197504,
+    "longitudeMean": 103.3031708
   },
   {
     "body": "Venus",
     "type": "retrograde",
     "jd": 2434459.6619024,
     "longitude": 31.3431905,
-    "fitResidualArcsec": 0.00036
+    "fitResidualArcsec": 0.00036,
+    "jdMean": 2434459.6615627,
+    "longitudeMean": 31.3395019
   },
   {
     "body": "Venus",
     "type": "direct",
     "jd": 2439172.278731,
     "longitude": 298.2379211,
-    "fitResidualArcsec": 0.00038
+    "fitResidualArcsec": 0.00038,
+    "jdMean": 2439172.2792761,
+    "longitudeMean": 298.2416285
   },
   {
     "body": "Venus",
     "type": "retrograde",
     "jd": 2444384.3408067,
     "longitude": 92.5857681,
-    "fitResidualArcsec": 0.00042
+    "fitResidualArcsec": 0.00042,
+    "jdMean": 2444384.3413568,
+    "longitudeMean": 92.5888831
   },
   {
     "body": "Venus",
     "type": "retrograde",
     "jd": 2449057.8951918,
     "longitude": 20.0230097,
-    "fitResidualArcsec": 0.00037
+    "fitResidualArcsec": 0.00037,
+    "jdMean": 2449057.8956085,
+    "longitudeMean": 20.0182171
   },
   {
     "body": "Venus",
     "type": "direct",
     "jd": 2453769.8887473,
     "longitude": 286.0219115,
-    "fitResidualArcsec": 0.0004
+    "fitResidualArcsec": 0.0004,
+    "jdMean": 2453769.8882481,
+    "longitudeMean": 286.0221326
   },
   {
     "body": "Venus",
     "type": "direct",
     "jd": 2458438.9529271,
     "longitude": 205.2423205,
-    "fitResidualArcsec": 0.00035
+    "fitResidualArcsec": 0.00035,
+    "jdMean": 2458438.952642,
+    "longitudeMean": 205.246854
   },
   {
     "body": "Venus",
     "type": "retrograde",
     "jd": 2463656.1542208,
     "longitude": 8.5311508,
-    "fitResidualArcsec": 0.00043
+    "fitResidualArcsec": 0.00043,
+    "jdMean": 2463656.1545084,
+    "longitudeMean": 8.5288547
   },
   {
     "body": "Venus",
     "type": "direct",
     "jd": 2468367.4574015,
     "longitude": 273.6715544,
-    "fitResidualArcsec": 0.00035
+    "fitResidualArcsec": 0.00035,
+    "jdMean": 2468367.4583578,
+    "longitudeMean": 273.6677894
   },
   {
     "body": "Venus",
     "type": "direct",
     "jd": 2473036.9057053,
     "longitude": 193.3354779,
-    "fitResidualArcsec": 0.00045
+    "fitResidualArcsec": 0.00045,
+    "jdMean": 2473036.9063864,
+    "longitudeMean": 193.3402403
   },
   {
     "body": "Venus",
     "type": "retrograde",
     "jd": 2478254.2667892,
     "longitude": 356.8511892,
-    "fitResidualArcsec": 0.0004
+    "fitResidualArcsec": 0.0004,
+    "jdMean": 2478254.266772,
+    "longitudeMean": 356.8532786
   },
   {
     "body": "Venus",
     "type": "retrograde",
     "jd": 2482924.0741597,
     "longitude": 276.5905033,
-    "fitResidualArcsec": 0.00041
+    "fitResidualArcsec": 0.00041,
+    "jdMean": 2482924.0737209,
+    "longitudeMean": 276.5860728
   },
   {
     "body": "Venus",
     "type": "direct",
     "jd": 2487634.9350766,
     "longitude": 181.6423729,
-    "fitResidualArcsec": 0.00044
+    "fitResidualArcsec": 0.00044,
+    "jdMean": 2487634.9343207,
+    "longitudeMean": 181.643889
   },
   {
     "body": "Mars",
     "type": "retrograde",
     "jd": 2415397.7942546,
     "longitude": 162.5472378,
-    "fitResidualArcsec": 0.00022
+    "fitResidualArcsec": 0.00022,
+    "jdMean": 2415397.7947315,
+    "longitudeMean": 162.5428689
   },
   {
     "body": "Mars",
     "type": "retrograde",
     "jd": 2420098.3826816,
     "longitude": 114.5645852,
-    "fitResidualArcsec": 0.00021
+    "fitResidualArcsec": 0.00021,
+    "jdMean": 2420098.3810478,
+    "longitudeMean": 114.5641765
   },
   {
     "body": "Mars",
     "type": "direct",
     "jd": 2424856.6010453,
     "longitude": 34.5232864,
-    "fitResidualArcsec": 0.00025
+    "fitResidualArcsec": 0.00025,
+    "jdMean": 2424856.6042984,
+    "longitudeMean": 34.5282471
   },
   {
     "body": "Mars",
     "type": "direct",
     "jd": 2429499.4990904,
     "longitude": 293.9183163,
-    "fitResidualArcsec": 0.00034
+    "fitResidualArcsec": 0.00034,
+    "jdMean": 2429499.4998379,
+    "longitudeMean": 293.9154051
   },
   {
     "body": "Mars",
     "type": "retrograde",
     "jd": 2434886.0329928,
     "longitude": 278.5319539,
-    "fitResidualArcsec": 0.00027
+    "fitResidualArcsec": 0.00027,
+    "jdMean": 2434886.0320408,
+    "longitudeMean": 278.52765
   },
   {
     "body": "Mars",
     "type": "retrograde",
     "jd": 2439558.2394271,
     "longitude": 213.1950971,
-    "fitResidualArcsec": 0.00012
+    "fitResidualArcsec": 0.00012,
+    "jdMean": 2439558.2406246,
+    "longitudeMean": 213.1978211
   },
   {
     "body": "Mars",
     "type": "direct",
     "jd": 2444335.8524829,
     "longitude": 145.8706647,
-    "fitResidualArcsec": 0.00013
+    "fitResidualArcsec": 0.00013,
+    "jdMean": 2444335.85296,
+    "longitudeMean": 145.8735369
   },
   {
     "body": "Mars",
     "type": "direct",
     "jd": 2449033.8223046,
     "longitude": 98.675402,
-    "fitResidualArcsec": 0.00017
+    "fitResidualArcsec": 0.00017,
+    "jdMean": 2449033.8239533,
+    "longitudeMean": 98.670327
   },
   {
     "body": "Mars",
     "type": "retrograde",
     "jd": 2454419.8511034,
     "longitude": 102.4508726,
-    "fitResidualArcsec": 0.00027
+    "fitResidualArcsec": 0.00027,
+    "jdMean": 2454419.849248,
+    "longitudeMean": 102.449091
   },
   {
     "body": "Mars",
     "type": "retrograde",
     "jd": 2459102.4329939,
     "longitude": 28.1416695,
-    "fitResidualArcsec": 0.00029
+    "fitResidualArcsec": 0.00029,
+    "jdMean": 2459102.4326219,
+    "longitudeMean": 28.1463769
   },
   {
     "body": "Mars",
     "type": "direct",
     "jd": 2463811.1011889,
     "longitude": 269.791726,
-    "fitResidualArcsec": 0.00023
+    "fitResidualArcsec": 0.00023,
+    "jdMean": 2463811.0996897,
+    "longitudeMean": 269.7901206
   },
   {
     "body": "Mars",
     "type": "direct",
     "jd": 2468494.1477274,
     "longitude": 198.104368,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2468494.1461752,
+    "longitudeMean": 198.1008378
   },
   {
     "body": "Mars",
     "type": "retrograde",
     "jd": 2473878.4485481,
     "longitude": 202.0703959,
-    "fitResidualArcsec": 0.00038
+    "fitResidualArcsec": 0.00038,
+    "jdMean": 2473878.4515035,
+    "longitudeMean": 202.0718939
   },
   {
     "body": "Mars",
     "type": "retrograde",
     "jd": 2478577.3772714,
     "longitude": 155.4684363,
-    "fitResidualArcsec": 0.00012
+    "fitResidualArcsec": 0.00012,
+    "jdMean": 2478577.3785456,
+    "longitudeMean": 155.4717724
   },
   {
     "body": "Mars",
     "type": "direct",
     "jd": 2483353.8754329,
     "longitude": 87.1833837,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2483353.8763195,
+    "longitudeMean": 87.1787283
   },
   {
     "body": "Mars",
     "type": "direct",
     "jd": 2488025.9907805,
     "longitude": 19.3403327,
-    "fitResidualArcsec": 0.00034
+    "fitResidualArcsec": 0.00034,
+    "jdMean": 2488025.9914903,
+    "longitudeMean": 19.340057
   },
   {
     "body": "Jupiter",
     "type": "retrograde",
     "jd": 2415106.3854879,
     "longitude": 250.8692562,
-    "fitResidualArcsec": 0.00596
+    "fitResidualArcsec": 0.00596,
+    "jdMean": 2415106.3934397,
+    "longitudeMean": 250.8646122
   },
   {
     "body": "Jupiter",
     "type": "retrograde",
     "jd": 2419893.2916272,
     "longitude": 287.8393768,
-    "fitResidualArcsec": 0.0055
+    "fitResidualArcsec": 0.0055,
+    "jdMean": 2419893.293549,
+    "longitudeMean": 287.8398769
   },
   {
     "body": "Jupiter",
     "type": "direct",
     "jd": 2424802.7032748,
     "longitude": 317.31355,
-    "fitResidualArcsec": 0.00687
+    "fitResidualArcsec": 0.00687,
+    "jdMean": 2424802.7091916,
+    "longitudeMean": 317.3185369
   },
   {
     "body": "Jupiter",
     "type": "direct",
     "jd": 2429592.3875171,
     "longitude": 358.8710118,
-    "fitResidualArcsec": 0.00606
+    "fitResidualArcsec": 0.00606,
+    "jdMean": 2429592.3871653,
+    "longitudeMean": 358.8691608
   },
   {
     "body": "Jupiter",
     "type": "direct",
     "jd": 2434382.8270837,
     "longitude": 40.9760756,
-    "fitResidualArcsec": 0.00661
+    "fitResidualArcsec": 0.00661,
+    "jdMean": 2434382.8233336,
+    "longitudeMean": 40.9724773
   },
   {
     "body": "Jupiter",
     "type": "retrograde",
     "jd": 2439450.9315476,
     "longitude": 124.4823977,
-    "fitResidualArcsec": 0.00695
+    "fitResidualArcsec": 0.00695,
+    "jdMean": 2439450.9367201,
+    "longitudeMean": 124.4860517
   },
   {
     "body": "Jupiter",
     "type": "retrograde",
     "jd": 2444234.1261216,
     "longitude": 160.2446676,
-    "fitResidualArcsec": 0.00526
+    "fitResidualArcsec": 0.00526,
+    "jdMean": 2444234.130654,
+    "longitudeMean": 160.2469002
   },
   {
     "body": "Jupiter",
     "type": "retrograde",
     "jd": 2449016.4649866,
     "longitude": 194.6958097,
-    "fitResidualArcsec": 0.00501
+    "fitResidualArcsec": 0.00501,
+    "jdMean": 2449016.4710735,
+    "longitudeMean": 194.6907705
   },
   {
     "body": "Jupiter",
     "type": "direct",
     "jd": 2453922.8047128,
     "longitude": 218.9785013,
-    "fitResidualArcsec": 0.0071
+    "fitResidualArcsec": 0.0071,
+    "jdMean": 2453922.8081311,
+    "longitudeMean": 218.978356
   },
   {
     "body": "Jupiter",
     "type": "direct",
     "jd": 2458707.0695324,
     "longitude": 254.5050066,
-    "fitResidualArcsec": 0.00613
+    "fitResidualArcsec": 0.00613,
+    "jdMean": 2458707.0761854,
+    "longitudeMean": 254.509292
   },
   {
     "body": "Jupiter",
     "type": "direct",
     "jd": 2463493.3285102,
     "longitude": 292.3102322,
-    "fitResidualArcsec": 0.00643
+    "fitResidualArcsec": 0.00643,
+    "jdMean": 2463493.3185888,
+    "longitudeMean": 292.3075647
   },
   {
     "body": "Jupiter",
     "type": "retrograde",
     "jd": 2468565.6784355,
     "longitude": 19.0020381,
-    "fitResidualArcsec": 0.0057
+    "fitResidualArcsec": 0.0057,
+    "jdMean": 2468565.6796381,
+    "longitudeMean": 18.9978364
   },
   {
     "body": "Jupiter",
     "type": "retrograde",
     "jd": 2473356.0624344,
     "longitude": 60.8465378,
-    "fitResidualArcsec": 0.00732
+    "fitResidualArcsec": 0.00732,
+    "jdMean": 2473356.0666109,
+    "longitudeMean": 60.8500905
   },
   {
     "body": "Jupiter",
     "type": "retrograde",
     "jd": 2478143.6486282,
     "longitude": 100.8678903,
-    "fitResidualArcsec": 0.00697
+    "fitResidualArcsec": 0.00697,
+    "jdMean": 2478143.6513949,
+    "longitudeMean": 100.870293
   },
   {
     "body": "Jupiter",
     "type": "direct",
     "jd": 2483048.6849662,
     "longitude": 128.0256784,
-    "fitResidualArcsec": 0.00563
+    "fitResidualArcsec": 0.00563,
+    "jdMean": 2483048.6850292,
+    "longitudeMean": 128.0211833
   },
   {
     "body": "Jupiter",
     "type": "direct",
     "jd": 2487833.1021072,
     "longitude": 163.2704804,
-    "fitResidualArcsec": 0.00528
+    "fitResidualArcsec": 0.00528,
+    "jdMean": 2487833.1112931,
+    "longitudeMean": 163.2710171
   },
   {
     "body": "Saturn",
     "type": "retrograde",
     "jd": 2415123.7934599,
     "longitude": 275.0373923,
-    "fitResidualArcsec": 0.00019
+    "fitResidualArcsec": 0.00019,
+    "jdMean": 2415123.8130347,
+    "longitudeMean": 275.0330474
   },
   {
     "body": "Saturn",
     "type": "retrograde",
     "jd": 2420041.411996,
     "longitude": 78.1735779,
-    "fitResidualArcsec": 0.00036
+    "fitResidualArcsec": 0.00036,
+    "jdMean": 2420041.4308819,
+    "longitudeMean": 78.173203
   },
   {
     "body": "Saturn",
     "type": "direct",
     "jd": 2424720.898589,
     "longitude": 229.4136896,
-    "fitResidualArcsec": 0.00036
+    "fitResidualArcsec": 0.00036,
+    "jdMean": 2424720.9224778,
+    "longitudeMean": 229.4179976
   },
   {
     "body": "Saturn",
     "type": "direct",
     "jd": 2429625.5483568,
     "longitude": 24.4157042,
-    "fitResidualArcsec": 0.00021
+    "fitResidualArcsec": 0.00021,
+    "jdMean": 2429625.5636931,
+    "longitudeMean": 24.4134748
   },
   {
     "body": "Saturn",
     "type": "direct",
     "jd": 2434552.2281437,
     "longitude": 200.5515296,
-    "fitResidualArcsec": 0.0002
+    "fitResidualArcsec": 0.0002,
+    "jdMean": 2434552.2404681,
+    "longitudeMean": 200.5477197
   },
   {
     "body": "Saturn",
     "type": "retrograde",
     "jd": 2439318.0461162,
     "longitude": 359.687935,
-    "fitResidualArcsec": 0.00018
+    "fitResidualArcsec": 0.00018,
+    "jdMean": 2439318.0534308,
+    "longitudeMean": 359.6915251
   },
   {
     "body": "Saturn",
     "type": "retrograde",
     "jd": 2444245.4444006,
     "longitude": 177.0194362,
-    "fitResidualArcsec": 0.00017
+    "fitResidualArcsec": 0.00017,
+    "jdMean": 2444245.4490383,
+    "longitudeMean": 177.0215169
   },
   {
     "body": "Saturn",
     "type": "retrograde",
     "jd": 2449148.7271651,
     "longitude": 330.3277564,
-    "fitResidualArcsec": 0.00014
+    "fitResidualArcsec": 0.00014,
+    "jdMean": 2449148.7321678,
+    "longitudeMean": 330.3232392
   },
   {
     "body": "Saturn",
     "type": "direct",
     "jd": 2453831.0364338,
     "longitude": 124.3753976,
-    "fitResidualArcsec": 0.00018
+    "fitResidualArcsec": 0.00018,
+    "jdMean": 2453831.0456636,
+    "longitudeMean": 124.3758073
   },
   {
     "body": "Saturn",
     "type": "direct",
     "jd": 2458744.8683994,
     "longitude": 283.9096569,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2458744.8537183,
+    "longitudeMean": 283.9143879
   },
   {
     "body": "Saturn",
     "type": "direct",
     "jd": 2463658.1700609,
     "longitude": 90.2110663,
-    "fitResidualArcsec": 0.00033
+    "fitResidualArcsec": 0.00033,
+    "jdMean": 2463658.1506933,
+    "longitudeMean": 90.2088216
   },
   {
     "body": "Saturn",
     "type": "retrograde",
     "jd": 2468437.113413,
     "longitude": 263.2302577,
-    "fitResidualArcsec": 0.00026
+    "fitResidualArcsec": 0.00026,
+    "jdMean": 2468437.125205,
+    "longitudeMean": 263.2267032
   },
   {
     "body": "Saturn",
     "type": "retrograde",
     "jd": 2473351.7701199,
     "longitude": 63.4216031,
-    "fitResidualArcsec": 0.00014
+    "fitResidualArcsec": 0.00014,
+    "jdMean": 2473351.757747,
+    "longitudeMean": 63.42522
   },
   {
     "body": "Saturn",
     "type": "retrograde",
     "jd": 2478270.6884546,
     "longitude": 235.4779849,
-    "fitResidualArcsec": 0.00023
+    "fitResidualArcsec": 0.00023,
+    "jdMean": 2478270.687849,
+    "longitudeMean": 235.4801625
   },
   {
     "body": "Saturn",
     "type": "direct",
     "jd": 2482937.0597293,
     "longitude": 10.1924951,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2482937.0593613,
+    "longitudeMean": 10.1879355
   },
   {
     "body": "Saturn",
     "type": "direct",
     "jd": 2487863.8384258,
     "longitude": 187.4749441,
-    "fitResidualArcsec": 0.0002
+    "fitResidualArcsec": 0.0002,
+    "jdMean": 2487863.8351531,
+    "longitudeMean": 187.475146
   },
   {
     "body": "Uranus",
     "type": "retrograde",
     "jd": 2415096.3105451,
     "longitude": 252.4823099,
-    "fitResidualArcsec": 0.00019
+    "fitResidualArcsec": 0.00019,
+    "jdMean": 2415096.3529724,
+    "longitudeMean": 252.4776199
   },
   {
     "body": "Uranus",
     "type": "retrograde",
     "jd": 2419900.1897693,
     "longitude": 307.5481925,
-    "fitResidualArcsec": 0.0002
+    "fitResidualArcsec": 0.0002,
+    "jdMean": 2419900.1708835,
+    "longitudeMean": 307.5485057
   },
   {
     "body": "Uranus",
     "type": "direct",
     "jd": 2424855.077684,
     "longitude": 355.521444,
-    "fitResidualArcsec": 0.0002
+    "fitResidualArcsec": 0.0002,
+    "jdMean": 2424855.1181282,
+    "longitudeMean": 355.5264658
   },
   {
     "body": "Uranus",
     "type": "direct",
     "jd": 2429655.3512829,
     "longitude": 47.9791737,
-    "fitResidualArcsec": 0.00028
+    "fitResidualArcsec": 0.00028,
+    "jdMean": 2429655.3362001,
+    "longitudeMean": 47.9767535
   },
   {
     "body": "Uranus",
     "type": "direct",
     "jd": 2434459.3904251,
     "longitude": 104.4340139,
-    "fitResidualArcsec": 0.00018
+    "fitResidualArcsec": 0.00018,
+    "jdMean": 2434459.4080507,
+    "longitudeMean": 104.4303292
   },
   {
     "body": "Uranus",
     "type": "retrograde",
     "jd": 2439489.8130946,
     "longitude": 174.4254376,
-    "fitResidualArcsec": 0.0002
+    "fitResidualArcsec": 0.0002,
+    "jdMean": 2439489.7834855,
+    "longitudeMean": 174.4284974
   },
   {
     "body": "Uranus",
     "type": "retrograde",
     "jd": 2444298.778067,
     "longitude": 235.5697854,
-    "fitResidualArcsec": 0.00023
+    "fitResidualArcsec": 0.00023,
+    "jdMean": 2444298.7998743,
+    "longitudeMean": 235.5719816
   },
   {
     "body": "Uranus",
     "type": "retrograde",
     "jd": 2449103.9196953,
     "longitude": 292.1915891,
-    "fitResidualArcsec": 0.00017
+    "fitResidualArcsec": 0.00017,
+    "jdMean": 2449103.893228,
+    "longitudeMean": 292.1872741
   },
   {
     "body": "Uranus",
     "type": "direct",
     "jd": 2454059.7566024,
     "longitude": 340.8090958,
-    "fitResidualArcsec": 0.00018
+    "fitResidualArcsec": 0.00018,
+    "jdMean": 2454059.7717455,
+    "longitudeMean": 340.8088758
   },
   {
     "body": "Uranus",
     "type": "direct",
     "jd": 2458859.576029,
     "longitude": 32.6498381,
-    "fitResidualArcsec": 0.0002
+    "fitResidualArcsec": 0.0002,
+    "jdMean": 2458859.6212595,
+    "longitudeMean": 32.6543127
   },
   {
     "body": "Uranus",
     "type": "direct",
     "jd": 2463662.1130424,
     "longitude": 87.5944756,
-    "fitResidualArcsec": 0.00029
+    "fitResidualArcsec": 0.00029,
+    "jdMean": 2463662.1014957,
+    "longitudeMean": 87.592351
   },
   {
     "body": "Uranus",
     "type": "retrograde",
     "jd": 2468691.1743406,
     "longitude": 156.4030318,
-    "fitResidualArcsec": 0.00018
+    "fitResidualArcsec": 0.00018,
+    "jdMean": 2468691.1429344,
+    "longitudeMean": 156.3990302
   },
   {
     "body": "Uranus",
     "type": "retrograde",
     "jd": 2473500.928123,
     "longitude": 218.2574538,
-    "fitResidualArcsec": 0.00026
+    "fitResidualArcsec": 0.00026,
+    "jdMean": 2473500.8929999,
+    "longitudeMean": 218.2602419
   },
   {
     "body": "Uranus",
     "type": "retrograde",
     "jd": 2478307.3325688,
     "longitude": 276.472038,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2478307.3542402,
+    "longitudeMean": 276.4748981
   },
   {
     "body": "Uranus",
     "type": "direct",
     "jd": 2483264.2876979,
     "longitude": 326.0705824,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2483264.2656278,
+    "longitudeMean": 326.0666414
   },
   {
     "body": "Uranus",
     "type": "direct",
     "jd": 2488064.1764755,
     "longitude": 17.7291658,
-    "fitResidualArcsec": 0.00019
+    "fitResidualArcsec": 0.00019,
+    "jdMean": 2488064.2342702,
+    "longitudeMean": 17.7284166
   },
   {
     "body": "Neptune",
     "type": "direct",
     "jd": 2415084.2047882,
     "longitude": 84.2102086,
-    "fitResidualArcsec": 0.00025
+    "fitResidualArcsec": 0.00025,
+    "jdMean": 2415084.1953663,
+    "longitudeMean": 84.2053646
   },
   {
     "body": "Neptune",
     "type": "direct",
     "jd": 2419861.7069067,
     "longitude": 113.2102858,
-    "fitResidualArcsec": 0.00018
+    "fitResidualArcsec": 0.00018,
+    "jdMean": 2419861.6415385,
+    "longitudeMean": 113.2106035
   },
   {
     "body": "Neptune",
     "type": "retrograde",
     "jd": 2424849.4584532,
     "longitude": 146.991952,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2424849.4928203,
+    "longitudeMean": 146.996986
   },
   {
     "body": "Neptune",
     "type": "retrograde",
     "jd": 2429626.0932229,
     "longitude": 175.5173311,
-    "fitResidualArcsec": 0.0002
+    "fitResidualArcsec": 0.0002,
+    "jdMean": 2429626.0561619,
+    "longitudeMean": 175.5150888
   },
   {
     "body": "Neptune",
     "type": "direct",
     "jd": 2434561.4256199,
     "longitude": 201.1081237,
-    "fitResidualArcsec": 0.00023
+    "fitResidualArcsec": 0.00023,
+    "jdMean": 2434561.3879293,
+    "longitudeMean": 201.1041037
   },
   {
     "body": "Neptune",
     "type": "direct",
     "jd": 2439338.687436,
     "longitude": 229.4057846,
-    "fitResidualArcsec": 0.00019
+    "fitResidualArcsec": 0.00019,
+    "jdMean": 2439338.7103418,
+    "longitudeMean": 229.4090638
   },
   {
     "body": "Neptune",
     "type": "retrograde",
     "jd": 2444323.2364474,
     "longitude": 262.6758542,
-    "fitResidualArcsec": 0.00022
+    "fitResidualArcsec": 0.00022,
+    "jdMean": 2444323.2325169,
+    "longitudeMean": 262.6784473
   },
   {
     "body": "Neptune",
     "type": "retrograde",
     "jd": 2449100.4381476,
     "longitude": 291.1525145,
-    "fitResidualArcsec": 0.00017
+    "fitResidualArcsec": 0.00017,
+    "jdMean": 2449100.4496716,
+    "longitudeMean": 291.1482384
   },
   {
     "body": "Neptune",
     "type": "direct",
     "jd": 2454037.8326011,
     "longitude": 317.0305895,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2454037.8693893,
+    "longitudeMean": 317.0303666
   },
   {
     "body": "Neptune",
     "type": "direct",
     "jd": 2458815.0244215,
     "longitude": 345.9261376,
-    "fitResidualArcsec": 0.00023
+    "fitResidualArcsec": 0.00023,
+    "jdMean": 2458815.0847497,
+    "longitudeMean": 345.9311977
   },
   {
     "body": "Neptune",
     "type": "retrograde",
     "jd": 2463801.9357471,
     "longitude": 20.1204515,
-    "fitResidualArcsec": 0.00022
+    "fitResidualArcsec": 0.00022,
+    "jdMean": 2463801.8883733,
+    "longitudeMean": 20.1187929
   },
   {
     "body": "Neptune",
     "type": "retrograde",
     "jd": 2468580.0591582,
     "longitude": 49.3692587,
-    "fitResidualArcsec": 0.00018
+    "fitResidualArcsec": 0.00018,
+    "jdMean": 2468580.0858819,
+    "longitudeMean": 49.3650989
   },
   {
     "body": "Neptune",
     "type": "direct",
     "jd": 2473514.4850052,
     "longitude": 75.7785981,
-    "fitResidualArcsec": 0.0002
+    "fitResidualArcsec": 0.0002,
+    "jdMean": 2473514.5100379,
+    "longitudeMean": 75.7814868
   },
   {
     "body": "Neptune",
     "type": "direct",
     "jd": 2478291.9702234,
     "longitude": 104.8677665,
-    "fitResidualArcsec": 0.00017
+    "fitResidualArcsec": 0.00017,
+    "jdMean": 2478291.9183366,
+    "longitudeMean": 104.8703709
   },
   {
     "body": "Neptune",
     "type": "retrograde",
     "jd": 2483280.115995,
     "longitude": 138.7381587,
-    "fitResidualArcsec": 0.00032
+    "fitResidualArcsec": 0.00032,
+    "jdMean": 2483280.0685223,
+    "longitudeMean": 138.7342024
   },
   {
     "body": "Neptune",
     "type": "retrograde",
     "jd": 2488056.6965086,
     "longitude": 167.3365439,
-    "fitResidualArcsec": 0.00016
+    "fitResidualArcsec": 0.00016,
+    "jdMean": 2488056.7222922,
+    "longitudeMean": 167.3358796
   },
   {
     "body": "Pluto",
     "type": "direct",
     "jd": 2415078.1012502,
     "longitude": 74.6956646,
-    "fitResidualArcsec": 0.00046
+    "fitResidualArcsec": 0.00046,
+    "jdMean": 2415078.0832919,
+    "longitudeMean": 74.6906528
   },
   {
     "body": "Pluto",
     "type": "direct",
     "jd": 2419839.3695125,
     "longitude": 88.0054923,
-    "fitResidualArcsec": 0.00058
+    "fitResidualArcsec": 0.00058,
+    "jdMean": 2419839.3454573,
+    "longitudeMean": 88.0057639
   },
   {
     "body": "Pluto",
     "type": "retrograde",
     "jd": 2424805.8756294,
     "longitude": 105.9437278,
-    "fitResidualArcsec": 0.00047
+    "fitResidualArcsec": 0.00047,
+    "jdMean": 2424805.9145779,
+    "longitudeMean": 105.9486973
   },
   {
     "body": "Pluto",
     "type": "retrograde",
     "jd": 2429571.8017224,
     "longitude": 122.914971,
-    "fitResidualArcsec": 0.00093
+    "fitResidualArcsec": 0.00093,
+    "jdMean": 2429571.7999128,
+    "longitudeMean": 122.9129925
   },
   {
     "body": "Pluto",
     "type": "direct",
     "jd": 2434500.303828,
     "longitude": 140.7974206,
-    "fitResidualArcsec": 0.00126
+    "fitResidualArcsec": 0.00126,
+    "jdMean": 2434500.3767547,
+    "longitudeMean": 140.7940332
   },
   {
     "body": "Pluto",
     "type": "direct",
     "jd": 2439272.9827907,
     "longitude": 165.8066465,
-    "fitResidualArcsec": 0.00057
+    "fitResidualArcsec": 0.00057,
+    "jdMean": 2439272.9654259,
+    "longitudeMean": 165.810685
   },
   {
     "body": "Pluto",
     "type": "retrograde",
     "jd": 2444263.1455291,
     "longitude": 201.775707,
-    "fitResidualArcsec": 0.00059
+    "fitResidualArcsec": 0.00059,
+    "jdMean": 2444263.160497,
+    "longitudeMean": 201.7777731
   },
   {
     "body": "Pluto",
     "type": "retrograde",
     "jd": 2449045.0856588,
     "longitude": 235.5227395,
-    "fitResidualArcsec": 0.00066
+    "fitResidualArcsec": 0.00066,
+    "jdMean": 2449045.1187152,
+    "longitudeMean": 235.5178283
   },
   {
     "body": "Pluto",
     "type": "direct",
     "jd": 2453983.4621895,
     "longitude": 264.0775761,
-    "fitResidualArcsec": 0.00064
+    "fitResidualArcsec": 0.00064,
+    "jdMean": 2453983.489849,
+    "longitudeMean": 264.077022
   },
   {
     "body": "Pluto",
     "type": "direct",
     "jd": 2458759.8028194,
     "longitude": 290.6336261,
-    "fitResidualArcsec": 0.00079
+    "fitResidualArcsec": 0.00079,
+    "jdMean": 2458759.8198593,
+    "longitudeMean": 290.6385088
   },
   {
     "body": "Pluto",
     "type": "retrograde",
     "jd": 2463735.0041976,
     "longitude": 316.7735628,
-    "fitResidualArcsec": 0.00079
+    "fitResidualArcsec": 0.00079,
+    "jdMean": 2463734.9493765,
+    "longitudeMean": 316.7722365
   },
   {
     "body": "Pluto",
     "type": "retrograde",
     "jd": 2468501.8521695,
     "longitude": 335.427668,
-    "fitResidualArcsec": 0.00094
+    "fitResidualArcsec": 0.00094,
+    "jdMean": 2468501.7395959,
+    "longitudeMean": 335.4240985
   },
   {
     "body": "Pluto",
     "type": "direct",
     "jd": 2473431.1545929,
     "longitude": 349.7143335,
-    "fitResidualArcsec": 0.00049
+    "fitResidualArcsec": 0.00049,
+    "jdMean": 2473431.1988984,
+    "longitudeMean": 349.7180426
   },
   {
     "body": "Pluto",
     "type": "direct",
     "jd": 2478194.6780154,
     "longitude": 4.6358307,
-    "fitResidualArcsec": 0.0008
+    "fitResidualArcsec": 0.0008,
+    "jdMean": 2478194.6408123,
+    "longitudeMean": 4.6380387
   },
   {
     "body": "Pluto",
     "type": "retrograde",
     "jd": 2483157.7375159,
     "longitude": 21.4663827,
-    "fitResidualArcsec": 0.00052
+    "fitResidualArcsec": 0.00052,
+    "jdMean": 2483157.6941002,
+    "longitudeMean": 21.4615986
   },
   {
     "body": "Pluto",
     "type": "retrograde",
     "jd": 2487918.9463508,
     "longitude": 34.3522731,
-    "fitResidualArcsec": 0.00047
+    "fitResidualArcsec": 0.00047,
+    "jdMean": 2487919.0030629,
+    "longitudeMean": 34.3517983
   }
 ]
