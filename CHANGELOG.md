@@ -6,6 +6,14 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+### Performance
+
+- `findPatterns` (and so `calculateChart`) is about 4× faster: Grand Trines are found once
+  and reused for Kites, and the triangle search skips body pairs without a trine
+  (findPatterns 138 → 34 µs, calculateChart 357 → 251 µs on 400 varied charts). Output is
+  unchanged, including pattern order and fields; a seeded differential test compares every
+  detector with the previous implementation on 2,500 charts and 3,000 synthetic aspect lists.
+
 ## [0.3.0] - 2026-10-24
 
 ### Fixed

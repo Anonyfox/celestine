@@ -52,12 +52,13 @@ import { AspectType, PatternType } from './types.js';
  */
 export function findPatterns(aspects: Aspect[]): AspectPattern[] {
   const patterns: AspectPattern[] = [];
+  const grandTrines = detectGrandTrine(aspects);
 
-  // Detect patterns in order of rarity
+  // Detect patterns in order of rarity (Grand Trines are found once, reused for Kites)
   patterns.push(...detectGrandCross(aspects));
-  patterns.push(...detectKite(aspects));
+  patterns.push(...kitesFrom(aspects, grandTrines));
   patterns.push(...detectMysticRectangle(aspects));
-  patterns.push(...detectGrandTrine(aspects));
+  patterns.push(...grandTrines);
   patterns.push(...detectTSquare(aspects));
   patterns.push(...detectYod(aspects));
   patterns.push(...detectStellium(aspects));
@@ -153,21 +154,21 @@ export function detectGrandTrine(aspects: Aspect[]): AspectPattern[] {
     bodies.add(t.body2);
   }
 
-  // Check all combinations of 3 bodies
+  // Check all combinations of 3 bodies, skipping pairs without a trine
   const bodyArray = Array.from(bodies);
   for (let i = 0; i < bodyArray.length - 2; i++) {
     for (let j = i + 1; j < bodyArray.length - 1; j++) {
-      for (let k = j + 1; k < bodyArray.length; k++) {
+      const ab = findAspectBetween(trines, bodyArray[i], bodyArray[j]);
+      for (let k = j + 1; ab && k < bodyArray.length; k++) {
         const a = bodyArray[i];
         const b = bodyArray[j];
         const c = bodyArray[k];
 
         // Check if all three pairs form trines
-        const ab = findAspectBetween(trines, a, b);
         const bc = findAspectBetween(trines, b, c);
-        const ac = findAspectBetween(trines, a, c);
+        const ac = bc && findAspectBetween(trines, a, c);
 
-        if (ab && bc && ac) {
+        if (bc && ac) {
           patterns.push({
             type: PatternType.GrandTrine,
             bodies: [a, b, c],
@@ -209,11 +210,7 @@ export function detectGrandCross(aspects: Aspect[]): AspectPattern[] {
       const opp2 = oppositions[j];
 
       // Check that they share no bodies
-      const bodies1 = new Set([opp1.body1, opp1.body2]);
-      const bodies2 = new Set([opp2.body1, opp2.body2]);
-
-      const shared = [...bodies1].filter((b) => bodies2.has(b));
-      if (shared.length > 0) continue;
+      if (sharesBody(opp1, opp2)) continue;
 
       // All 4 bodies
       const allBodies = [opp1.body1, opp1.body2, opp2.body1, opp2.body2];
@@ -319,8 +316,11 @@ export function detectYod(aspects: Aspect[]): AspectPattern[] {
  * - Forms sextiles to 120° and 240° ✓
  */
 export function detectKite(aspects: Aspect[]): AspectPattern[] {
+  return kitesFrom(aspects, detectGrandTrine(aspects));
+}
+
+function kitesFrom(aspects: Aspect[], grandTrines: AspectPattern[]): AspectPattern[] {
   const patterns: AspectPattern[] = [];
-  const grandTrines = detectGrandTrine(aspects);
   const oppositions = aspects.filter((a) => a.type === AspectType.Opposition);
   const sextiles = aspects.filter((a) => a.type === AspectType.Sextile);
 
@@ -388,11 +388,7 @@ export function detectMysticRectangle(aspects: Aspect[]): AspectPattern[] {
       const opp1 = oppositions[i];
       const opp2 = oppositions[j];
 
-      const bodies1 = new Set([opp1.body1, opp1.body2]);
-      const bodies2 = new Set([opp2.body1, opp2.body2]);
-
-      const shared = [...bodies1].filter((b) => bodies2.has(b));
-      if (shared.length > 0) continue;
+      if (sharesBody(opp1, opp2)) continue;
 
       const allBodies = [opp1.body1, opp1.body2, opp2.body1, opp2.body2];
 
@@ -536,13 +532,18 @@ function findAspectBetween(aspects: Aspect[], body1: string, body2: string): Asp
 }
 
 /**
- * Check if two arrays have the same elements.
+ * Check if two sorted arrays of the same length are equal (callers sort both; lengths match
+ * because only patterns of one type are compared).
  */
 function arraysEqual(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) return false;
-  const sortedA = [...a].sort();
-  const sortedB = [...b].sort();
-  return sortedA.every((val, idx) => val === sortedB[idx]);
+  return a.every((val, idx) => val === b[idx]);
+}
+
+/**
+ * Whether two aspects share a body.
+ */
+function sharesBody(a: Aspect, b: Aspect): boolean {
+  return [a.body1, a.body2].some((x) => x === b.body1 || x === b.body2);
 }
 
 /**
