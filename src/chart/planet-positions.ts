@@ -84,6 +84,8 @@ export function calculatePlanetPositions(
   jd: number,
   options: Required<ChartOptions>,
 ): PlanetPositions {
+  const dt = options.deltaT;
+  if (dt) jd += (typeof dt === 'function' ? dt(jd) : dt) / 86400;
   const planets = new Map<CelestialBody, PlanetPosition>();
 
   // Always calculate the main planets

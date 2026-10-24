@@ -38,7 +38,7 @@ export {
 } from './constants.js';
 
 // Delta T (ΔT corrections)
-export { deltaT, ttToUT, utToTT } from './delta-t.js';
+export { deltaT, deltaTAt, toTT, toUT, ttToUT, utToTT } from './delta-t.js';
 
 // Julian Centuries conversion
 export { fromJulianCenturies, toJulianCenturies } from './julian-centuries.js';

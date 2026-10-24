@@ -24,7 +24,7 @@
  *
  * // Or use individual modules
  * const jd = time.toJulianDate({ year: 2000, month: 1, day: 1, hour: 12 });
- * const sun = ephemeris.getSunPosition(jd);
+ * const sun = ephemeris.getSunPosition(time.toTT(jd));
  * const position = zodiac.eclipticToZodiac(sun.longitude);
  * ```
  */
@@ -107,6 +107,8 @@ export type {
 export {
   /** Calculate Delta T correction */
   deltaT,
+  /** ΔT (TT−UT) in seconds for a UT Julian Date */
+  deltaTAt,
   /** Convert Julian Date to calendar date */
   fromJulianDate,
   /** Calculate Greenwich Mean Sidereal Time */
@@ -115,6 +117,10 @@ export {
   localSiderealTime,
   /** Convert calendar date to Julian Date */
   toJulianDate,
+  /** Convert a UT Julian Date to TT */
+  toTT,
+  /** Convert a TT Julian Date to UT */
+  toUT,
 } from './time/index.js';
 
 // =============================================================================

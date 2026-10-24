@@ -58,6 +58,14 @@ export interface BirthData {
  * Optional configuration for chart calculation.
  */
 export interface ChartOptions {
+  /**
+   * Optional TT−UT correction in seconds, or a function of the UT Julian Date.
+   * Only body ephemerides use the corrected TT date; houses/angles stay on UT.
+   * Omitted preserves the historical UT ephemeris input. Pass deltaTAt from
+   * celestine/time to use the built-in model; zero reproduces default positions.
+   */
+  deltaT?: number | ((jdUT: number) => number);
+
   /** House system to use (default: 'placidus') */
   houseSystem?: HouseSystem;
 

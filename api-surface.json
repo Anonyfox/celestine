@@ -1231,6 +1231,9 @@
   "exports.deltaT": {
     "kind": "function"
   },
+  "exports.deltaTAt": {
+    "kind": "function"
+  },
   "exports.detectAspect": {
     "kind": "function"
   },
@@ -3525,6 +3528,9 @@
   "exports.time.deltaT": {
     "kind": "function"
   },
+  "exports.time.deltaTAt": {
+    "kind": "function"
+  },
   "exports.time.formatJulianDate": {
     "kind": "function"
   },
@@ -3682,6 +3688,12 @@
   "exports.time.toJulianDate": {
     "kind": "function"
   },
+  "exports.time.toTT": {
+    "kind": "function"
+  },
+  "exports.time.toUT": {
+    "kind": "function"
+  },
   "exports.time.ttToUT": {
     "kind": "function"
   },
@@ -3696,6 +3708,12 @@
     "kind": "function"
   },
   "exports.toJulianDate": {
+    "kind": "function"
+  },
+  "exports.toTT": {
+    "kind": "function"
+  },
+  "exports.toUT": {
     "kind": "function"
   },
   "exports.transits": {
@@ -5580,7 +5598,7 @@
     "kind": "type",
     "type": "AspectClassification",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -5795,7 +5813,7 @@
     "kind": "type",
     "type": "AspectNature",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -7256,6 +7274,10 @@
         "type": "AspectType[] | undefined",
         "optional": true
       },
+      "deltaT": {
+        "type": "number | ((jdUT: number) => number) | undefined",
+        "optional": true
+      },
       "houseSystem": {
         "type": "HouseSystem | undefined",
         "optional": true
@@ -7289,7 +7311,7 @@
         "optional": true
       }
     },
-    "definition": "export interface ChartOptions { houseSystem?: HouseSystem; includeAsteroids?: boolean; includeChiron?: boolean; includeLilith?: 'mean' | 'true' | 'both' | false; includeNodes?: 'mean' | 'true' | 'both' | false; includeLots?: boolean; aspectTypes?: AspectType[]; aspectOrbs?: Partial<Record<AspectType, number>>; includePatterns?: boolean; minimumAspectStrength?: number; }",
+    "definition": "export interface ChartOptions { deltaT?: number | ((jdUT: number) => number); houseSystem?: HouseSystem; includeAsteroids?: boolean; includeChiron?: boolean; includeLilith?: 'mean' | 'true' | 'both' | false; includeNodes?: 'mean' | 'true' | 'both' | false; includeLots?: boolean; aspectTypes?: AspectType[]; aspectOrbs?: Partial<Record<AspectType, number>>; includePatterns?: boolean; minimumAspectStrength?: number; }",
     "references": {
       "AspectType": "public.aspects.AspectType",
       "HouseSystem": "public.houses.HouseSystem"
@@ -7934,6 +7956,10 @@
         "type": "AspectType[] | undefined",
         "optional": true
       },
+      "deltaT": {
+        "type": "number | ((jdUT: number) => number) | undefined",
+        "optional": true
+      },
       "houseSystem": {
         "type": "HouseSystem | undefined",
         "optional": true
@@ -7967,7 +7993,7 @@
         "optional": true
       }
     },
-    "definition": "export interface ChartOptions { houseSystem?: HouseSystem; includeAsteroids?: boolean; includeChiron?: boolean; includeLilith?: 'mean' | 'true' | 'both' | false; includeNodes?: 'mean' | 'true' | 'both' | false; includeLots?: boolean; aspectTypes?: AspectType[]; aspectOrbs?: Partial<Record<AspectType, number>>; includePatterns?: boolean; minimumAspectStrength?: number; }",
+    "definition": "export interface ChartOptions { deltaT?: number | ((jdUT: number) => number); houseSystem?: HouseSystem; includeAsteroids?: boolean; includeChiron?: boolean; includeLilith?: 'mean' | 'true' | 'both' | false; includeNodes?: 'mean' | 'true' | 'both' | false; includeLots?: boolean; aspectTypes?: AspectType[]; aspectOrbs?: Partial<Record<AspectType, number>>; includePatterns?: boolean; minimumAspectStrength?: number; }",
     "references": {
       "AspectType": "public.aspects.AspectType",
       "HouseSystem": "public.houses.HouseSystem"
@@ -8100,6 +8126,10 @@
   "public.deltaT": {
     "kind": "value",
     "type": "(year: number, month: number) => number"
+  },
+  "public.deltaTAt": {
+    "kind": "value",
+    "type": "(jd: number) => number"
   },
   "public.detectAspect": {
     "kind": "value",
@@ -8871,11 +8901,11 @@
     "kind": "type",
     "type": "PlanetPositions",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => MapIterator<[Planet, PlanetPosition]>",
         "optional": false
       },
-      "__@toStringTag@2414": {
+      "__@toStringTag@2426": {
         "type": "string",
         "optional": false
       },
@@ -9467,7 +9497,7 @@
     "kind": "type",
     "type": "HouseSystem",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -9813,7 +9843,7 @@
     "kind": "type",
     "type": "HouseSystem",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -10460,7 +10490,7 @@
     "kind": "type",
     "type": "AngleProgressionMethod",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -11430,7 +11460,7 @@
     "kind": "type",
     "type": "ProgressedAspectPhase",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -11645,7 +11675,7 @@
     "kind": "type",
     "type": "ProgressedBodyName",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -12473,7 +12503,7 @@
     "kind": "type",
     "type": "ProgressionType",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -12783,7 +12813,7 @@
     "kind": "type",
     "type": "ProgressionType",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -13083,6 +13113,10 @@
     "kind": "value",
     "type": "(year: number, month: number) => number"
   },
+  "public.time.deltaTAt": {
+    "kind": "value",
+    "type": "(jd: number) => number"
+  },
   "public.time.formatJulianDate": {
     "kind": "value",
     "type": "(jd: number) => string"
@@ -13274,7 +13308,7 @@
     "kind": "type",
     "type": "TimeSystem",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -13500,6 +13534,14 @@
       "CalendarDateTime": "public.time.CalendarDateTime"
     }
   },
+  "public.time.toTT": {
+    "kind": "value",
+    "type": "(jdUT: number) => number"
+  },
+  "public.time.toUT": {
+    "kind": "value",
+    "type": "(jdTT: number) => number"
+  },
   "public.time.ttToUT": {
     "kind": "value",
     "type": "(ttJD: number, year: number, month: number) => number"
@@ -13541,6 +13583,14 @@
     "references": {
       "CalendarDateTime": "public.time.CalendarDateTime"
     }
+  },
+  "public.toTT": {
+    "kind": "value",
+    "type": "(jdUT: number) => number"
+  },
+  "public.toUT": {
+    "kind": "value",
+    "type": "(jdTT: number) => number"
   },
   "public.Transit": {
     "kind": "type",
@@ -14408,7 +14458,7 @@
     "kind": "type",
     "type": "MotionState",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -14653,7 +14703,7 @@
     "kind": "type",
     "type": "NatalPointType",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -15385,7 +15435,7 @@
     "kind": "type",
     "type": "TransitPhase",
     "members": {
-      "__@iterator@1738": {
+      "__@iterator@1747": {
         "type": "() => StringIterator<string>",
         "optional": false
       },

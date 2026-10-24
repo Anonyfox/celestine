@@ -155,66 +155,29 @@ export function calculateChart(birth: BirthData, options?: ChartOptions): Chart 
 
   // Add asteroids
   if (positions.asteroids) {
-    if (positions.asteroids.ceres) {
-      planets.push(
-        buildChartPlanet(CelestialBody.Ceres, positions.asteroids.ceres, houseResult.houses),
-      );
-    }
-    if (positions.asteroids.pallas) {
-      planets.push(
-        buildChartPlanet(CelestialBody.Pallas, positions.asteroids.pallas, houseResult.houses),
-      );
-    }
-    if (positions.asteroids.juno) {
-      planets.push(
-        buildChartPlanet(CelestialBody.Juno, positions.asteroids.juno, houseResult.houses),
-      );
-    }
-    if (positions.asteroids.vesta) {
-      planets.push(
-        buildChartPlanet(CelestialBody.Vesta, positions.asteroids.vesta, houseResult.houses),
-      );
+    for (const [body, position] of [
+      [CelestialBody.Ceres, positions.asteroids.ceres],
+      [CelestialBody.Pallas, positions.asteroids.pallas],
+      [CelestialBody.Juno, positions.asteroids.juno],
+      [CelestialBody.Vesta, positions.asteroids.vesta],
+    ] as const) {
+      if (position) planets.push(buildChartPlanet(body, position, houseResult.houses));
     }
   }
 
   // Step 8: Build nodes
   const nodes: ChartNode[] = [];
   if (positions.nodes) {
-    if (positions.nodes.trueNorth) {
-      nodes.push(
-        buildChartNode(
-          'North Node',
-          'True',
-          positions.nodes.trueNorth.longitude,
-          houseResult.houses,
-        ),
-      );
-      nodes.push(
-        buildChartNode(
-          'South Node',
-          'True',
-          positions.nodes.trueSouth!.longitude,
-          houseResult.houses,
-        ),
-      );
-    }
-    if (positions.nodes.meanNorth) {
-      nodes.push(
-        buildChartNode(
-          'North Node',
-          'Mean',
-          positions.nodes.meanNorth.longitude,
-          houseResult.houses,
-        ),
-      );
-      nodes.push(
-        buildChartNode(
-          'South Node',
-          'Mean',
-          positions.nodes.meanSouth!.longitude,
-          houseResult.houses,
-        ),
-      );
+    for (const [type, north, south] of [
+      ['True', positions.nodes.trueNorth, positions.nodes.trueSouth],
+      ['Mean', positions.nodes.meanNorth, positions.nodes.meanSouth],
+    ] as const) {
+      if (north) {
+        nodes.push(
+          buildChartNode('North Node', type, north.longitude, houseResult.houses),
+          buildChartNode('South Node', type, south!.longitude, houseResult.houses),
+        );
+      }
     }
   }
 
@@ -354,6 +317,20 @@ export function calculatePlanets(birth: BirthData, options?: Partial<ChartOption
   const positions = calculatePlanetPositions(calculatedData.julianDate, mergedOptions);
 
   // Build a minimal houses object for zodiac placement (uses 0° ASC as placeholder)
+  const signNames = [
+    'Aries',
+    'Taurus',
+    'Gemini',
+    'Cancer',
+    'Leo',
+    'Virgo',
+    'Libra',
+    'Scorpio',
+    'Sagittarius',
+    'Capricorn',
+    'Aquarius',
+    'Pisces',
+  ];
   const placeholderHouses: ChartHouses = {
     system: 'equal',
     systemName: 'Equal',
@@ -361,23 +338,10 @@ export function calculatePlanets(birth: BirthData, options?: Partial<ChartOption
       house: i + 1,
       longitude: i * 30,
       sign: i as Sign,
-      signName: [
-        'Aries',
-        'Taurus',
-        'Gemini',
-        'Cancer',
-        'Leo',
-        'Virgo',
-        'Libra',
-        'Scorpio',
-        'Sagittarius',
-        'Capricorn',
-        'Aquarius',
-        'Pisces',
-      ][i],
+      signName: signNames[i],
       degree: 0,
       minute: 0,
-      formatted: `0° ${['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'][i]}`,
+      formatted: `0° ${signNames[i]}`,
       size: 30,
     })),
   };
@@ -395,25 +359,13 @@ export function calculatePlanets(birth: BirthData, options?: Partial<ChartOption
 
   // Add asteroids
   if (mergedOptions.includeAsteroids && positions.asteroids) {
-    if (positions.asteroids.ceres) {
-      planets.push(
-        buildChartPlanet(CelestialBody.Ceres, positions.asteroids.ceres, placeholderHouses),
-      );
-    }
-    if (positions.asteroids.pallas) {
-      planets.push(
-        buildChartPlanet(CelestialBody.Pallas, positions.asteroids.pallas, placeholderHouses),
-      );
-    }
-    if (positions.asteroids.juno) {
-      planets.push(
-        buildChartPlanet(CelestialBody.Juno, positions.asteroids.juno, placeholderHouses),
-      );
-    }
-    if (positions.asteroids.vesta) {
-      planets.push(
-        buildChartPlanet(CelestialBody.Vesta, positions.asteroids.vesta, placeholderHouses),
-      );
+    for (const [body, position] of [
+      [CelestialBody.Ceres, positions.asteroids.ceres],
+      [CelestialBody.Pallas, positions.asteroids.pallas],
+      [CelestialBody.Juno, positions.asteroids.juno],
+      [CelestialBody.Vesta, positions.asteroids.vesta],
+    ] as const) {
+      if (position) planets.push(buildChartPlanet(body, position, placeholderHouses));
     }
   }
 

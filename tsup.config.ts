@@ -1,7 +1,8 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/index.ts'],
+  // celestine/events is subpath-only, so its CJS build is a separate bundle.
+  entry: { index: 'src/index.ts', 'events/index': 'src/events/index.ts' },
   format: ['cjs'],
   dts: true,
   splitting: false,

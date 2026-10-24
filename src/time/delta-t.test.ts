@@ -1,28 +1,17 @@
 /**
- * Tests for Delta T (ΔT) calculations
- *
- * Test values are from NASA official sources:
- * - Historical Values: https://eclipse.gsfc.nasa.gov/SEhelp/deltaT2.html
- * - Polynomial Expressions: https://eclipse.gsfc.nasa.gov/SEcat5/deltatpoly.html
- * - Fred Espenak & Jean Meeus (2006): "Five Millennium Canon of Solar Eclipses"
- *
- * Reference values verified against:
- * - Historical eclipse observations (ancient times)
- * - Direct astronomical measurements (1600-present)
- * - IERS Bulletins (modern era)
- *
- * Expected accuracy by era:
- * - Before 1600: ±100-1000 seconds (limited historical data)
- * - 1600-1900: ±1-100 seconds (improving observations)
- * - 1900-2000: ±0.1-1 second (precise measurements)
- * - 2000-2050: ±1-10 seconds (predictions/extrapolations)
- *
- * @module time/delta-t.test
+ * NASA/Espenak–Meeus reference values retain their original error limits.
+ * Historical values: https://eclipse.gsfc.nasa.gov/SEcat5/deltat.html
+ * Polynomials: https://eclipse.gsfc.nasa.gov/SEcat5/deltatpoly.html
+ * Observed values follow USNO; the complete reference fixtures below include
+ * provenance and fitting-error measurements, distinct from physical uncertainty.
+ * https://eclipse.gsfc.nasa.gov/SEhelp/deltaT2.html
+ * https://maia.usno.navy.mil/ser7/historic_deltat.data
+ * https://maia.usno.navy.mil/ser7/deltat.data
  */
 
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { deltaT, ttToUT, utToTT } from './delta-t.js';
+import { deltaT, deltaTAt, toTT, toUT, ttToUT, utToTT } from './delta-t.js';
 
 describe('deltaT', () => {
   describe('NASA official reference values', () => {
@@ -131,7 +120,7 @@ describe('deltaT', () => {
     describe('Modern era (direct measurements)', () => {
       it('should match year 1950 within ±0.1s', () => {
         const dt = deltaT(1950, 1);
-        const expected = 29.07;
+        const expected = 29.15;
         const stdError = 0.1;
         assert.ok(
           Math.abs(dt - expected) <= stdError,
@@ -189,12 +178,11 @@ describe('deltaT', () => {
         );
       });
 
-      it('should match year 2010 within ±2s (polynomial boundary)', () => {
+      it('should match year 2010 within ±0.2s', () => {
         const dt = deltaT(2010, 1);
         const expected = 66.07;
-        // Relaxed tolerance: this is at the 2005-2050 polynomial boundary
-        // Standard error is 0.2s but we allow 2s due to polynomial transition effects
-        const stdError = 2.0;
+        // USNO observed data replaces the old extrapolation.
+        const stdError = 0.2;
         assert.ok(
           Math.abs(dt - expected) <= stdError,
           `Expected ${expected}±${stdError}s, got ${dt.toFixed(2)}s (error: ${(dt - expected).toFixed(2)}s)`,
@@ -221,11 +209,10 @@ describe('deltaT', () => {
       assert.ok(dt > 68 && dt < 71, `Expected ~69, got ${dt}`);
     });
 
-    it('should return ~71-73 seconds for year 2025', () => {
+    it('should return ~69.1 seconds for year 2025', () => {
       const dt = deltaT(2025, 1);
-      // Extrapolated from NASA 2005-2050 polynomial
-      // ΔT continues to increase at ~0.3-0.5 seconds/year
-      assert.ok(dt > 70 && dt < 73, `Expected ~71-73, got ${dt}`);
+      // USNO monthly observations: approximately 69.1 seconds.
+      assert.ok(dt > 69 && dt < 69.2, `Expected ~69.1, got ${dt}`);
     });
 
     it('should return ~64 seconds for year 2000', () => {
@@ -330,8 +317,8 @@ describe('deltaT', () => {
 
     it('should return reasonable values for 2050', () => {
       const dt = deltaT(2050, 1);
-      // By 2050, ΔT might be ~90-100 seconds
-      assert.ok(dt > 70 && dt < 120, `Expected ~90-100, got ${dt}`);
+      // About 76 s in 2050 (Bulletin A trend toward the SMH 2016 parabola)
+      assert.ok(dt > 70 && dt < 120, `Expected ~76, got ${dt}`);
     });
 
     it('should return extrapolated values for 2100', () => {
@@ -623,5 +610,148 @@ describe('TT ↔ UT round-trip', () => {
     const ut = ttToUT(original, 1, 1);
     const back = utToTT(ut, 1, 1);
     assert.ok(Math.abs(back - original) < 1e-8);
+  });
+});
+
+describe('USNO observed ΔT and JD helpers', () => {
+  const jdAt = (year: number) => 2451545 + (year - 2000) * 365.25;
+
+  it('does not regress the existing ancient NASA reference errors', () => {
+    // Previous Espenak–Meeus errors at the same mid-January decimal years.
+    for (const [year, reference, previousError] of [
+      [-500, 17190, 12.9027108],
+      [0, 10580, 3.17733504],
+      [500, 5710, 0.36852664],
+      [1000, 1570, 3.96834154],
+      [1500, 200, 1.72212159],
+      [1600, 120, 0.04089326],
+    ]) {
+      assert.ok(Math.abs(deltaT(year, 1) - reference) <= previousError, `year ${year}`);
+    }
+  });
+
+  it('retains original E–M coefficients outside the final-year continuity taper', () => {
+    for (let y = 1600; y < 1800; y += 0.25) {
+      const t = y - (y < 1700 ? 1600 : 1700);
+      const expected =
+        y < 1700
+          ? 120 - 0.9808 * t - 0.01532 * t ** 2 + t ** 3 / 7129
+          : 8.83 + 0.1603 * t - 0.0059285 * t ** 2 + 0.00013336 * t ** 3 - t ** 4 / 1174000;
+      const taper = y < 1700 ? 0.16212793 * Math.max(0, y - 1699) : 0;
+      assert.ok(Math.abs(deltaTAt(jdAt(y)) - (expected - taper)) < 1e-10, `year ${y}`);
+    }
+  });
+
+  it('fits USNO rows from 1800, including the overlapping historic/monthly series', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const rows: number[][] = [];
+    for (const name of ['historic_deltat.data', 'deltat.data']) {
+      const fixture = JSON.parse(
+        await readFile(new URL(`./__fixtures__/delta-t/${name}.json`, import.meta.url), 'utf8'),
+      );
+      rows.push(...fixture.rows);
+    }
+    // In 1657–1799 the older USNO tabulation and NASA/M&S (2004) disagree;
+    // we follow NASA there. The max USNO difference (12.681097 s) exceeds
+    // its listed 10 s standard errors, so no USNO accuracy assertion there.
+    // Measured max/RMS seconds from 1800: 1.346667/.462101, .320000/.103792,
+    // .103977/.033801. Limits are rounded up, not observational uncertainty.
+    for (const [start, end, count, maxLimit, rmsLimit] of [
+      [1800, 1900, 200, 1.35, 0.463],
+      [1900, 1955, 110, 0.321, 0.104],
+      [1955, 2027, 705, 0.105, 0.034],
+    ]) {
+      const errors = rows
+        .filter(([y]) => y >= start && y < end)
+        .map(([y, seconds]) => Math.abs(deltaTAt(jdAt(y)) - seconds));
+      assert.equal(errors.length, count);
+      assert.ok(Math.max(...errors) < maxLimit, `max error at ${start}`);
+      assert.ok(
+        Math.sqrt(errors.reduce((sum, e) => sum + e * e, 0) / errors.length) < rmsLimit,
+        `RMS error at ${start}`,
+      );
+    }
+  });
+
+  it('has no jumps above .05 seconds at polynomial, knot or extrapolation joins', () => {
+    // Every quarter-year includes every encoded knot and all segment boundaries.
+    for (const y of [-500, 500, 1600, ...Array.from({ length: 1973 }, (_, i) => 1657 + i / 4)]) {
+      assert.ok(
+        Math.abs(deltaTAt(jdAt(y - 1e-8)) - deltaTAt(jdAt(y + 1e-8))) < 0.05,
+        `join at ${y}`,
+      );
+    }
+  });
+
+  it('extrapolates monotonically with matching slopes at the two Hermite endpoints', () => {
+    let previous = deltaTAt(jdAt(2026.75));
+    for (let y = 2026.76; y <= 2800; y += 0.01) {
+      const next = deltaTAt(jdAt(y));
+      assert.ok(next > previous);
+      previous = next;
+    }
+    for (const y of [2026.75, 2800]) {
+      const left = (deltaTAt(jdAt(y)) - deltaTAt(jdAt(y - 0.001))) / 0.001;
+      const right = (deltaTAt(jdAt(y + 0.001)) - deltaTAt(jdAt(y))) / 0.001;
+      assert.ok(Math.abs(left - right) < 0.001);
+    }
+    assert.ok(Math.abs(deltaTAt(jdAt(2026.75)) - 69.2) < 1e-10);
+    assert.ok(Math.abs(deltaTAt(jdAt(2800)) - (-320 + 32.5 * 9.75 ** 2)) < 1e-9);
+    assert.ok(Math.abs(deltaTAt(jdAt(3000)) - (-320 + 32.5 * 11.75 ** 2)) < 1e-9);
+  });
+
+  it('follows current USNO/IERS predictions after the last observation', () => {
+    // Comparison data retrieved 2026-10-24 (not used for coefficients):
+    // IERS Bulletin A via https://maia.usno.navy.mil/ser7/finals2000A.data (TAI−UTC 37 s),
+    // ΔT = 69.184 − (UT1−UTC); and https://maia.usno.navy.mil/ser7/deltat.preds.
+    const bulletinA: [number, number][] = [
+      [61340, 69.2347],
+      [61430, 69.3263],
+      [61520, 69.4191],
+      [61610, 69.3993],
+      [61700, 69.3865],
+    ];
+    for (const [mjd, value] of bulletinA) {
+      assert.ok(Math.abs(deltaTAt(mjd + 2400000.5) - value) < 0.12, `Bulletin A MJD ${mjd}`);
+    }
+    const preds: [number, number][] = [
+      [2027, 69.14],
+      [2028, 69.34],
+      [2030, 69.97],
+      [2032, 70.62],
+      [2033.75, 71.25],
+    ];
+    for (const [year, value] of preds) {
+      assert.ok(Math.abs(deltaTAt(jdAt(year)) - value) < 0.45, `deltat.preds ${year}`);
+    }
+  });
+
+  it('inverts TT/UT to within 1e-9 day across −2000…3000, including joins', () => {
+    for (let y = -2000; y <= 3000; y += 0.25) {
+      const jd = jdAt(y);
+      assert.ok(Math.abs(toTT(toUT(jd)) - jd) < 1e-9, `TT at ${y}`);
+      assert.ok(Math.abs(toUT(toTT(jd)) - jd) < 1e-9, `UT at ${y}`);
+      assert.equal(toTT(jd), jd + deltaTAt(jd) / 86400);
+    }
+  });
+
+  it('inverts dates immediately around model joins without inverse gaps', () => {
+    for (const year of [
+      -500, 500, 1000, 1501, 1600, 1699, 1700, 1800, 1804, 2026.25, 2026.75, 2800,
+    ]) {
+      const tt = toTT(jdAt(year));
+      for (let i = -100; i <= 100; i++) {
+        const date = tt + i * 1e-8;
+        assert.ok(Math.abs(toTT(toUT(date)) - date) < 1e-9, `join ${year}, offset ${i}`);
+      }
+    }
+  });
+
+  it('keeps month and JD entry points consistent', () => {
+    for (let y = -2000; y <= 3000; y += 10) {
+      for (let m = 1; m <= 12; m++) {
+        assert.ok(Math.abs(deltaT(y, m) - deltaTAt(jdAt(y + (m - 0.5) / 12))) < 1e-9);
+      }
+    }
   });
 });

@@ -96,6 +96,16 @@
         "types": "./dist/progressions/index.d.cts",
         "default": "./dist/progressions/index.cjs"
       }
+    },
+    "./events": {
+      "import": {
+        "types": "./dist/events/index.d.ts",
+        "default": "./dist/events/index.js"
+      },
+      "require": {
+        "types": "./dist/events/index.d.cts",
+        "default": "./dist/events/index.cjs"
+      }
     }
   },
   "files": [
@@ -289,6 +299,9 @@
       ],
       "progressions": [
         "dist/progressions/index.d.ts"
+      ],
+      "events": [
+        "dist/events/index.d.ts"
       ]
     }
   }

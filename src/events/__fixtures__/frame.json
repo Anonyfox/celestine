@@ -1,0 +1,20 @@
+[
+  {
+    "jd": 2415020,
+    "reference": 279.6433957,
+    "meanResidualArcsec": -17.257779559713526,
+    "trueResidualArcsec": -0.3634043360762007
+  },
+  {
+    "jd": 2451545,
+    "reference": 280.3681519,
+    "meanResidualArcsec": 14.086873426003876,
+    "trueResidualArcsec": 0.005128224347572541
+  },
+  {
+    "jd": 2488070,
+    "reference": 281.1128356,
+    "meanResidualArcsec": -3.031200455643557,
+    "trueResidualArcsec": -0.3139443433155975
+  }
+]

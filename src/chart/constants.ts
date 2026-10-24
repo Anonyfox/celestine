@@ -122,7 +122,8 @@ export const DEFAULT_OPTIONS: Required<ChartOptions> = {
   aspectOrbs: {},
   includePatterns: true,
   minimumAspectStrength: 0,
-};
+  // Leave deltaT absent to preserve the historical chart.options object.
+} as Required<ChartOptions>;
 
 // =============================================================================
 // CELESTIAL BODY NAMES
