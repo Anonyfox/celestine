@@ -6,7 +6,7 @@
  * @module aspects/constants
  *
  * @remarks
- * All aspect angles and orbs are verified against authoritative sources:
+ * Background references for these conventions:
  * - Ptolemy's "Tetrabiblos" (major aspects)
  * - Lilly's "Christian Astrology" (traditional orbs)
  * - Modern consensus (Astrograph, Astro.com)

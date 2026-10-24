@@ -37,6 +37,7 @@ coverage/
 *.tmp
 .cache/
 
-# Documentation (generated, do not commit)
-docs/
+# Documentation (TypeDoc output is generated, do not commit; hand-written docs/*.md are tracked)
+/docs/*
+!/docs/*.md
 

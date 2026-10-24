@@ -6,7 +6,7 @@
  * @module progressions/constants
  *
  * @remarks
- * All constants are verified against authoritative sources:
+ * Background references for these conventions:
  * - Meeus "Astronomical Algorithms" for astronomical values
  * - Robert Hand & Noel Tyl for astrological practice
  *
