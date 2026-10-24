@@ -1,0 +1,289 @@
+{
+  "frame": "true equinox of date",
+  "source": "https://ssd.jpl.nasa.gov/api/horizons.api",
+  "retrieved": "2026-10-24",
+  "quantity": 31,
+  "timeScale": "TT",
+  "events": [
+    {
+      "jd": 2458667.3084143517,
+      "sunLongitude": 100.6304837,
+      "moonLongitude": 100.6933883
+    },
+    {
+      "jd": 2458681.397164352,
+      "sunLongitude": 114.0642535,
+      "moonLongitude": 294.0058673
+    },
+    {
+      "jd": 2458843.721446759,
+      "sunLongitude": 274.1175835,
+      "moonLongitude": 274.1564543
+    },
+    {
+      "jd": 2458859.2994328705,
+      "sunLongitude": 289.9957161,
+      "moonLongitude": 109.8933822
+    },
+    {
+      "jd": 2459006.3098842595,
+      "sunLongitude": 75.5758156,
+      "moonLongitude": 255.6931911
+    },
+    {
+      "jd": 2459021.7786458335,
+      "sunLongitude": 90.3555879,
+      "moonLongitude": 90.3442725
+    },
+    {
+      "jd": 2459035.6883333335,
+      "sunLongitude": 103.6204651,
+      "moonLongitude": 283.4949336
+    },
+    {
+      "jd": 2459183.9055671296,
+      "sunLongitude": 248.6429771,
+      "moonLongitude": 68.7441807
+    },
+    {
+      "jd": 2459198.176840278,
+      "sunLongitude": 263.1352083,
+      "moonLongitude": 263.1060229
+    },
+    {
+      "jd": 2459360.9721412035,
+      "sunLongitude": 65.4326162,
+      "moonLongitude": 245.4804904
+    },
+    {
+      "jd": 2459375.9466087963,
+      "sunLongitude": 79.7779287,
+      "moonLongitude": 79.6966417
+    },
+    {
+      "jd": 2459537.877847222,
+      "sunLongitude": 237.2450352,
+      "moonLongitude": 57.2863134
+    },
+    {
+      "jd": 2459552.8157175924,
+      "sunLongitude": 252.3605055,
+      "moonLongitude": 252.2661347
+    },
+    {
+      "jd": 2459700.3629166665,
+      "sunLongitude": 40.4821317,
+      "moonLongitude": 40.5879268
+    },
+    {
+      "jd": 2459715.675486111,
+      "sunLongitude": 55.29818,
+      "moonLongitude": 235.2730895
+    },
+    {
+      "jd": 2459877.959259259,
+      "sunLongitude": 212.0096494,
+      "moonLongitude": 212.1111451
+    },
+    {
+      "jd": 2459891.958587963,
+      "sunLongitude": 226.0127637,
+      "moonLongitude": 45.9887903
+    },
+    {
+      "jd": 2460054.67912037,
+      "sunLongitude": 29.8392649,
+      "moonLongitude": 29.8769686
+    },
+    {
+      "jd": 2460070.22505787,
+      "sunLongitude": 44.9624355,
+      "moonLongitude": 224.8659445
+    },
+    {
+      "jd": 2460232.2504745373,
+      "sunLongitude": 201.1290648,
+      "moonLongitude": 201.1635982
+    },
+    {
+      "jd": 2460246.343958333,
+      "sunLongitude": 215.1443975,
+      "moonLongitude": 35.0534596
+    },
+    {
+      "jd": 2460394.8013773146,
+      "sunLongitude": 5.1292401,
+      "moonLongitude": 185.223531
+    },
+    {
+      "jd": 2460409.2628356484,
+      "sunLongitude": 19.3980186,
+      "moonLongitude": 19.363683
+    },
+    {
+      "jd": 2460571.614872685,
+      "sunLongitude": 175.6857958,
+      "moonLongitude": 355.7824497
+    },
+    {
+      "jd": 2460586.2820949075,
+      "sunLongitude": 190.0605193,
+      "moonLongitude": 190.0289011
+    },
+    {
+      "jd": 2460748.7916203705,
+      "sunLongitude": 353.9451494,
+      "moonLongitude": 173.9769102
+    },
+    {
+      "jd": 2460763.9504166665,
+      "sunLongitude": 8.9943701,
+      "moonLongitude": 8.8926757
+    },
+    {
+      "jd": 2460926.2590046297,
+      "sunLongitude": 165.3771845,
+      "moonLongitude": 345.4040192
+    },
+    {
+      "jd": 2460940.321574074,
+      "sunLongitude": 179.0775741,
+      "moonLongitude": 178.981107
+    },
+    {
+      "jd": 2461089.0090972222,
+      "sunLongitude": 328.8364436,
+      "moonLongitude": 328.9276105
+    },
+    {
+      "jd": 2461102.9825462964,
+      "sunLongitude": 342.8952237,
+      "moonLongitude": 162.8595298
+    },
+    {
+      "jd": 2461265.241041667,
+      "sunLongitude": 140.0390366,
+      "moonLongitude": 140.1250668
+    },
+    {
+      "jd": 2461280.676435185,
+      "sunLongitude": 154.8981829,
+      "moonLongitude": 334.8521105
+    },
+    {
+      "jd": 2461443.1672222223,
+      "sunLongitude": 317.6295814,
+      "moonLongitude": 317.6565028
+    },
+    {
+      "jd": 2461457.468125,
+      "sunLongitude": 332.0856075,
+      "moonLongitude": 151.9836619
+    },
+    {
+      "jd": 2461605.169548611,
+      "sunLongitude": 115.8245732,
+      "moonLongitude": 295.960872
+    },
+    {
+      "jd": 2461619.9221064816,
+      "sunLongitude": 129.918319,
+      "moonLongitude": 129.9325565
+    },
+    {
+      "jd": 2461634.8020717595,
+      "sunLongitude": 144.1869128,
+      "moonLongitude": 324.0743369
+    },
+    {
+      "jd": 2461782.6765393517,
+      "sunLongitude": 291.4658319,
+      "moonLongitude": 111.5624475
+    },
+    {
+      "jd": 2461797.131238426,
+      "sunLongitude": 306.1804135,
+      "moonLongitude": 306.145082
+    },
+    {
+      "jd": 2461959.264548611,
+      "sunLongitude": 105.1915912,
+      "moonLongitude": 285.2638044
+    },
+    {
+      "jd": 2461974.622685185,
+      "sunLongitude": 119.8418094,
+      "moonLongitude": 119.7828247
+    },
+    {
+      "jd": 2462137.2036458333,
+      "sunLongitude": 280.5495238,
+      "moonLongitude": 100.5808081
+    },
+    {
+      "jd": 2462151.2179166665,
+      "sunLongitude": 294.8308534,
+      "moonLongitude": 294.7333378
+    },
+    {
+      "jd": 2462299.6709837965,
+      "sunLongitude": 81.494611,
+      "moonLongitude": 81.6115303
+    },
+    {
+      "jd": 2462313.641226852,
+      "sunLongitude": 94.8307737,
+      "moonLongitude": 274.829506
+    },
+    {
+      "jd": 2462329.150914352,
+      "sunLongitude": 109.6192645,
+      "moonLongitude": 109.4919498
+    },
+    {
+      "jd": 2462476.1277546296,
+      "sunLongitude": 253.7651421,
+      "moonLongitude": 253.868361
+    },
+    {
+      "jd": 2462491.446666667,
+      "sunLongitude": 269.3410995,
+      "moonLongitude": 89.306058
+    },
+    {
+      "jd": 2462653.7702893517,
+      "sunLongitude": 70.8365752,
+      "moonLongitude": 70.8870618
+    },
+    {
+      "jd": 2462668.27400463,
+      "sunLongitude": 84.7123663,
+      "moonLongitude": 264.6377306
+    },
+    {
+      "jd": 2462830.7858449076,
+      "sunLongitude": 243.0374505,
+      "moonLongitude": 243.07637
+    },
+    {
+      "jd": 2462845.436701389,
+      "sunLongitude": 257.8908706,
+      "moonLongitude": 77.7951995
+    },
+    {
+      "jd": 2462993.6611342593,
+      "sunLongitude": 46.4224801,
+      "moonLongitude": 226.5255936
+    },
+    {
+      "jd": 2463007.802824074,
+      "sunLongitude": 60.0715184,
+      "moonLongitude": 60.0535245
+    },
+    {
+      "jd": 2463022.9897800926,
+      "sunLongitude": 74.6467178,
+      "moonLongitude": 254.5059454
+    }
+  ]
+}

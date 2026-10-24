@@ -181,5 +181,31 @@ const hits = findLunarPhases(start, end, { phases: ['new', 'full'] }).filter(
 Checked against JPL Horizons at all 148 phases of 2025–2027: Moon within 7.5″, Sun
 within 0.3″ (true equinox of date).
 
+### Eclipses
+
+`findEclipses` searches an inclusive TT interval for greatest solar and lunar eclipses.
+It is exported only from `celestine/events`. Results include TT `jd`, model-derived UT
+`jdUT`, type, NASA magnitude and signed gamma in Earth equatorial radii. Lunar events
+also include umbral and penumbral magnitudes; solar events identify whether the axis
+intersects Earth's ellipsoid with `central`.
+
+```ts
+import { findEclipses } from 'celestine/events';
+
+const eclipses = findEclipses(2460310.5, 2460676.5, {
+  kinds: ['solar', 'lunar'],
+  includeNutation: true,
+});
+for (const eclipse of eclipses) {
+  console.log(eclipse.jdUT, eclipse.kind, eclipse.type, eclipse.magnitude);
+}
+```
+
+`sunLongitude` and `moonLongitude` equal the position getters at greatest eclipse:
+apparent geocentric ecliptic longitudes, mean equinox of date by default, true equinox
+with `includeNutation: true`. NASA Canon comparisons for 2020–2030 match all 50 types;
+maximum TT timing error is 17.103 seconds (mean 5.879 seconds). These are geocentric
+searches; results do not describe local visibility or contact times.
+
 For integrations, see [examples](../examples/). For signatures and option types,
 see the [API documentation](https://anonyfox.github.io/celestine).

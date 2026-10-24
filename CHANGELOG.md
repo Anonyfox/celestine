@@ -13,6 +13,11 @@ All notable changes to this project are documented here, following
   matching lunations against natal points. Phase names also accept `'new'`, `'first'`, `'full'`
   and `'last'`, and an unknown name now throws a `RangeError` listing the valid names. Checked
   against JPL Horizons at all 148 phases of 2025–2027 (Moon ≤ 7.46″, Sun ≤ 0.28″).
+
+- `findEclipses` and eclipse types in `celestine/events`: solar and lunar greatest
+  eclipses with TT/UT instants, NASA magnitudes, gamma and frame-selectable longitudes.
+  NASA Canon 2020–2030 agreement: 50/50 types matched, maximum |Δt| 17.103 s.
+
 - Runnable examples, executed in `npm run check` by `src/examples.test.ts`: `examples/node-cli.mjs`
   (next station-retrograde per planet, current Moon phase), `examples/browser-natal-chart.html`
   (no build step, ESM from a CDN) and `examples/cloudflare-worker.ts`. The README quickstart is

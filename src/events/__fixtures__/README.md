@@ -231,3 +231,40 @@ of 2025–2027. `jd` is the library's TT phase instant (it only chooses the requ
 of the Moon (301) and Sun (10) at that TT instant, same request parameters as above. Produced by
 `npm run build && node scripts/events/fetch-phase-longitudes.mjs` (retrieved 2026-10-24).
 Measured maxima: Moon 7.46″, Sun 0.28″.
+
+## NASA eclipses and Horizons longitudes
+
+`nasa-eclipses.json` contains every solar and lunar eclipse from 2019-07-01 through
+2031-06-30 (56 events), with the NASA calendar date, greatest-eclipse TD clock,
+TT JD (TD = TT), ΔT seconds, raw type, normalized type, gamma and magnitudes.
+Century counts are parsed from the complete catalog rows (2001–2100): solar
+77 partial, 72 annular, 68 total, 7 hybrid; lunar 86 penumbral, 57 partial, 85 total.
+
+Retrieved 2026-10-24 from:
+- https://eclipse.gsfc.nasa.gov/SEcat5/SE2001-2100.html
+- https://eclipse.gsfc.nasa.gov/LEcat5/LE2001-2100.html
+
+Regenerate with `node scripts/events/fetch-nasa-eclipses.mjs`. Optional first and
+second arguments are local solar and lunar catalog paths, respectively. The script
+strips HTML, parses catalog rows and converts the TD calendar directly to TT JD
+without applying ΔT. No library-generated reference values are used.
+
+`horizons-eclipses.json` records Sun/Moon apparent geocentric ecliptic longitude
+at those exact NASA TT epochs, true equinox of date (quantity 31). The same script
+uses `scripts/events/horizons.mjs` and its cached raw requests, retrieved 2026-10-24
+from https://ssd.jpl.nasa.gov/api/horizons.api. The longitude tests compare at these
+reference epochs, separately from greatest-eclipse timing errors.
+
+After building, `node scripts/events/measure-eclipses.mjs` measures agreement for
+2020-01-01 through 2031-01-01 TT: 50/50 kinds and types, maximum timing error
+17.102905 s, mean 5.879146 s, maximum gamma error 0.000422721 Earth equatorial
+radii, solar magnitude error 0.000532581, lunar umbral magnitude error 0.000701454,
+and lunar penumbral magnitude error 0.000699891. Maximum UT difference from NASA
+TD−ΔT is 20.739256 s (different ΔT models). The test ceilings round these errors
+up. The full-century test checks all seven type counts.
+
+At the 56 NASA epochs, maximum apparent longitude errors against Horizons are
+0.261796 arcsec (Sun) and 9.906056 arcsec (Moon). The Moon maximum occurs at
+2021-12-04 07:34:38 TT (JD 2459552.8157175924). That is above the 8 arcsec
+Moon budget, which is the maximum over the precision sample set, so the eclipse
+test bounds the Moon at 10 arcsec. The position API and its outputs are unchanged.

@@ -88,3 +88,37 @@ export interface StationEvent extends EventInstant {
   sign: number;
   signName: string;
 }
+
+/** Eclipse family; inputs and greatest instants use TT. @example 'solar' */
+export type EclipseKind = 'solar' | 'lunar';
+/** Solar shadow classification. @example 'hybrid' */
+export type SolarEclipseType = 'total' | 'annular' | 'hybrid' | 'partial';
+/** Lunar shadow classification. @example 'penumbral' */
+export type LunarEclipseType = 'total' | 'partial' | 'penumbral';
+/** Greatest eclipse geometry, TT/UT JD and apparent geocentric longitudes of date. @example event.gamma */
+interface EclipseGeometry extends EventInstant {
+  /** Signed axis separation in Earth equatorial radii (NASA north-positive convention). */
+  gamma: number;
+  /** NASA magnitude; lunar penumbral events use the penumbral magnitude. */
+  magnitude: number;
+  /** Degrees [0,360), mean equinox of date by default, true with includeNutation. */
+  sunLongitude: number;
+  /** Same frame and units as sunLongitude. */
+  moonLongitude: number;
+}
+/** Greatest solar eclipse; apparent diameter ratio for central eclipses. @example event.central */
+export interface SolarEclipseEvent extends EclipseGeometry {
+  kind: 'solar';
+  type: SolarEclipseType;
+  /** Whether the shadow axis intersects Earth's ellipsoid. */
+  central: boolean;
+}
+/** Greatest lunar eclipse; magnitudes are fractions of the Moon diameter immersed. @example event.umbralMagnitude */
+export interface LunarEclipseEvent extends EclipseGeometry {
+  kind: 'lunar';
+  type: LunarEclipseType;
+  umbralMagnitude: number;
+  penumbralMagnitude: number;
+}
+/** Discriminated greatest-eclipse union, with TT/UT instants. @example event.kind */
+export type EclipseEvent = SolarEclipseEvent | LunarEclipseEvent;
