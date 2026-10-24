@@ -34,11 +34,16 @@ All notable changes to this project are documented here, following
   Packed npm size 793 kB → 366 kB. CommonJS `require('celestine')` is unchanged.
 - Snapshot public API paths and resolved types independently of declaration bundler names.
 
-- Output shift notice (default options): Mercury longitudes change by up to ~3° for
-  1800-era dates and by up to tens of arcminutes in the 20th/21st century; Pluto by up to
-  ~1.6°; Sun, Venus–Neptune by up to 30″–53″; Moon latitude by up to 3.1″. Chiron shifts by
-  up to 0.77° (frame correction); its Keplerian model still has degree-scale errors away from
-  J2000. Sign/house placements and retrograde flags near boundaries and stations may change.
+- Output shift notice (default options, measured against 0.2.1 over 1800–2100): Mercury
+  longitudes change by up to 3.25° for 1800-era dates (2020s: median 5′, max 27′); Pluto by up
+  to 2.85° (2020s: ~21–26′); Sun, Venus–Neptune by under 1′; Moon latitude by up to 3.1″.
+  Chiron and the asteroids (Ceres, Pallas, Juno, Vesta) now use the correct of-date frame and
+  shift by up to 3.07° (Chiron) and 5.9° (asteroids). Their Keplerian models still have
+  degree-scale errors away from their epochs, and for present-day dates Chiron, Ceres, Juno and
+  Vesta are currently *less* accurate than in 0.2.1 (e.g. Chiron 9′ → 32′ in 2026 vs JPL
+  Horizons), because the old frame bug happened to cancel part of the Keplerian drift; Pallas
+  improves (24′ → 4′). Station times may move by 12–42 h; sign/house placements and retrograde
+  flags near boundaries and stations may change.
 - `includeNutation: true` is now honored by every body except the Moon (unchanged); the default
   (mean equinox of date, no nutation) is unchanged.
 - Node >=20 required; CI tests Node 20, 22 and 24.
