@@ -26,6 +26,16 @@ All notable changes to this project are documented here, following
   sizes, including the shared pipeline: Chiron 5.5 KB up to Pallas 11.8 KB, all five 30.7 KB.
 - The root `celestine` export and all other subpaths are unchanged.
 
+### Fixed
+
+- `calculateChart` now computes the aspect types requested in `options.aspectTypes`, including
+  minor and Kepler aspects. Before, it detected only the major aspects and then filtered them, so
+  a requested quincunx (and any pattern that needs one, such as a Yod) never appeared.
+- Minor aspects use the existing `DEFAULT_ORBS` (2°, quincunx 3°, Kepler aspects 1°) unless
+  `aspectOrbs` overrides them.
+- When `aspectTypes` is omitted or an empty array, the output is unchanged (major aspects only).
+  This is verified to be bit-identical over 2,500 seeded charts.
+
 ## [0.4.0] - 2026-10-24
 
 ### Added

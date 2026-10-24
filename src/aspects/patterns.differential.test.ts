@@ -11,8 +11,11 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { addExtraBodies, buildAspectBodies } from '../chart/aspect-calculation.js';
 import { calculateChart } from '../chart/chart.js';
-import type { ChartOptions } from '../chart/types.js';
+import { DEFAULT_OPTIONS } from '../chart/constants.js';
+import type { Chart, ChartAspects, ChartOptions } from '../chart/types.js';
+import { calculateAspects, filterAspectsByBody, filterAspectsByType } from './aspect-detection.js';
 import {
   detectGrandCross,
   detectGrandTrine,
@@ -426,6 +429,52 @@ function oldArraysEqual(a: string[], b: string[]): boolean {
   return sortedA.every((val, idx) => val === sortedB[idx]);
 }
 
+/**
+ * Frozen calculateChartAspects from celestine 0.3.0 (5659336), test-only: major aspects were
+ * always detected and `aspectTypes` only filtered them afterwards.
+ */
+function oldChartAspects(chart: Chart): ChartAspects {
+  const options = chart.options;
+  const bodies = addExtraBodies(buildAspectBodies(chart.planets), chart.nodes, chart.lilith);
+  const result = calculateAspects(bodies, {
+    orbs: options.aspectOrbs,
+    minimumStrength: options.minimumAspectStrength,
+  });
+  let aspects = result.aspects;
+  if (options.aspectTypes && options.aspectTypes.length > 0) {
+    aspects = filterAspectsByType(aspects, options.aspectTypes);
+  }
+  const byBody: Record<string, Aspect[]> = {};
+  for (const body of bodies) {
+    const bodyAspects = filterAspectsByBody(aspects, body.name);
+    if (bodyAspects.length > 0) {
+      byBody[body.name] = bodyAspects;
+    }
+  }
+  const byType: Record<AspectType, Aspect[]> = {} as Record<AspectType, Aspect[]>;
+  for (const aspect of aspects) {
+    if (!byType[aspect.type]) {
+      byType[aspect.type] = [];
+    }
+    byType[aspect.type].push(aspect);
+  }
+  const majorTypes = ['conjunction', 'sextile', 'square', 'trine', 'opposition'];
+  const summary = {
+    conjunctions: byType.conjunction?.length ?? 0,
+    sextiles: byType.sextile?.length ?? 0,
+    squares: byType.square?.length ?? 0,
+    trines: byType.trine?.length ?? 0,
+    oppositions: byType.opposition?.length ?? 0,
+    minor: 0,
+  };
+  for (const [type, list] of Object.entries(byType)) {
+    if (!majorTypes.includes(type)) {
+      summary.minor += list.length;
+    }
+  }
+  return { all: aspects, byBody, byType, count: aspects.length, summary };
+}
+
 // ---- Harness ----
 
 function prng(seed: number): () => number {
@@ -512,6 +561,7 @@ describe('pattern detection (differential vs original implementation)', () => {
   it('matches on 2,500 seeded random charts', () => {
     const rand = prng(20261024);
     const seen = new Map<string, number>();
+    let quincunxes = 0;
     for (let i = 0; i < 2500; i++) {
       const wide = rand() < 0.5;
       const options: ChartOptions = {
@@ -531,32 +581,53 @@ describe('pattern detection (differential vs original implementation)', () => {
           },
         }),
       };
-      const chart = calculateChart(
-        {
-          year: 1800 + Math.floor(rand() * 300),
-          month: 1 + Math.floor(rand() * 12),
-          day: 1 + Math.floor(rand() * 28),
-          hour: Math.floor(rand() * 24),
-          minute: Math.floor(rand() * 60),
-          timezone: Math.round(rand() * 24 - 12),
-          latitude: rand() * 130 - 65,
-          longitude: rand() * 360 - 180,
-        },
-        options,
-      );
+      const birth = {
+        year: 1800 + Math.floor(rand() * 300),
+        month: 1 + Math.floor(rand() * 12),
+        day: 1 + Math.floor(rand() * 28),
+        hour: Math.floor(rand() * 24),
+        minute: Math.floor(rand() * 60),
+        timezone: Math.round(rand() * 24 - 12),
+        latitude: rand() * 130 - 65,
+        longitude: rand() * 360 - 180,
+      };
+      const chart = calculateChart(birth, options);
       const aspects = chart.aspects.all;
+      for (const aspect of aspects)
+        assert.ok(PATTERN_ASPECTS.includes(aspect.type), `chart ${i}: unrequested ${aspect.type}`);
+      quincunxes += chart.aspects.byType[AspectType.Quincunx]?.length ?? 0;
       assert.deepEqual(
         observe(chart.patterns, aspects),
         observe(oldFindPatterns(aspects), aspects),
         `calculateChart patterns differ for chart ${i}`,
       );
       compare(aspects, `chart ${i}`, seen);
+
+      // Default path (no aspectTypes): aspects, patterns and the whole chart must be exactly
+      // what 0.3.0 returned, i.e. major aspects only, same objects in the same order.
+      const { aspectTypes: _, ...defaults } = options;
+      const plain = calculateChart(birth, defaults);
+      assert.equal(plain.options.aspectTypes, DEFAULT_OPTIONS.aspectTypes);
+      const expected = oldChartAspects(plain);
+      assert.equal(
+        JSON.stringify(plain.aspects),
+        JSON.stringify(expected),
+        `default aspects differ for chart ${i}`,
+      );
+      assert.equal(
+        JSON.stringify(plain.patterns),
+        JSON.stringify(oldFindPatterns(expected.all)),
+        `default patterns differ for chart ${i}`,
+      );
+      // Everything except aspects and patterns is independent of aspectTypes.
+      const strip = (c: Chart) =>
+        JSON.stringify({ ...c, options: 0, aspects: 0, patterns: 0, summary: 0 });
+      assert.equal(strip(plain), strip(chart), `chart ${i} positions differ`);
     }
-    // calculateChart only computes major aspects (aspectTypes filters afterwards), so its
-    // charts never contain quincunxes or Yods; the synthetic corpus covers those.
+    // Requested quincunxes are now detected, so Yods occur in real charts too.
+    assert.ok(quincunxes > 1000, `only ${quincunxes} quincunxes in chart corpus`);
     for (const type of Object.values(PatternType))
-      if (type !== PatternType.Yod)
-        assert.ok((seen.get(type) ?? 0) > 100, `too few ${type} in chart corpus`);
+      assert.ok((seen.get(type) ?? 0) > 100, `too few ${type} in chart corpus (${seen.get(type)})`);
   });
 
   it('matches on 3,000 seeded synthetic aspect lists (duplicates, self-aspects)', () => {

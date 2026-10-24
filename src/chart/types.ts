@@ -98,7 +98,14 @@ export interface ChartOptions {
   /** Include Part of Fortune and Part of Spirit (default: true) */
   includeLots?: boolean;
 
-  /** Aspect types to calculate (default: major aspects) */
+  /**
+   * Aspect types to calculate (default: the five major aspects).
+   *
+   * Every requested type is detected, including minor ones such as quincunx or semi-sextile,
+   * so patterns that need them (Yod) can appear. Minor aspects use their default orbs
+   * (`DEFAULT_ORBS`: 2°, quincunx 3°, Kepler aspects 1°) unless `aspectOrbs` overrides them.
+   * An empty array is treated like the default.
+   */
   aspectTypes?: AspectType[];
 
   /** Custom orbs per aspect type */

@@ -9,7 +9,6 @@
 import {
   calculateAspects as calculateAspectsCore,
   filterAspectsByBody,
-  filterAspectsByType,
 } from '../aspects/aspect-detection.js';
 import { findPatterns } from '../aspects/patterns.js';
 import type { Aspect, AspectBody, AspectPattern, AspectType } from '../aspects/types.js';
@@ -93,17 +92,13 @@ export function calculateChartAspects(
   // Optionally add nodes and Lilith
   bodies = addExtraBodies(bodies, nodes, lilith);
 
-  // Calculate aspects
-  const result = calculateAspectsCore(bodies, {
+  // Detect exactly the requested aspect types (minor ones included, with their default orbs
+  // unless overridden in aspectOrbs); none requested means the major aspects.
+  const { aspects } = calculateAspectsCore(bodies, {
+    aspectTypes: options.aspectTypes?.length ? options.aspectTypes : undefined,
     orbs: options.aspectOrbs,
     minimumStrength: options.minimumAspectStrength,
   });
-
-  // Filter by requested aspect types if specified
-  let aspects = result.aspects;
-  if (options.aspectTypes && options.aspectTypes.length > 0) {
-    aspects = filterAspectsByType(aspects, options.aspectTypes);
-  }
 
   // Build aspects by body
   const byBody: Record<string, Aspect[]> = {};
