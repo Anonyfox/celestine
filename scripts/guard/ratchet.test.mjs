@@ -96,3 +96,19 @@ test('any perf.nodeMajor change counts as loosening', () => {
     'perf.nodeMajor: 20 → 18',
   ]);
 });
+test('API symbol-id renumbering is ignored; real member changes are not', () => {
+  const at = (id, type = '() => Iterator<string>') => ({
+    'public.Name': { kind: 'type', members: { [`__@iterator@${id}`]: { type, optional: false } } },
+  });
+  assert.deepEqual(compareApi(at(1738), at(1747)), []);
+  assert.deepEqual(compareApi(at(1738), at(1747, '() => Iterator<number>')), [
+    'public.Name: changed',
+  ]);
+  const toTag = {
+    'public.Name': {
+      kind: 'type',
+      members: { '__@toStringTag@9': { type: 'string', optional: false } },
+    },
+  };
+  assert.deepEqual(compareApi(at(1738), toTag), ['public.Name: changed']);
+});

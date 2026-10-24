@@ -84,3 +84,23 @@ for (const name of [
   }
 }
 console.log('Consumer: all eight ESM/CJS subpaths match their root namespaces.');
+const events = await import('celestine/events');
+const eventsCjs = createRequire(import.meta.url)('celestine/events');
+assert.equal('events' in esm, false);
+assert.equal('events' in cjs, false);
+assert.deepEqual(Object.keys(events).sort(), Object.keys(eventsCjs).sort());
+assert.deepEqual(
+  events.findSeasons(2461041.5, 2461406.5),
+  eventsCjs.findSeasons(2461041.5, 2461406.5),
+);
+assert.deepEqual(events.getMoonPhase(2451545), eventsCjs.getMoonPhase(2451545));
+console.log('Consumer: subpath-only celestine/events matches across ESM and CJS.');
+const precise = await import('celestine/precise');
+const preciseCjs = createRequire(import.meta.url)('celestine/precise');
+assert.equal('precise' in esm, false);
+assert.equal('precise' in cjs, false);
+assert.deepEqual(Object.keys(precise).sort(), Object.keys(preciseCjs).sort());
+assert.deepEqual(precise.getPallasPosition(2460000.5), preciseCjs.getPallasPosition(2460000.5));
+assert.deepEqual(precise.PRECISE_RANGE, preciseCjs.PRECISE_RANGE);
+assert.throws(() => precise.getChironPosition(precise.PRECISE_RANGE.endJD + 1), RangeError);
+console.log('Consumer: subpath-only celestine/precise matches across ESM and CJS.');

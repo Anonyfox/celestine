@@ -22,6 +22,17 @@ import {findAllAspects} from 'celestine/aspects';
 import {calculateChart} from 'celestine/chart';
 export * from 'celestine/ephemeris';
 export {toJulianDate, fromJulianDate, eclipticToZodiac, findStationPoints, findAllAspects, calculateChart};`,
+  // celestine/events is subpath-only (never re-exported from the root).
+  'events.full': `export * from 'celestine/events';`,
+  'events.findSeasons': `export {findSeasons} from 'celestine/events';`,
+  'events.findLunarPhases': `export {findLunarPhases} from 'celestine/events';`,
+  // celestine/precise is subpath-only; a single body must bundle only its own model.
+  'precise.getChironPosition': `export {getChironPosition} from 'celestine/precise';`,
+  'precise.getCeresPosition': `export {getCeresPosition} from 'celestine/precise';`,
+  'precise.getPallasPosition': `export {getPallasPosition} from 'celestine/precise';`,
+  'precise.getJunoPosition': `export {getJunoPosition} from 'celestine/precise';`,
+  'precise.getVestaPosition': `export {getVestaPosition} from 'celestine/precise';`,
+  'precise.all': `export * from 'celestine/precise';`,
 };
 export const bundleOptions = {
   bundle: true,

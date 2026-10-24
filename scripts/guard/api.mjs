@@ -1,16 +1,29 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import ts from 'typescript';
+import * as eventsApi from '../../dist/events/index.js';
 import * as api from '../../dist/index.js';
+import * as preciseApi from '../../dist/precise/index.js';
+import { stableApi } from './api-normalize.mjs';
 import { updating } from './common.mjs';
 
-const program = ts.createProgram(['dist/index.d.ts'], {
-  module: ts.ModuleKind.NodeNext,
-  moduleResolution: ts.ModuleResolutionKind.NodeNext,
-  strict: true,
-  skipLibCheck: true,
-});
+// Root plus the subpath-only entry points (not reachable from the root namespace).
+const ENTRIES = [
+  ['dist/index.d.ts', api, ''],
+  ['dist/events/index.d.ts', eventsApi, 'events:'],
+  ['dist/precise/index.d.ts', preciseApi, 'precise:'],
+];
+
+const program = ts.createProgram(
+  ENTRIES.map(([file]) => file),
+  {
+    module: ts.ModuleKind.NodeNext,
+    moduleResolution: ts.ModuleResolutionKind.NodeNext,
+    strict: true,
+    skipLibCheck: true,
+  },
+);
 const checker = program.getTypeChecker();
-const source = program.getSourceFile('dist/index.d.ts');
+let source;
 const flags =
   ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope;
 const snapshot = {};
@@ -23,7 +36,6 @@ function runtime(value, path, depth = 0) {
     else if (typeof entry === 'string' || typeof entry === 'number') snapshot[name].value = entry;
   }
 }
-runtime(api, 'exports');
 function resolve(symbol) {
   return symbol.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol;
 }
@@ -39,7 +51,6 @@ function register(module, prefix) {
     if (symbol.flags & ts.SymbolFlags.Module) register(symbol, path);
   }
 }
-register(checker.getSymbolAtLocation(source), 'public');
 function describe(symbol, path, ancestors = new Set()) {
   symbol = resolve(symbol);
   if (symbol.flags & ts.SymbolFlags.Module) {
@@ -124,14 +135,19 @@ function describe(symbol, path, ancestors = new Set()) {
   }
   if (!references.size) delete entry.references;
 }
-for (const symbol of checker.getExportsOfModule(checker.getSymbolAtLocation(source)))
-  describe(symbol, `public.${symbol.name}`);
+for (const [file, runtimeApi, prefix] of ENTRIES) {
+  source = program.getSourceFile(file);
+  runtime(runtimeApi, `${prefix}exports`);
+  register(checker.getSymbolAtLocation(source), `${prefix}public`);
+  for (const symbol of checker.getExportsOfModule(checker.getSymbolAtLocation(source)))
+    describe(symbol, `${prefix}public.${symbol.name}`);
+}
 const normalized = Object.fromEntries(
-  Object.entries(snapshot).sort(([a], [b]) => a.localeCompare(b, 'en')),
+  Object.entries(stableApi(snapshot)).sort(([a], [b]) => a.localeCompare(b, 'en')),
 );
 if (updating) writeFileSync('api-surface.json', `${JSON.stringify(normalized, null, 2)}\n`);
 else {
-  const expected = JSON.parse(readFileSync('api-surface.json', 'utf8'));
+  const expected = stableApi(JSON.parse(readFileSync('api-surface.json', 'utf8')));
   const changes = [...new Set([...Object.keys(expected), ...Object.keys(normalized)])].filter(
     (key) => JSON.stringify(expected[key]) !== JSON.stringify(normalized[key]),
   );

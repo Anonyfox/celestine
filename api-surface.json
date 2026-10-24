@@ -1,4 +1,498 @@
 {
+  "events:exports.findAspectTimes": {
+    "kind": "function"
+  },
+  "events:exports.findLunarPhases": {
+    "kind": "function"
+  },
+  "events:exports.findSeasons": {
+    "kind": "function"
+  },
+  "events:exports.findSignIngresses": {
+    "kind": "function"
+  },
+  "events:exports.findVoidOfCourseMoon": {
+    "kind": "function"
+  },
+  "events:exports.getMoonPhase": {
+    "kind": "function"
+  },
+  "events:public.AspectTimeEvent": {
+    "kind": "type",
+    "type": "AspectTimeEvent",
+    "members": {
+      "angle": {
+        "type": "number",
+        "optional": false
+      },
+      "body": {
+        "type": "CelestialBody",
+        "optional": false
+      },
+      "increasing": {
+        "type": "boolean",
+        "optional": false
+      },
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "target": {
+        "type": "number | CelestialBody",
+        "optional": false
+      }
+    },
+    "definition": "export interface AspectTimeEvent extends EventInstant { body: CelestialBody; target: CelestialBody | number; angle: number; increasing: boolean; }",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
+  "events:public.EventInstant": {
+    "kind": "type",
+    "type": "EventInstant",
+    "members": {
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface EventInstant { jd: number; jdUT: number; }"
+  },
+  "events:public.findAspectTimes": {
+    "kind": "value",
+    "type": "(body: CelestialBody, target: CelestialBody | number, startJD: number, endJD: number, options?: { angles?: number[]; }) => AspectTimeEvent[]",
+    "references": {
+      "AspectTimeEvent": "events:public.AspectTimeEvent",
+      "CelestialBody": "public.ephemeris.CelestialBody"
+    }
+  },
+  "events:public.findLunarPhases": {
+    "kind": "value",
+    "type": "(startJD: number, endJD: number, options?: { phases?: LunarPhase[]; }) => LunarPhaseEvent[]",
+    "references": {
+      "LunarPhase": "events:public.LunarPhase",
+      "LunarPhaseEvent": "events:public.LunarPhaseEvent"
+    }
+  },
+  "events:public.findSeasons": {
+    "kind": "value",
+    "type": "(startJD: number, endJD: number) => SeasonEvent[]",
+    "references": {
+      "SeasonEvent": "events:public.SeasonEvent"
+    }
+  },
+  "events:public.findSignIngresses": {
+    "kind": "value",
+    "type": "(body: CelestialBody, startJD: number, endJD: number, options?: { nutation?: boolean; }) => SignIngress[]",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "SignIngress": "events:public.SignIngress"
+    }
+  },
+  "events:public.findVoidOfCourseMoon": {
+    "kind": "value",
+    "type": "(startJD: number, endJD: number, options?: { bodies?: CelestialBody[]; }) => VoidOfCoursePeriod[]",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "VoidOfCoursePeriod": "events:public.VoidOfCoursePeriod"
+    }
+  },
+  "events:public.getMoonPhase": {
+    "kind": "value",
+    "type": "(jd: number) => MoonPhaseInfo",
+    "references": {
+      "MoonPhaseInfo": "events:public.MoonPhaseInfo"
+    }
+  },
+  "events:public.LunarPhase": {
+    "kind": "type",
+    "type": "LunarPhase",
+    "members": {
+      "[Symbol.iterator]": {
+        "type": "() => StringIterator<string>",
+        "optional": false
+      },
+      "anchor": {
+        "type": "(name: string) => string",
+        "optional": false
+      },
+      "at": {
+        "type": "(index: number) => string | undefined",
+        "optional": false
+      },
+      "big": {
+        "type": "() => string",
+        "optional": false
+      },
+      "blink": {
+        "type": "() => string",
+        "optional": false
+      },
+      "bold": {
+        "type": "() => string",
+        "optional": false
+      },
+      "charAt": {
+        "type": "(pos: number) => string",
+        "optional": false
+      },
+      "charCodeAt": {
+        "type": "(index: number) => number",
+        "optional": false
+      },
+      "codePointAt": {
+        "type": "(pos: number) => number | undefined",
+        "optional": false
+      },
+      "concat": {
+        "type": "(...strings: string[]) => string",
+        "optional": false
+      },
+      "endsWith": {
+        "type": "(searchString: string, endPosition?: number) => boolean",
+        "optional": false
+      },
+      "fixed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "fontcolor": {
+        "type": "(color: string) => string",
+        "optional": false
+      },
+      "fontsize": {
+        "type": "{ (size: number): string; (size: string): string; }",
+        "optional": false
+      },
+      "includes": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "indexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "isWellFormed": {
+        "type": "() => boolean",
+        "optional": false
+      },
+      "italics": {
+        "type": "() => string",
+        "optional": false
+      },
+      "lastIndexOf": {
+        "type": "(searchString: string, position?: number) => number",
+        "optional": false
+      },
+      "length": {
+        "type": "number",
+        "optional": false
+      },
+      "link": {
+        "type": "(url: string) => string",
+        "optional": false
+      },
+      "localeCompare": {
+        "type": "{ (that: string): number; (that: string, locales?: string | string[], options?: Intl.CollatorOptions): number; (that: string, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): number; }",
+        "optional": false
+      },
+      "match": {
+        "type": "{ (regexp: string | RegExp): RegExpMatchArray | null; (matcher: { [Symbol.match](string: string): RegExpMatchArray | null; }): RegExpMatchArray | null; }",
+        "optional": false
+      },
+      "matchAll": {
+        "type": "(regexp: RegExp) => RegExpStringIterator<RegExpExecArray>",
+        "optional": false
+      },
+      "normalize": {
+        "type": "{ (form: \"NFC\" | \"NFD\" | \"NFKC\" | \"NFKD\"): string; (form?: string): string; }",
+        "optional": false
+      },
+      "padEnd": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "padStart": {
+        "type": "(maxLength: number, fillString?: string) => string",
+        "optional": false
+      },
+      "repeat": {
+        "type": "(count: number) => string",
+        "optional": false
+      },
+      "replace": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; (searchValue: { [Symbol.replace](string: string, replaceValue: string): string; }, replaceValue: string): string; (searchValue: { [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string; }, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "replaceAll": {
+        "type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; }",
+        "optional": false
+      },
+      "search": {
+        "type": "{ (regexp: string | RegExp): number; (searcher: { [Symbol.search](string: string): number; }): number; }",
+        "optional": false
+      },
+      "slice": {
+        "type": "(start?: number, end?: number) => string",
+        "optional": false
+      },
+      "small": {
+        "type": "() => string",
+        "optional": false
+      },
+      "split": {
+        "type": "{ (separator: string | RegExp, limit?: number): string[]; (splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[]; }",
+        "optional": false
+      },
+      "startsWith": {
+        "type": "(searchString: string, position?: number) => boolean",
+        "optional": false
+      },
+      "strike": {
+        "type": "() => string",
+        "optional": false
+      },
+      "sub": {
+        "type": "() => string",
+        "optional": false
+      },
+      "substr": {
+        "type": "(from: number, length?: number) => string",
+        "optional": false
+      },
+      "substring": {
+        "type": "(start: number, end?: number) => string",
+        "optional": false
+      },
+      "sup": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toLocaleLowerCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLocaleUpperCase": {
+        "type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+        "optional": false
+      },
+      "toLowerCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toString": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toUpperCase": {
+        "type": "() => string",
+        "optional": false
+      },
+      "toWellFormed": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trim": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimEnd": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimLeft": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimRight": {
+        "type": "() => string",
+        "optional": false
+      },
+      "trimStart": {
+        "type": "() => string",
+        "optional": false
+      },
+      "valueOf": {
+        "type": "() => string",
+        "optional": false
+      }
+    },
+    "definition": "export type LunarPhase = 'new-moon' | 'first-quarter' | 'full-moon' | 'last-quarter';"
+  },
+  "events:public.LunarPhaseEvent": {
+    "kind": "type",
+    "type": "LunarPhaseEvent",
+    "members": {
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "phase": {
+        "type": "LunarPhase",
+        "optional": false
+      }
+    },
+    "definition": "export interface LunarPhaseEvent extends EventInstant { phase: LunarPhase; }",
+    "references": {
+      "EventInstant": "events:public.EventInstant",
+      "LunarPhase": "events:public.LunarPhase"
+    }
+  },
+  "events:public.MoonPhaseInfo": {
+    "kind": "type",
+    "type": "MoonPhaseInfo",
+    "members": {
+      "elongation": {
+        "type": "number",
+        "optional": false
+      },
+      "illumination": {
+        "type": "number",
+        "optional": false
+      },
+      "phase": {
+        "type": "LunarPhase",
+        "optional": false
+      },
+      "phaseAngle": {
+        "type": "number",
+        "optional": false
+      },
+      "waxing": {
+        "type": "boolean",
+        "optional": false
+      }
+    },
+    "definition": "export interface MoonPhaseInfo { elongation: number; phaseAngle: number; illumination: number; waxing: boolean; phase: LunarPhase; }",
+    "references": {
+      "LunarPhase": "events:public.LunarPhase"
+    }
+  },
+  "events:public.SeasonEvent": {
+    "kind": "type",
+    "type": "SeasonEvent",
+    "members": {
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "type": {
+        "type": "\"march-equinox\" | \"june-solstice\" | \"september-equinox\" | \"december-solstice\"",
+        "optional": false
+      }
+    },
+    "definition": "export interface SeasonEvent extends EventInstant { type: 'march-equinox' | 'june-solstice' | 'september-equinox' | 'december-solstice'; }",
+    "references": {
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
+  "events:public.SignIngress": {
+    "kind": "type",
+    "type": "SignIngress",
+    "members": {
+      "body": {
+        "type": "CelestialBody",
+        "optional": false
+      },
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "previousSign": {
+        "type": "number",
+        "optional": false
+      },
+      "previousSignName": {
+        "type": "string",
+        "optional": false
+      },
+      "retrograde": {
+        "type": "boolean",
+        "optional": false
+      },
+      "sign": {
+        "type": "number",
+        "optional": false
+      },
+      "signName": {
+        "type": "string",
+        "optional": false
+      }
+    },
+    "definition": "export interface SignIngress extends EventInstant { body: CelestialBody; sign: number; signName: string; previousSign: number; previousSignName: string; retrograde: boolean; }",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
+  "events:public.VoidOfCoursePeriod": {
+    "kind": "type",
+    "type": "VoidOfCoursePeriod",
+    "members": {
+      "end": {
+        "type": "number",
+        "optional": false
+      },
+      "endUT": {
+        "type": "number",
+        "optional": false
+      },
+      "lastAspect": {
+        "type": "({ body: CelestialBody; angle: number; } & EventInstant) | null",
+        "optional": false
+      },
+      "nextSign": {
+        "type": "number",
+        "optional": false
+      },
+      "nextSignName": {
+        "type": "string",
+        "optional": false
+      },
+      "sign": {
+        "type": "number",
+        "optional": false
+      },
+      "signName": {
+        "type": "string",
+        "optional": false
+      },
+      "start": {
+        "type": "number",
+        "optional": false
+      },
+      "startUT": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface VoidOfCoursePeriod { start: number; startUT: number; end: number; endUT: number; sign: number; signName: string; nextSign: number; nextSignName: string; lastAspect: ({ body: CelestialBody; angle: number; } & EventInstant) | null; }",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
   "exports.ALL_ASPECTS": {
     "kind": "object"
   },
@@ -5272,6 +5766,126 @@
     "kind": "number",
     "value": 5
   },
+  "precise:exports.getCeresPosition": {
+    "kind": "function"
+  },
+  "precise:exports.getChironPosition": {
+    "kind": "function"
+  },
+  "precise:exports.getJunoPosition": {
+    "kind": "function"
+  },
+  "precise:exports.getPallasPosition": {
+    "kind": "function"
+  },
+  "precise:exports.getVestaPosition": {
+    "kind": "function"
+  },
+  "precise:exports.PRECISE_RANGE": {
+    "kind": "object"
+  },
+  "precise:exports.PRECISE_RANGE.endJD": {
+    "kind": "number",
+    "value": 2524594
+  },
+  "precise:exports.PRECISE_RANGE.startJD": {
+    "kind": "number",
+    "value": 2378497
+  },
+  "precise:public.EphemerisOptions": {
+    "kind": "type",
+    "type": "EphemerisOptions",
+    "members": {
+      "includeAberration": {
+        "type": "boolean | undefined",
+        "optional": true
+      },
+      "includeLightTime": {
+        "type": "boolean | undefined",
+        "optional": true
+      },
+      "includeNutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      },
+      "includeSpeed": {
+        "type": "boolean | undefined",
+        "optional": true
+      }
+    },
+    "definition": "export interface EphemerisOptions { includeSpeed?: boolean; includeNutation?: boolean; includeAberration?: boolean; includeLightTime?: boolean; }"
+  },
+  "precise:public.getCeresPosition": {
+    "kind": "value",
+    "type": "(jd: number, options?: EphemerisOptions) => PlanetPosition",
+    "references": {
+      "EphemerisOptions": "public.ephemeris.EphemerisOptions",
+      "PlanetPosition": "public.ephemeris.PlanetPosition"
+    }
+  },
+  "precise:public.getChironPosition": {
+    "kind": "value",
+    "type": "(jd: number, options?: EphemerisOptions) => PlanetPosition",
+    "references": {
+      "EphemerisOptions": "public.ephemeris.EphemerisOptions",
+      "PlanetPosition": "public.ephemeris.PlanetPosition"
+    }
+  },
+  "precise:public.getJunoPosition": {
+    "kind": "value",
+    "type": "(jd: number, options?: EphemerisOptions) => PlanetPosition",
+    "references": {
+      "EphemerisOptions": "public.ephemeris.EphemerisOptions",
+      "PlanetPosition": "public.ephemeris.PlanetPosition"
+    }
+  },
+  "precise:public.getPallasPosition": {
+    "kind": "value",
+    "type": "(jd: number, options?: EphemerisOptions) => PlanetPosition",
+    "references": {
+      "EphemerisOptions": "public.ephemeris.EphemerisOptions",
+      "PlanetPosition": "public.ephemeris.PlanetPosition"
+    }
+  },
+  "precise:public.getVestaPosition": {
+    "kind": "value",
+    "type": "(jd: number, options?: EphemerisOptions) => PlanetPosition",
+    "references": {
+      "EphemerisOptions": "public.ephemeris.EphemerisOptions",
+      "PlanetPosition": "public.ephemeris.PlanetPosition"
+    }
+  },
+  "precise:public.PlanetPosition": {
+    "kind": "type",
+    "type": "PlanetPosition",
+    "members": {
+      "distance": {
+        "type": "number",
+        "optional": false
+      },
+      "isRetrograde": {
+        "type": "boolean",
+        "optional": false
+      },
+      "latitude": {
+        "type": "number",
+        "optional": false
+      },
+      "longitude": {
+        "type": "number",
+        "optional": false
+      },
+      "longitudeSpeed": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface PlanetPosition { longitude: number; latitude: number; distance: number; longitudeSpeed: number; isRetrograde: boolean; }"
+  },
+  "precise:public.PRECISE_RANGE": {
+    "kind": "value",
+    "type": "{ readonly startJD: number; readonly endJD: number; }"
+  },
   "public.ALL_ASPECTS": {
     "kind": "value",
     "type": "AspectType[]",
@@ -5598,7 +6212,7 @@
     "kind": "type",
     "type": "AspectClassification",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -5813,7 +6427,7 @@
     "kind": "type",
     "type": "AspectNature",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -8901,11 +9515,11 @@
     "kind": "type",
     "type": "PlanetPositions",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => MapIterator<[Planet, PlanetPosition]>",
         "optional": false
       },
-      "__@toStringTag@2426": {
+      "[Symbol.toStringTag]": {
         "type": "string",
         "optional": false
       },
@@ -9497,7 +10111,7 @@
     "kind": "type",
     "type": "HouseSystem",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -9843,7 +10457,7 @@
     "kind": "type",
     "type": "HouseSystem",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -10490,7 +11104,7 @@
     "kind": "type",
     "type": "AngleProgressionMethod",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -11460,7 +12074,7 @@
     "kind": "type",
     "type": "ProgressedAspectPhase",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -11675,7 +12289,7 @@
     "kind": "type",
     "type": "ProgressedBodyName",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -12503,7 +13117,7 @@
     "kind": "type",
     "type": "ProgressionType",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -12813,7 +13427,7 @@
     "kind": "type",
     "type": "ProgressionType",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -13308,7 +13922,7 @@
     "kind": "type",
     "type": "TimeSystem",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -14458,7 +15072,7 @@
     "kind": "type",
     "type": "MotionState",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -14703,7 +15317,7 @@
     "kind": "type",
     "type": "NatalPointType",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },
@@ -15435,7 +16049,7 @@
     "kind": "type",
     "type": "TransitPhase",
     "members": {
-      "__@iterator@1747": {
+      "[Symbol.iterator]": {
         "type": "() => StringIterator<string>",
         "optional": false
       },

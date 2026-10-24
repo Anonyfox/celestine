@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { stableApi } from './api-normalize.mjs';
 
 export function compareBudgets(before, after, path = '') {
   const changes = [];
@@ -29,6 +30,8 @@ export function compareBudgets(before, after, path = '') {
   return changes;
 }
 export function compareApi(before, after) {
+  before = stableApi(before);
+  after = stableApi(after);
   return Object.keys(before)
     .filter((key) => JSON.stringify(before[key]) !== JSON.stringify(after[key]))
     .map((key) => `${key}: ${key in after ? 'changed' : 'removed'}`);
