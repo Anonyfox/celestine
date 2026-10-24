@@ -10,9 +10,15 @@ import type {
   LunarPhaseAlias,
   LunarPhaseEvent,
   MoonPhaseInfo,
+  MoonPhaseName,
 } from './types.js';
 
 const phases: readonly LunarPhase[] = ['new-moon', 'first-quarter', 'full-moon', 'last-quarter'];
+// new-moon, waxing-crescent, first-quarter, waxing-gibbous, full-moon, ...
+const names = /* @__PURE__ */ phases.flatMap((p, i): MoonPhaseName[] => [
+  p,
+  `${i < 2 ? 'waxing' : 'waning'}-${i % 3 ? 'gibbous' : 'crescent'}`,
+]);
 const aliases: readonly LunarPhaseAlias[] = ['new', 'first', 'full', 'last'];
 /**
  * Find principal apparent geocentric Moon−Sun longitude phases in an inclusive TT JD interval.
@@ -79,6 +85,7 @@ export function findLunarPhases(
  * Phase angle is Sun–Moon–Earth [0,180], using latitude and both geocentric AU distances;
  * illumination is (1+cos(phaseAngle))/2. Waxing means elongation <180 degrees.
  * phase is the nearest principal longitude phase, with boundaries at 45,135,225,315 degrees.
+ * phaseName is one of eight names in 45-degree buckets centred on multiples of 45 degrees.
  * @param jd - TT Julian Date (not UT).
  * @returns Elongation, geometric phase angle, illuminated fraction and phase bucket.
  * @example getMoonPhase(2451545).illumination
@@ -108,5 +115,6 @@ export function getMoonPhase(jd: number): MoonPhaseInfo {
     illumination: (1 + Math.cos(phaseAngle * rad)) / 2,
     waxing: elongation < 180,
     phase: phases[Math.floor((elongation + 45) / 90) % 4]!,
+    phaseName: names[Math.floor((elongation + 22.5) / 45) % 8]!,
   };
 }

@@ -8,6 +8,9 @@ All notable changes to this project are documented here, following
 
 ### Added
 
+- `getMoonPhase` (`celestine/events`) also returns `phaseName`, one of eight Moon
+  phase names in 45° elongation buckets (`'new-moon'`, `'waxing-crescent'`, …,
+  `'waning-crescent'`), and the `MoonPhaseName` type is exported. `phase` is unchanged.
 - `findStations` (`celestine/events`) accepts Chiron, using the precise Chiron model
   within 1800–2200. Its 31 stations in 2020–2035 match JPL Horizons (retrieved
   2026-10-24) within 8.0 minutes and 0.38″ of station longitude.

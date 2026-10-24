@@ -295,6 +295,20 @@ const hits = findLunarPhases(start, end, { phases: ['new', 'full'] }).filter(
 Checked against JPL Horizons at all 148 phases of 2025–2027: Moon within 7.5″, Sun
 within 0.3″ (true equinox of date).
 
+For the phase at a given moment, `getMoonPhase(jd)` (TT) returns the elongation,
+illuminated fraction and two names. `phase` is the nearest of the four principal
+phases (90° buckets). `phaseName` is one of eight names: `'new-moon'`,
+`'waxing-crescent'`, `'first-quarter'`, `'waxing-gibbous'`, `'full-moon'`,
+`'waning-gibbous'`, `'last-quarter'`, `'waning-crescent'`, in 45° buckets centred on
+the principal phases and the midpoints between them. So `'full-moon'` covers
+elongation 157.5°–202.5°, roughly a day and a half either side of the exact full moon.
+
+```ts
+import { getMoonPhase } from 'celestine/events';
+
+getMoonPhase(start + 10).phaseName; // 'last-quarter' (2026-01-11)
+```
+
 ### Eclipses
 
 `findEclipses` searches an inclusive TT interval for greatest solar and lunar eclipses.

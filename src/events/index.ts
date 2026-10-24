@@ -22,6 +22,7 @@ export type {
   LunarPhaseAlias,
   LunarPhaseEvent,
   MoonPhaseInfo,
+  MoonPhaseName,
   SeasonEvent,
   SignIngress,
   SignsDuring,

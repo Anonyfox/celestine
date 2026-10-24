@@ -112,3 +112,38 @@ test('VOC periods are ordered complete sign stays; empty-body convention and ove
   const point = periods[2]!.end;
   assert.ok(findVoidOfCourseMoon(point, point).some((p) => Math.abs(p.end - point) < 1e-6));
 });
+
+test('getMoonPhase phaseName: eight 45-degree buckets around Horizons phase instants', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const refs = (
+    JSON.parse(
+      await readFile(new URL('./__fixtures__/horizons-events.json', import.meta.url), 'utf8'),
+    ) as { kind: string; phase: string; jd: number }[]
+  )
+    .filter((r) => r.kind === 'phase')
+    .sort((a, b) => a.jd - b.jd);
+  const between: Record<string, string> = {
+    'new-moon': 'waxing-crescent',
+    'first-quarter': 'waxing-gibbous',
+    'full-moon': 'waning-gibbous',
+    'last-quarter': 'waning-crescent',
+  };
+  let checked = 0;
+  for (const [i, ref] of refs.entries()) {
+    // Within a day of the exact instant the Moon is within ~16 degrees of the phase angle.
+    for (const dt of [-1, 0, 1]) assert.equal(getMoonPhase(ref.jd + dt).phaseName, ref.phase);
+    const next = refs[i + 1];
+    if (next && next.jd - ref.jd < 9) {
+      assert.equal(getMoonPhase((ref.jd + next.jd) / 2).phaseName, between[ref.phase]);
+      checked++;
+    }
+  }
+  assert.ok(checked > 10);
+  for (let jd = 2461041.5; jd < 2461071; jd += 0.05) {
+    const info = getMoonPhase(jd);
+    const names = Object.entries(between).flat();
+    assert.equal(info.phaseName, names[Math.floor((info.elongation + 22.5) / 45) % 8]);
+    if (info.phaseName === info.phase)
+      assert.ok(Math.abs(wrap(info.elongation - names.indexOf(info.phase) * 45)) <= 22.5);
+  }
+});

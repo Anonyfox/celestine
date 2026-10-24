@@ -39,7 +39,19 @@ export interface MoonPhaseInfo {
   waxing: boolean;
   /** Nearest principal phase (45-degree bucket boundaries). */
   phase: LunarPhase;
+  /**
+   * Eight-phase name: 45-degree elongation buckets centred on 0, 45, ... 315 degrees, so
+   * 'new-moon' is elongation within 22.5 degrees of 0, 'waxing-crescent' 22.5–67.5, and so on.
+   */
+  phaseName: MoonPhaseName;
 }
+/** Eight-phase Moon name, from getMoonPhase(jd).phaseName. @example 'waxing-gibbous' */
+export type MoonPhaseName =
+  | LunarPhase
+  | 'waxing-crescent'
+  | 'waxing-gibbous'
+  | 'waning-gibbous'
+  | 'waning-crescent';
 /** True-equinox solar season; TT inputs, TT/UT event outputs. @example event.type */
 export interface SeasonEvent extends EventInstant {
   type: 'march-equinox' | 'june-solstice' | 'september-equinox' | 'december-solstice';
