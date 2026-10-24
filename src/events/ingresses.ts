@@ -1,7 +1,7 @@
 import type { CelestialBody } from '../ephemeris/positions.js';
 import { toUT } from '../time/delta-t.js';
 import { getSignName } from '../zodiac/sign-properties.js';
-import { bodyStep, position } from './bodies.js';
+import { bodyStep, position, trueEquinox } from './bodies.js';
 import { crossings } from './search.js';
 import type { EventFrameOptions, SignIngress } from './types.js';
 
@@ -25,14 +25,11 @@ export function findSignIngresses(
   body: CelestialBody,
   startJD: number,
   endJD: number,
-  options: EventFrameOptions & {
-    /** @deprecated Since 0.5.0: use includeNutation (same meaning). */
-    nutation?: boolean;
-  } = {},
+  options: EventFrameOptions = {},
 ): SignIngress[] {
-  const trueEquinox = options.includeNutation ?? options.nutation;
+  const frame = trueEquinox(options);
   return crossings(
-    (jd) => position(body, jd, trueEquinox),
+    (jd) => position(body, jd, frame),
     Array.from({ length: 12 }, (_, i) => i * 30),
     startJD,
     endJD,

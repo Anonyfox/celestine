@@ -88,7 +88,7 @@
     },
     "realistic": {
       "minBytes": 133952,
-      "gzipBytes": 48384
+      "gzipBytes": 48448
     },
     "subpath.getMercuryPosition": {
       "minBytes": 9280,
@@ -123,8 +123,8 @@
       "gzipBytes": 30784
     },
     "events.full": {
-      "minBytes": 59712,
-      "gzipBytes": 24320
+      "minBytes": 60160,
+      "gzipBytes": 24576
     },
     "events.findSeasons": {
       "minBytes": 9344,
@@ -133,6 +133,10 @@
     "events.findLunarPhases": {
       "minBytes": 11392,
       "gzipBytes": 5504
+    },
+    "events.findStations": {
+      "minBytes": 56192,
+      "gzipBytes": 22848
     }
   },
   "perf": {

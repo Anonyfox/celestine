@@ -8,6 +8,13 @@ All notable changes to this project are documented here, following
 
 ### Added
 
+- `findStations(body, startJD, endJD, options?)` in `celestine/events` finds retrograde and direct
+  stations for Mercury through Pluto. A station is a zero of the apparent geocentric longitude
+  rate. It uses the same positions and frame as the other event searches: mean equinox of date
+  by default, or the true equinox with `{ includeNutation: true }`. Each result has `type`, `jd` (TT), `jdUT`, `longitude`, `sign` and
+  `signName` (`StationEvent`). Maximum error vs JPL Horizons over 1900–2100 (true equinox) is
+  0.7 min for Mercury, up to 76 min for Pluto, and ≤3.5″ in longitude for all bodies; see the
+  README. It shares one station solver with `findStationPoints` (see Changed).
 - `celestine/precise`, an opt-in subpath with `getChironPosition`, `getCeresPosition`,
   `getPallasPosition`, `getJunoPosition` and `getVestaPosition`. They have the same signatures
   and `PlanetPosition` return type as the `celestine/ephemeris` functions, so switching is a
@@ -41,20 +48,20 @@ All notable changes to this project are documented here, following
   Venus 2.15″ → 0.65″, Mars 1.92″ → 1.24″, Jupiter 2.51″ → 1.42″, Saturn 2.68″ → 1.69″,
   Uranus 4.04″ → 3.22″, Neptune 5.74″ → 4.77″, Pluto 4.29″ → 3.29″. The precise bodies
   (1800–2200) improve from 1.98–2.60″ to 0.74–0.93″.
-- True-equinox event times (seasons, `nutation: true` ingresses) move by up to a few seconds
+- True-equinox event times (seasons, true-equinox ingresses) move by up to a few seconds
   for the inner bodies. Measured against Horizons, seasons improve from 9.3 s to 7.5 s max and
   Sun ingresses from 9.1 s to 7.1 s. Mean-equinox events (the default) are unchanged.
 - Event frames are explicit and tested against the position API: default events use the
-  same mean equinox of date as `getPosition` and `calculateChart`, and `nutation: true`
-  matches `includeNutation: true`. At every found ingress, aspect, season and void-of-course
+  same mean equinox of date as `getPosition` and `calculateChart`, and the events'
+  `includeNutation: true` matches the position API's. At every found ingress, aspect, season and void-of-course
   boundary the position API is on target to within 1e-4″. Seasons stay on the true
   equinox (USNO, Meeus); lunar phases and aspects between bodies are frame-free.
 - Event searches take `includeNutation`, the position API's name, as their frame option:
-  `findSignIngresses`, and new on `findAspectTimes` (it changes results only for a fixed
-  target longitude, read in the chosen frame; between bodies the frame cancels) and
-  `findVoidOfCourseMoon` (the Moon's ingresses). The shared type is `EventFrameOptions`.
-  `nutation`, the 0.4.0 name on `findSignIngresses`, keeps working as a deprecated alias;
-  `includeNutation` wins when both are given. Fixed-longitude aspects measured against
+  `findSignIngresses`, `findStations`, and new on `findAspectTimes` (it changes results only
+  for a fixed target longitude, read in the chosen frame; between bodies the frame cancels)
+  and `findVoidOfCourseMoon` (the Moon's ingresses). The shared type is `EventFrameOptions`.
+  `nutation`, the 0.4.0 name on `findSignIngresses`, keeps working as a deprecated alias on
+  all of them; `includeNutation` wins when both are given. Fixed-longitude aspects measured against
   Horizons: 28.8 s max (mean) and 28.2 s (true).
 - Horizons event references are labelled by frame, and each test compares like with like.
   Mean-equinox references (`jdMean`) are derived from the same Horizons samples with IAU
@@ -62,6 +69,25 @@ All notable changes to this project are documented here, following
   longitude error per body, in both frames (for example Jupiter 1.35″ and Saturn 0.8″,
   inside their position budgets), instead of a time that is unbounded near a station; the
   Mercury aspect time limit tightens from 100 s to 60 s.
+- One station solver for the library. `findStations` (events), `findStationPoints` (transits)
+  and the rate-reversal split inside every event search share it: the longitude rate is
+  sampled at about a fifth of each body's shortest gap between stations, and every sign change
+  is solved to 1e-7 day by regula falsi alternating with bisection. For Mercury through Pluto,
+  `findStationPoints` now returns exactly the default-frame `findStations` instants. Its
+  public API, `StationPoint` shape and Chiron support are unchanged, and empty or invalid
+  ranges still return `[]`.
+- `findStationPoints` is more accurate, so its instants change. Before, it bisected with a
+  0.001°/day speed threshold and stopped early, leaving up to 1.0–3.6″/day of residual rate.
+  Over 1900–2100 that put instants up to 18 min (Mercury), 37 min (Venus), 1.9 h (Mars) and
+  0.3–2.8 days (Jupiter 0.3, Saturn 0.6, Pluto 2.8; Chiron 1.1) from its own speed's zero.
+  Now the residual rate is below 1e-4″/day for every body.
+  Against the Horizons stations, the maximum error falls from 2.0 to 1.3 min (Mercury), 15.5 to
+  4.3 min (Mars) and 12 h to 3.7 h (Pluto). Pluto's 3.7 h is mostly the frame
+  difference (mean versus Horizons' true equinox; 76 min with `includeNutation`), not the solver. It also no longer misses a station in the last partial step
+  of the range: one Uranus station on 2100-12-26 was missing in 1900–2100.
+  Retrograde-period helpers built on it (`findRetrogradePeriods`, `findNextStation`,
+  `getCurrentRetrogradePeriod`) inherit the accuracy. The perf-gated 180-day Mercury search
+  costs about the same as before.
 - Planet, Sun and precise-body positions are about 8–22% faster: the apparent-place pipeline no
   longer builds intermediate objects by spreading them. Output is bit-identical.
 
@@ -70,7 +96,7 @@ All notable changes to this project are documented here, following
 - `getMoonPosition` now honours `includeNutation`. Before, it silently returned the
   mean-equinox longitude.
 - `getPosition` now honours `includeNutation` for the lunar nodes and Lilith (mean and true).
-  Before, they stayed mean-equinox, so a `nutation: true` node or Lilith ingress was up to
+  Before, they stayed mean-equinox, so a true-equinox node or Lilith ingress was up to
   about 18″ off the cusp in the position API. Default output is unchanged.
 - `calculateChart` now computes the aspect types requested in `options.aspectTypes`, including
   minor and Kepler aspects. Before, it detected only the major aspects and then filtered them, so

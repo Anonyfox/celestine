@@ -45,6 +45,68 @@ function refine(f: (t: number) => Sample, a: number, b: number, fa: Sample, fb: 
 }
 
 /**
+ * THE station solver: the zero of the rate in [lo, hi], whose end rates have opposite
+ * signs. Regula falsi alternating with bisection (at least halves the bracket every two
+ * evaluations, superlinear near a simple zero) to 1e-7 d (9 ms); returns the midpoint and
+ * its sample as [jd, sample]. Used by roots() to split at rate reversals, by findStations and by transits'
+ * findStationPoints.
+ */
+export function stationIn(
+  f: (t: number) => Sample,
+  lo: number,
+  hi: number,
+  fl: number,
+  fr: number,
+): [number, Sample] {
+  for (let i = 0; hi - lo > 1e-7; i++) {
+    let t = (lo * fr - hi * fl) / (fr - fl);
+    if (i % 2 || !(t > lo && t < hi)) t = (lo + hi) / 2;
+    const rate = f(t).rate;
+    if (rate < 0 === fl < 0) {
+      lo = t;
+      fl = rate;
+    } else {
+      hi = t;
+      fr = rate;
+    }
+  }
+  const jd = (lo + hi) / 2;
+  return [jd, f(jd)];
+}
+
+// Station scan steps (days): about a fifth of the shortest gap between stations over
+// 1900–2100 (Mercury 19.8 d, Venus 40.9, Mars 59.9, Jupiter–Pluto and Chiron ≥117).
+const STATION_STEPS: Record<string, number> = { Mercury: 4, Venus: 8, Mars: 12 };
+export const stationStep = (body: string): number => STATION_STEPS[body] ?? 20;
+
+/**
+ * Every station (rate sign change) in [a, b] (validated by the caller), sampled every `step`
+ * days; assumes at most one station per step. Each comes with its sample and the motion
+ * that follows.
+ */
+export function stations(
+  f: (t: number) => Sample,
+  a: number,
+  b: number,
+  step: number,
+): { jd: number; sample: Sample; retrograde: boolean }[] {
+  const found: { jd: number; sample: Sample; retrograde: boolean }[] = [];
+  let lo = a;
+  let left = f(lo);
+  while (lo < b) {
+    const hi = Math.min(b, lo + step);
+    const right = f(hi);
+    if (left.rate < 0 !== right.rate < 0) {
+      const [jd, sample] = stationIn(f, lo, hi, left.rate, right.rate);
+      found.push({ jd, sample, retrograde: right.rate < 0 });
+    }
+    lo = hi;
+    left = right;
+  }
+  return found;
+}
+
+/**
  * One shared core, including station splitting. Assumes at most one rate reversal
  * per sampling interval and <180 degrees of motion per interval. Tangencies are
  * returned once. Functions identically zero have no isolated event (return []).
@@ -67,21 +129,7 @@ export function roots(f: (t: number) => Sample, a: number, b: number, step: numb
     const hi = Math.min(b, lo + step);
     const right = f(hi);
     if (left.rate * right.rate < 0) {
-      // Rate's derivative is not supplied: bisect it, reusing endpoint samples.
-      let l = lo;
-      let r = hi;
-      let sl = left;
-      while (r - l > 1e-7) {
-        const mid = (l + r) / 2;
-        if (mid === l || mid === r) break;
-        const sm = f(mid);
-        if (sm.rate < 0 === sl.rate < 0) {
-          l = mid;
-          sl = sm;
-        } else r = mid;
-      }
-      const t = (l + r) / 2;
-      const station = f(t);
+      const [t, station] = stationIn(f, lo, hi, left.rate, right.rate);
       if (Math.abs(station.value) < 1e-12) add(t);
       segment(lo, t, left, station);
       segment(t, hi, station, right);

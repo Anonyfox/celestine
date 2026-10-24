@@ -12,6 +12,9 @@ import { moon, track } from './luminaries.js';
 export function bodyStep(body: CelestialBody): number {
   return body === 'Moon' || body.includes('True') ? 0.5 : body === 'Mercury' ? 1 : 2;
 }
+/** The frame an event search uses: includeNutation, else its deprecated alias nutation. */
+export const trueEquinox = (options: { includeNutation?: boolean; nutation?: boolean }) =>
+  options.includeNutation ?? options.nutation ?? false;
 export function position(body: CelestialBody, jd: number, trueEquinox = false) {
   const p =
     body === 'Moon' ? moon(jd) : body === 'Sun' ? getSunPosition(jd) : getPosition(body, jd);

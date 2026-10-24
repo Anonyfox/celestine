@@ -23,6 +23,7 @@
  */
 
 import { CelestialBody, getPosition } from '../ephemeris/positions.js';
+import { stationStep, stations } from '../events/search.js';
 import {
   AVERAGE_DAILY_MOTION,
   BODY_NAMES,
@@ -138,78 +139,26 @@ export function findStationPoints(
     return [];
   }
 
-  const stations: StationPoint[] = [];
+  // Same contract as before for empty or invalid ranges (the shared solver throws on them).
+  if (!(Number.isFinite(startJD) && Number.isFinite(endJD) && startJD <= endJD)) return [];
 
-  // Step size based on typical motion speed
-  const avgMotion = Math.abs(AVERAGE_DAILY_MOTION[body] ?? 0.1);
-  const stepDays = Math.max(1, Math.min(14, 5 / avgMotion));
-
-  let prevJD = startJD;
-  let prevPos = getPosition(body, prevJD);
-  let currentJD = prevJD + stepDays;
-
-  while (currentJD <= endJD) {
-    const currentPos = getPosition(body, currentJD);
-
-    // Check for sign change in speed (station)
-    if (prevPos.longitudeSpeed * currentPos.longitudeSpeed < 0) {
-      // Speed crossed zero - find exact station
-      const stationJD = findExactStationTime(body, prevJD, currentJD);
-      const stationPos = getPosition(body, stationJD);
-
-      const stationType: 'station-retrograde' | 'station-direct' =
-        prevPos.longitudeSpeed > 0 ? 'station-retrograde' : 'station-direct';
-
-      stations.push({
-        body,
-        type: stationType,
-        jd: stationJD,
-        longitude: stationPos.longitude,
-        date: jdToTransitDate(stationJD),
-      });
-    }
-
-    prevJD = currentJD;
-    prevPos = currentPos;
-    currentJD += stepDays;
-  }
-
-  return stations;
-}
-
-/**
- * Find the exact time of a station using binary search.
- *
- * @internal
- */
-function findExactStationTime(body: CelestialBody, startJD: number, endJD: number): number {
-  const tolerance = STATIONARY_SPEED_THRESHOLD;
-  let lo = startJD;
-  let hi = endJD;
-
-  for (let i = 0; i < MAX_BINARY_SEARCH_ITERATIONS; i++) {
-    const midJD = (lo + hi) / 2;
-    const pos = getPosition(body, midJD);
-
-    if (Math.abs(pos.longitudeSpeed) < tolerance) {
-      return midJD;
-    }
-
-    // Determine which half to search based on speed sign
-    const posLo = getPosition(body, lo);
-    if (posLo.longitudeSpeed * pos.longitudeSpeed < 0) {
-      // Sign change is in lower half
-      hi = midJD;
-    } else {
-      lo = midJD;
-    }
-
-    if (hi - lo < 0.0001) {
-      break;
-    }
-  }
-
-  return (lo + hi) / 2;
+  // The one station solver shared with celestine/events findStations: rate sign changes
+  // over the whole inclusive range, solved to 1e-7 d on getPosition's centred speed.
+  return stations(
+    (jd) => {
+      const p = getPosition(body, jd);
+      return { value: p.longitude, rate: p.longitudeSpeed };
+    },
+    startJD,
+    endJD,
+    stationStep(body),
+  ).map(({ jd, sample, retrograde }) => ({
+    body,
+    type: retrograde ? 'station-retrograde' : 'station-direct',
+    jd,
+    longitude: sample.value,
+    date: jdToTransitDate(jd),
+  }));
 }
 
 /**

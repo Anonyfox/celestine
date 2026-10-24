@@ -55,6 +55,13 @@ Horizons caches requests by URL SHA-256 prefix; remove `requests/` to re-fetch t
   `[jdTT, illuminatedFraction]`. Same Horizons parameters except `COMMAND='301'`,
   `QUANTITIES='10'`; response column 3 is illuminated percent, divided by 100.
 
+`horizons-stations.json` comes from `node scripts/events/fetch-stations.mjs` (after
+`npm run build`). For each station it takes 17 Horizons samples (quantity 31: true ecliptic of
+date, TT) within ±1 day (Mercury), ±1.5 days (Venus) or ±2 days (other bodies). It then fits a quartic and
+records the vertex. The script recentres the window until the vertex lies within a quarter of the
+half-width. Short windows keep the monthly lunar reflex in geocentric longitude (≈0.16″ for
+Pluto) from biasing slow-planet stations by tens of minutes.
+
 ## Frames
 
 The library default for positions, charts and events is apparent longitude in the **mean**
@@ -69,6 +76,7 @@ the **true** equinox of date. Every reference is compared with the library in it
 | Season, mean | `jdMean` | default Sun ingress at 0/90/180/270° |
 | Aspect to a fixed longitude, mean | `jdMean` | `findAspectTimes(body, fixed, …)` |
 | Aspect to a fixed longitude, true | `jd` | `findAspectTimes(body, fixed, a, b, { includeNutation: true })` |
+| Station, true | `jd` (`horizons-stations.json`) | `findStations(body, a, b, { includeNutation: true })` |
 | Phase, aspect between bodies | `jd` (frame cancels) | `findLunarPhases`, `findAspectTimes` |
 
 Horizons quantity 31 (ObsEcLon) is the true ecliptic and equinox of date and has no

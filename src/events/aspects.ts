@@ -1,6 +1,6 @@
 import type { CelestialBody } from '../ephemeris/positions.js';
 import { toUT } from '../time/delta-t.js';
-import { bodyStep, position } from './bodies.js';
+import { bodyStep, position, trueEquinox } from './bodies.js';
 import { crossings, normalize } from './search.js';
 import type { AspectTimeEvent, EventFrameOptions } from './types.js';
 
@@ -30,6 +30,7 @@ export function findAspectTimes(
   endJD: number,
   options: EventFrameOptions & { angles?: number[] } = {},
 ): AspectTimeEvent[] {
+  const frame = trueEquinox(options);
   const angles = [...new Set(options.angles ?? [0, 60, 90, 120, 180])];
   if (
     angles.some((a) => !Number.isFinite(a) || a < 0 || a > 180) ||
@@ -39,11 +40,11 @@ export function findAspectTimes(
   const targets = angles.flatMap((a) => (a > 0 && a < 180 ? [a, 360 - a] : [a]));
   return crossings(
     (jd) => {
-      const p = position(body, jd, options.includeNutation);
+      const p = position(body, jd, frame);
       const q =
         typeof target === 'number'
           ? { value: normalize(target), rate: 0 }
-          : position(target, jd, options.includeNutation);
+          : position(target, jd, frame);
       return { value: p.value - q.value, rate: p.rate - q.rate };
     },
     targets,

@@ -1,6 +1,7 @@
 import { CelestialBody } from '../ephemeris/positions.js';
 import { toUT } from '../time/delta-t.js';
 import { findAspectTimes } from './aspects.js';
+import { trueEquinox } from './bodies.js';
 import { findSignIngresses } from './ingresses.js';
 import { interval } from './search.js';
 import type { EventFrameOptions, VoidOfCoursePeriod } from './types.js';
@@ -35,7 +36,7 @@ export function findVoidOfCourseMoon(
 ): VoidOfCoursePeriod[] {
   interval(startJD, endJD);
   const ingresses = findSignIngresses(CelestialBody.Moon, startJD - 4, endJD + 4, {
-    includeNutation: options.includeNutation,
+    includeNutation: trueEquinox(options),
   });
   const bodies = [...new Set(options.bodies ?? traditional)].filter(
     (b) => b !== CelestialBody.Moon,
