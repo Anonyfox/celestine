@@ -1,4 +1,4 @@
-> **Shipped (0.4.1):** these models are exposed only through the opt-in `celestine/precise`
+> **Shipped (unreleased, next minor):** these models are exposed only through the opt-in `celestine/precise`
 > subpath (`src/precise/`); the root Chiron/asteroid functions are unchanged. Regenerate with
 > `node fetch-vectors.mjs <dir> 2 '<command>'` (Horizons training vectors, not committed) and
 > `python3 gen-cheb.py <body> <deg> <tol> <quantum> <grain>` (writes `src/precise/<body>-data.ts`).

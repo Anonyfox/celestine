@@ -6,8 +6,6 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
-## [0.4.1] - 2026-10-24
-
 ### Added
 
 - `celestine/precise`, an opt-in subpath with `getChironPosition`, `getCeresPosition`,
