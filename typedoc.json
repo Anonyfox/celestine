@@ -1,6 +1,6 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["src/index.ts"],
+  "entryPoints": ["src/index.ts", "src/precise/index.ts"],
   "out": "docs",
   "name": "Celestine API Documentation",
   "includeVersion": true,

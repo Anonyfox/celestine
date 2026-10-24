@@ -1,6 +1,6 @@
 {
   "name": "celestine",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "No-BS astrological calculations validated against NASA, JPL Horizons & Swiss Ephemeris. Birth charts, transits, progressions. Powers cosmolytic.com.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -106,6 +106,16 @@
         "types": "./dist/events/index.d.cts",
         "default": "./dist/events/index.cjs"
       }
+    },
+    "./precise": {
+      "import": {
+        "types": "./dist/precise/index.d.ts",
+        "default": "./dist/precise/index.js"
+      },
+      "require": {
+        "types": "./dist/precise/index.d.cts",
+        "default": "./dist/precise/index.cjs"
+      }
     }
   },
   "files": [
@@ -114,7 +124,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup && node scripts/build-esm.mjs",
+    "build": "tsup && tsup --config tsup.precise.config.ts && node scripts/build-esm.mjs",
     "dev": "tsx src/index.ts",
     "test": "node --import tsx --test --test-reporter=dot $(find src -name '*.test.ts' -type f)",
     "test:verbose": "node --import tsx --test $(find src -name '*.test.ts' -type f)",
@@ -302,6 +312,9 @@
       ],
       "events": [
         "dist/events/index.d.ts"
+      ],
+      "precise": [
+        "dist/precise/index.d.ts"
       ]
     }
   }

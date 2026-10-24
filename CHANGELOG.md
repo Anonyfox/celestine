@@ -6,6 +6,26 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-24
+
+### Added
+
+- `celestine/precise`, an opt-in subpath with `getChironPosition`, `getCeresPosition`,
+  `getPallasPosition`, `getJunoPosition` and `getVestaPosition`. They have the same signatures
+  and `PlanetPosition` return type as the `celestine/ephemeris` functions, so switching is a
+  one-line import change. Each body is a mean orbit plus a compact piecewise Chebyshev fit to
+  JPL Horizons.
+- Maximum apparent error vs Horizons on held-out epochs, 1800–2200 (2020–2030):
+  Chiron 0.73″ (0.39″), Ceres 0.95″ (0.76″), Pallas 0.77″ (0.67″), Juno 0.83″ (0.51″),
+  Vesta 0.84″ (0.67″).
+- This fixes the present-day Pallas and Chiron regressions vs 0.2.1. In 2020–2030 the root
+  Pallas is off by up to 2.9° (0.2.1: 1.25°) and the root Chiron by up to 48′ (0.2.1: 23′).
+- `PRECISE_RANGE` is JD 2378497–2524594 TT (1800-01-01T12:00 to 2200-01-01T12:00). Outside it,
+  and for `NaN`, the functions throw a `RangeError`.
+- Each body's data is its own module, so a bundle contains only the bodies it imports. Gzip
+  sizes, including the shared pipeline: Chiron 5.5 KB up to Pallas 11.8 KB, all five 30.7 KB.
+- The root `celestine` export and all other subpaths are unchanged.
+
 ## [0.4.0] - 2026-10-24
 
 ### Added

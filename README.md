@@ -139,6 +139,36 @@ console.log(sign); // "Sagittarius"
 - Based on Jean Meeus' "Astronomical Algorithms" and VSOP87 theory
 - All positions validated against JPL Horizons and Swiss Ephemeris reference data
 
+#### Precise Chiron and asteroids (`celestine/precise`)
+
+The default Chiron and asteroid positions use mean Keplerian orbits and can be off by up to a
+few degrees. For arcsecond positions, import the same functions from the opt-in
+`celestine/precise` subpath. They have the same signatures and return types, so switching is a
+one-line import change:
+
+```typescript
+// import { getPallasPosition } from "celestine/ephemeris";
+import { getPallasPosition, PRECISE_RANGE } from "celestine/precise";
+
+const pallas = getPallasPosition(2460676.5); // JD (TT), 2025-01-01
+console.log(pallas.longitude, pallas.isRetrograde);
+```
+
+- **Bodies**: `getChironPosition`, `getCeresPosition`, `getPallasPosition`, `getJunoPosition`,
+  `getVestaPosition` (`(jd, options?) => PlanetPosition`, same options as `celestine/ephemeris`).
+- **Accuracy**: under 1″ against JPL Horizons on held-out epochs, 1800–2200 (max 0.73″–0.95″
+  per body; mean ecliptic and equinox of date). Each body is a mean orbit plus a compact
+  piecewise Chebyshev fit to Horizons.
+- **Range**: `PRECISE_RANGE` is JD 2378497–2524594 TT (1800-01-01T12:00 to 2200-01-01T12:00
+  TT). Outside it, and for `NaN`, the functions throw a `RangeError`; they never fall back
+  silently to the less accurate model. Use `celestine/ephemeris` for other dates.
+- **Size**: each body ships its own data module, so bundles contain only the bodies you import
+  (gzip, including the shared apparent-place pipeline: Chiron ≈5.5 KB, Ceres ≈9 KB,
+  Pallas ≈11.8 KB, Juno ≈10.8 KB, Vesta ≈9.5 KB, all five ≈30.7 KB). The root `celestine`
+  import and `celestine/ephemeris` do not include this data.
+- `includeNutation: true` uses the library's one-term nutation (about 1.3″ from the full
+  series), the same as everywhere else in Celestine.
+
 ### Time Calculations
 
 The Time module provides comprehensive astronomical time calculations, all verified against NASA reference data.

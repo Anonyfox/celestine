@@ -91,8 +91,8 @@ for (const file of files) {
 
 // Remove unused private declarations without collapsing the module graph.
 const graph = await rollup({
-  // events is subpath-only (not re-exported from the root), so it is its own entry.
-  input: ['dist/index.js', 'dist/events/index.js'],
+  // events and precise are subpath-only (not re-exported from the root), so each is its own entry.
+  input: ['dist/index.js', 'dist/events/index.js', 'dist/precise/index.js'],
   onwarn(warning, warn) {
     if (warning.code !== 'CIRCULAR_DEPENDENCY') warn(warning);
   },

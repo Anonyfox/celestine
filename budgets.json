@@ -97,6 +97,30 @@
     "subpath.realistic": {
       "minBytes": 100864,
       "gzipBytes": 37952
+    },
+    "precise.getChironPosition": {
+      "minBytes": 10176,
+      "gzipBytes": 5504
+    },
+    "precise.getCeresPosition": {
+      "minBytes": 14656,
+      "gzipBytes": 8960
+    },
+    "precise.getPallasPosition": {
+      "minBytes": 18560,
+      "gzipBytes": 11840
+    },
+    "precise.getJunoPosition": {
+      "minBytes": 17088,
+      "gzipBytes": 10816
+    },
+    "precise.getVestaPosition": {
+      "minBytes": 15488,
+      "gzipBytes": 9536
+    },
+    "precise.all": {
+      "minBytes": 43712,
+      "gzipBytes": 30784
     }
   },
   "perf": {
