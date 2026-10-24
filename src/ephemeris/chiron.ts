@@ -185,7 +185,14 @@ export function chironHeliocentricDistance(jd: number): number {
 /**
  * Calculate apparent geocentric position of Chiron.
  *
- * @param jd - Julian Date
+ * @remarks
+ * The default Keplerian model has degree-level error: maximum longitude error
+ * 19,805.700″ (5.50°) on the 123 Horizons samples spanning 1950–2050.
+ * Use `celestine/precise` for approximately arcsecond accuracy over 1800–2200.
+ * `celestine/events` uses that shared precise Chiron model inside its supported
+ * range (with a 0.001-day speed margin), and the root model outside.
+ *
+ * @param jd - Julian Date (TT)
  * @param options - Calculation options
  * @returns Chiron's apparent geocentric position
  *

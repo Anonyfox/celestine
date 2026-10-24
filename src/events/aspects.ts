@@ -7,7 +7,7 @@ import type { AspectTimeEvent, EventFrameOptions } from './types.js';
 /**
  * Exact apparent geocentric longitude aspects in inclusive TT JD bounds, in the position
  * API's default frame (mean equinox of date); includeNutation uses the true equinox, as
- * getPosition with includeNutation. Between two bodies the frame cancels (identical
+ * getPosition with includeNutation (Chiron uses celestine/precise in 1800–2200). Between two bodies the frame cancels (identical
  * results); a fixed target longitude is read in the chosen frame, so a natal position from
  * calculateChart is a default (mean-equinox) longitude.
  * Default angles are 0,60,90,120,180 degrees; both orientations are searched. Relative

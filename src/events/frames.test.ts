@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import { nutationInLongitude } from '../ephemeris/nutation.js';
 import { CelestialBody, getPosition } from '../ephemeris/positions.js';
 import { getSunPosition } from '../ephemeris/sun.js';
+import { getChironPosition } from '../precise/chiron.js';
 import { findAspectTimes, findSeasons, findSignIngresses, findVoidOfCourseMoon } from './index.js';
 import { wrap } from './search.js';
 
@@ -25,7 +26,10 @@ test('every sign ingress lies on its cusp in the position API, in both frames', 
       assert.ok(events.length >= 2, `${body}: ${events.length} ingresses`);
       for (const e of events) {
         const cusp = (e.retrograde ? e.previousSign : e.sign) * 30;
-        const p = getPosition(body, e.jd, { includeNutation: nutation });
+        const p =
+          body === 'Chiron'
+            ? getChironPosition(e.jd, { includeNutation: nutation })
+            : getPosition(body, e.jd, { includeNutation: nutation });
         const residual = arcsec(p.longitude - cusp);
         assert.ok(residual < TOLERANCE, `${body} ${e.jd} nutation:${nutation}: ${residual}″`);
       }

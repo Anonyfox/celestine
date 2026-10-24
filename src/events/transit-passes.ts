@@ -1,5 +1,5 @@
 import { ASPECT_DEFINITIONS } from '../aspects/constants.js';
-import { type CelestialBody, getPosition } from '../ephemeris/positions.js';
+import type { CelestialBody } from '../ephemeris/positions.js';
 import {
   AVERAGE_DAILY_MOTION,
   BODY_NAMES,
@@ -14,6 +14,7 @@ import {
 import { generateSearchSummary, groupTransitsByMonth } from '../transits/transit-search.js';
 import type { TransitSearchParams, TransitSearchResult, TransitTiming } from '../transits/types.js';
 import { findAspectTimes } from './aspects.js';
+import { eventPosition } from './bodies.js';
 
 /**
  * Split exact aspects into contiguous orb passes in the mean equinox of date.
@@ -40,7 +41,7 @@ export function findTransitPasses(
     ({ jd }) => jd,
   );
   const deviation = (jd: number) =>
-    Math.abs(angularSeparation(getPosition(body, jd).longitude, natalLongitude) - aspectAngle);
+    Math.abs(angularSeparation(eventPosition(body, jd).longitude, natalLongitude) - aspectAngle);
   // Bracketed maximisation: consecutive exact hits bound one deviation maximum.
   const peaks = hits.slice(1).map((jd, i) => {
     let lo = hits[i];
@@ -89,7 +90,7 @@ export function findTransitPasses(
       leaveOrbDate: jdToTransitDate(leaveOrbJD),
       durationDays: leaveOrbJD - enterOrbJD,
       exactPasses: exactJDs.length,
-      hasRetrogradePass: exactJDs.some((jd) => getPosition(body, jd).isRetrograde),
+      hasRetrogradePass: exactJDs.some((jd) => eventPosition(body, jd).isRetrograde),
     });
     first = last + 1;
   }
@@ -132,7 +133,7 @@ export function searchTransitPasses(params: TransitSearchParams): TransitSearchR
           endJD,
         )) {
           const exactJD = pass.exactJDs[0];
-          const pos = getPosition(body, exactJD);
+          const pos = eventPosition(body, exactJD);
           const separation = angularSeparation(pos.longitude, point.longitude);
           transits.push({
             ...pass,

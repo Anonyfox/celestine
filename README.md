@@ -44,7 +44,12 @@ frame cross-check. These fixtures do not cover every body or feature.
 
 Default Chiron uses a Keplerian model: its measured maximum longitude error is
 19805.700″ (about 5.50°) on the dates above. Use
-[`celestine/precise`](#precise-small-bodies) when that error is unacceptable.
+[`celestine/precise`](#precise-small-bodies) for arcsecond work over 1800–2200.
+Default asteroids also use Keplerian approximations with degree-level errors;
+planetary precision figures do not apply to them. `celestine/events` uses the
+shared precise Chiron model within that range (with a 0.001-day speed margin),
+falling back to root Chiron outside. On 189 independent Horizons observer samples
+in 1900–2100, event Chiron longitude differs by at most 0.60″; root is unchanged.
 
 ## Installation
 

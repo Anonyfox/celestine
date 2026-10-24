@@ -73,7 +73,13 @@ Import these getters explicitly to opt into the separate Chebyshev models.
 Their supported date span and sampled accuracy checks are described in the
 [README](../README.md#precise-small-bodies) and
 [tests](../src/precise/precise.test.ts). Default small-body models have much larger
-errors; do not apply planetary precision figures to them.
+errors; do not apply planetary precision figures to them. Root Chiron's measured
+maximum longitude error is 19,805.700″ (5.50°) on the 1950–2050 fixture; root
+asteroids likewise have degree-level errors. Use `celestine/precise` for arcsecond
+work. Chiron searches in `celestine/events` use the shared precise model within
+1800–2200, with a 0.001-day margin at each end for speed evaluation, and root
+Chiron outside. Events Chiron has a measured 0.60″ maximum on 189 independent
+Horizons observer samples in 1900–2100. The root getter remains unchanged.
 
 ```ts
 import { getChironPosition, getPallasPosition, PRECISE_RANGE } from 'celestine/precise';

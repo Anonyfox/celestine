@@ -311,3 +311,28 @@ Horizons station longitude yields each crossing. Each row records `retro`/`direc
 station JD, longitude and fit residual, and `pre`/`post` crossing JD, source speed
 and `[t0,t1,residual0,residual1]` bracket (days and degrees). The script prints
 signed timing errors in minutes and absolute implied longitude errors in arcseconds.
+
+### Chiron event references
+
+`horizons-chiron-events.json` comes from
+`npm run build && node scripts/events/fetch-chiron-events.mjs`, retrieved
+**2026-10-24**. The script requests small-body **COMMAND='2060;'**, OBSERVER,
+CENTER='500@399', QUANTITIES='31', TIME_TYPE='TT', TLIST_TYPE='JD', ICRF,
+CSV_FORMAT='YES', EXTRA_PREC='YES', APPARENT='AIRLESS', via `query()` in
+`scripts/events/horizons.mjs`; requests are cached in `requests/`. It holds
+6 ingresses, 31 stations and 3 spot longitudes.
+
+All Chiron ingresses in 2020–2035 use 41 samples at 0.02-day spacing around
+library predictions (windows only), with Horizons-native apparent true-equinox
+longitude crossing each cusp interpolated linearly. The script records brackets,
+local speed, and the measured maximum implied longitude error rounded up to
+0.01″. Tests check that bound and independently cap it at 1″. Stations use 17
+Horizons longitudes over ±2 days, a quartic least-squares fit, and its derivative
+root; windows recenter when needed. Three longitude rows cover 2026-01-01,
+2026-06-06, and 2026-10-01 at 00:00 UT converted to TT.
+
+`chiron-observer-holdout.json` is a new, unmodified 189-row subset (1900–2100)
+of the separately retrieved random400 observer dataset from the Chiron study,
+with provenance preserved. It is independent of the model fitting vectors.
+Its maximum event longitude error is 0.59343″, tested with a 0.60″ bound.
+It supplies available offline accuracy evidence, not ingress or station references.

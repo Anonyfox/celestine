@@ -10,7 +10,8 @@ import type { EventFrameOptions, SignIngress } from './types.js';
  * Same frame as the position API: by default apparent longitude in the mean equinox of
  * date (as getPosition and calculateChart); includeNutation:true is the true equinox, as
  * getPosition(body, jd, { includeNutation: true }). At every returned jd the position API
- * with matching options is on the cusp to within 1e-4 arcsecond.
+ * with matching options is on the cusp to within 1e-4 arcsecond. Chiron uses
+ * `celestine/precise` within 1800–2200 (0.001-day margin), and root outside.
  * Supports all getPosition bodies, including nodes/Lilith. jd is TT; jdUT is UT via toUT.
  * Sign indices are Aries=0 through Pisces=11; retrograde entries enter the preceding sign.
  * @param body - Any supported celestial body, including nodes and Lilith.

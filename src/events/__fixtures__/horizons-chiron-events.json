@@ -1,0 +1,272 @@
+{
+  "source": "JPL Horizons",
+  "command": "2060;",
+  "retrieved": "2026-10-24",
+  "frame": "apparent geocentric true ecliptic/equinox of date",
+  "timeScale": "TT",
+  "ingressLimitArcsec": 0.36,
+  "ingresses": [
+    {
+      "jd": 2461211.390537382,
+      "angle": 30,
+      "sign": 1,
+      "retrograde": false,
+      "speed": 0.03691499999831649,
+      "bracket": [
+        2461211.388042461, 2461211.408042461, -0.00009209999996073748, 0.0006462000000055923
+      ]
+    },
+    {
+      "jd": 2461301.577041662,
+      "angle": 30,
+      "sign": 0,
+      "retrograde": true,
+      "speed": -0.03603999999768348,
+      "bracket": [
+        2461301.5597414398, 2461301.57974144, 0.0006234999999605861, -0.00009729999999308347
+      ]
+    },
+    {
+      "jd": 2461510.1248558094,
+      "angle": 30,
+      "sign": 1,
+      "retrograde": false,
+      "speed": 0.06075999999666237,
+      "bracket": [
+        2461510.1243702928, 2461510.144370293, -0.00002949999998236308, 0.0011856999999508844
+      ]
+    },
+    {
+      "jd": 2463798.069662591,
+      "angle": 60,
+      "sign": 2,
+      "retrograde": false,
+      "speed": 0.045764999998709754,
+      "bracket": [
+        2463798.0692714625, 2463798.0892714625, -0.000017899999988912896, 0.0008973999999852822
+      ]
+    },
+    {
+      "jd": 2463894.4297976787,
+      "angle": 60,
+      "sign": 1,
+      "retrograde": true,
+      "speed": -0.04458999999883417,
+      "bracket": [
+        2463894.409905326, 2463894.429905326, 0.000887000000034277, -0.00000479999994240643
+      ]
+    },
+    {
+      "jd": 2464088.412659997,
+      "angle": 60,
+      "sign": 2,
+      "retrograde": false,
+      "speed": 0.07154499999728614,
+      "bracket": [
+        2464088.4124503387, 2464088.4324503387, -0.00001499999996212864, 0.0014158999999835942
+      ]
+    }
+  ],
+  "stations": [
+    {
+      "jd": 2459042.382060785,
+      "type": "retrograde",
+      "longitude": 9.437296345641528,
+      "fitResidualArcsec": 0.00015615157806792013
+    },
+    {
+      "jd": 2459199.428928148,
+      "type": "direct",
+      "longitude": 4.940904726653457,
+      "fitResidualArcsec": 0.00031941174825078633
+    },
+    {
+      "jd": 2459411.195991881,
+      "type": "retrograde",
+      "longitude": 12.929785210411524,
+      "fitResidualArcsec": 0.0002035913389875077
+    },
+    {
+      "jd": 2459568.190060185,
+      "type": "direct",
+      "longitude": 8.43653126068466,
+      "fitResidualArcsec": 0.00012480134046199964
+    },
+    {
+      "jd": 2459780.140580193,
+      "type": "retrograde",
+      "longitude": 16.433428044475022,
+      "fitResidualArcsec": 0.000195603712427328
+    },
+    {
+      "jd": 2459936.8972340473,
+      "type": "direct",
+      "longitude": 11.935008470429409,
+      "fitResidualArcsec": 0.00048687310183481713
+    },
+    {
+      "jd": 2460149.0300587974,
+      "type": "retrograde",
+      "longitude": 19.963335430885365,
+      "fitResidualArcsec": 0.0001817718072061325
+    },
+    {
+      "jd": 2460305.6326026623,
+      "type": "direct",
+      "longitude": 15.45170436735134,
+      "fitResidualArcsec": 0.00022188840844705737
+    },
+    {
+      "jd": 2460518.0834717387,
+      "type": "retrograde",
+      "longitude": 23.534361502988247,
+      "fitResidualArcsec": 0.000283546268065038
+    },
+    {
+      "jd": 2460674.384714227,
+      "type": "direct",
+      "longitude": 19.000608321439472,
+      "fitResidualArcsec": 0.0001931173045477408
+    },
+    {
+      "jd": 2460887.113208289,
+      "type": "retrograde",
+      "longitude": 27.162717233012472,
+      "fitResidualArcsec": 0.0001986471659165545
+    },
+    {
+      "jd": 2461043.1102471673,
+      "type": "direct",
+      "longitude": 22.598890264372812,
+      "fitResidualArcsec": 0.0003533128094090898
+    },
+    {
+      "jd": 2461256.3412682703,
+      "type": "retrograde",
+      "longitude": 30.866760543982252,
+      "fitResidualArcsec": 0.0001434772173070087
+    },
+    {
+      "jd": 2461411.95981577,
+      "type": "direct",
+      "longitude": 26.264478759967062,
+      "fitResidualArcsec": 0.00022894010527352293
+    },
+    {
+      "jd": 2461625.622464353,
+      "type": "retrograde",
+      "longitude": 34.66767004378079,
+      "fitResidualArcsec": 0.000184458042440383
+    },
+    {
+      "jd": 2461780.7794443048,
+      "type": "direct",
+      "longitude": 30.01888731154702,
+      "fitResidualArcsec": 0.0002658562394231012
+    },
+    {
+      "jd": 2461995.133773532,
+      "type": "retrograde",
+      "longitude": 38.58897784617085,
+      "fitResidualArcsec": 0.0001674755566227759
+    },
+    {
+      "jd": 2462149.757206572,
+      "type": "direct",
+      "longitude": 33.88552465040942,
+      "fitResidualArcsec": 0.00016748990674386732
+    },
+    {
+      "jd": 2462364.7710380238,
+      "type": "retrograde",
+      "longitude": 42.65888026019286,
+      "fitResidualArcsec": 0.00017372732372678001
+    },
+    {
+      "jd": 2462518.778051586,
+      "type": "direct",
+      "longitude": 37.89263014071378,
+      "fitResidualArcsec": 0.00015232193106839986
+    },
+    {
+      "jd": 2462734.703649968,
+      "type": "retrograde",
+      "longitude": 46.90954260262606,
+      "fitResidualArcsec": 0.00014052633616756793
+    },
+    {
+      "jd": 2462887.966583562,
+      "type": "direct",
+      "longitude": 42.07147927966821,
+      "fitResidualArcsec": 0.00030107881627827737
+    },
+    {
+      "jd": 2463104.828128142,
+      "type": "retrograde",
+      "longitude": 51.378587821066276,
+      "fitResidualArcsec": 0.0002025698137231302
+    },
+    {
+      "jd": 2463257.2939720745,
+      "type": "direct",
+      "longitude": 46.459876367700986,
+      "fitResidualArcsec": 0.00014294119807800598
+    },
+    {
+      "jd": 2463475.3356528003,
+      "type": "retrograde",
+      "longitude": 56.11098387440012,
+      "fitResidualArcsec": 0.0002137152790737673
+    },
+    {
+      "jd": 2463626.8431587596,
+      "type": "direct",
+      "longitude": 51.10115057636676,
+      "fitResidualArcsec": 0.00025358917525863944
+    },
+    {
+      "jd": 2463846.1566938423,
+      "type": "retrograde",
+      "longitude": 61.159288279083285,
+      "fitResidualArcsec": 0.0002109357808421919
+    },
+    {
+      "jd": 2463996.622001948,
+      "type": "direct",
+      "longitude": 56.04851698298023,
+      "fitResidualArcsec": 0.00013197417558785673
+    },
+    {
+      "jd": 2464217.442306805,
+      "type": "retrograde",
+      "longitude": 66.58839265738055,
+      "fitResidualArcsec": 0.0002358207837005466
+    },
+    {
+      "jd": 2464366.7205297397,
+      "type": "direct",
+      "longitude": 61.36392418370326,
+      "fitResidualArcsec": 0.00016699680998044641
+    },
+    {
+      "jd": 2464589.287420884,
+      "type": "retrograde",
+      "longitude": 72.47423124361751,
+      "fitResidualArcsec": 0.0001995048990011128
+    }
+  ],
+  "longitudes": [
+    {
+      "jd": 2461041.5007997686,
+      "longitude": 22.6001147
+    },
+    {
+      "jd": 2461197.5008001784,
+      "longitude": 29.4242388
+    },
+    {
+      "jd": 2461314.50080092,
+      "longitude": 29.4898478
+    }
+  ]
+}

@@ -52,7 +52,8 @@ export interface EventFrameOptions {
   /**
    * Use apparent longitudes referred to the TRUE equinox of date, as
    * getPosition(body, jd, { includeNutation: true }). Default: mean equinox of date, as
-   * getPosition and calculateChart.
+   * getPosition and calculateChart. Chiron events use celestine/precise within
+   * 1800–2200 with a 0.001-day speed margin; root Chiron outside.
    */
   includeNutation?: boolean;
   /** @deprecated Since 0.5.0: use includeNutation (same meaning; includeNutation wins). */

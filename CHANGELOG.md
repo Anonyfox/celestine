@@ -8,6 +8,17 @@ All notable changes to this project are documented here, following
 
 ### Changed (output shift)
 
+- Chiron searches in `celestine/events` (ingresses, aspect times, transit passes) now
+  use the `celestine/precise` Chiron model between 1800 and 2200, and root Chiron
+  outside that range. Root Chiron can be off by degrees; for example it put the
+  2026 Taurus ingress on 6 June instead of 19 June. Against JPL Horizons
+  (retrieved 2026-10-24) the six Chiron ingresses of 2020–2035 now land within
+  3.9 minutes (0.35″ of longitude), and 189 independent Horizons positions from
+  1900–2100 agree within 0.60″. `getPosition('Chiron')` itself is unchanged, so
+  at an event time it no longer sits exactly on the cusp; use
+  `getChironPosition` from `celestine/precise` for matching positions. Other
+  bodies' event times are bit-identical.
+
 - `getRetrogradeShadow` (`celestine/transits`) now solves the real crossings instead of
   estimating them from an average daily motion. The pre-shadow starts at the last crossing
   of the station-direct longitude before the station retrograde; the post-shadow ends at the
