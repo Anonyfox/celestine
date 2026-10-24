@@ -58,6 +58,25 @@ export function guardrailChanges(nameStatus, oldScripts, newScripts) {
       changes.push(`package.json scripts.${key}: ${oldScripts[key]} → ${newScripts[key]}`);
   return changes;
 }
+export const APPROVAL_TAGS = [
+  '[budget-increase-approved]',
+  '[api-change-approved]',
+  '[guardrails-change-approved]',
+  '[fixtures-regenerated]',
+];
+/** `Approved-by: <human>, YYYY-MM-DD: '<quoted words>'` (straight or typographic quotes). */
+export const APPROVED_BY =
+  /^Approved-by: *[^,\n]*[^,\s][^,\n]*, *\d{4}-\d{2}-\d{2}: *(['"\u2018\u201c]).*\S.*['"\u2019\u201d] *$/m;
+/** Commits that carry an approval tag without a quoted human approval trailer. */
+export function approvalTrailerFailures(commits) {
+  return commits
+    .filter(({ message }) => APPROVAL_TAGS.some((tag) => message.includes(tag)))
+    .filter(({ message }) => !APPROVED_BY.test(message))
+    .map(
+      ({ sha }) =>
+        `${sha.slice(0, 12)}: approval tag without an Approved-by trailer quoting the human`,
+    );
+}
 function git(...args) {
   return execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 }
@@ -83,7 +102,16 @@ function run() {
       : null;
   const head = event?.pull_request?.head?.sha ?? 'HEAD';
   const messages = git('log', '--format=%B', `${base}..${head}`);
-  const failures = [];
+  const failures = approvalTrailerFailures(
+    git('log', '--format=%H%x1f%B%x1e', `${base}..${head}`)
+      .split('\x1e')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .map((entry) => {
+        const [sha, message = ''] = entry.split('\x1f');
+        return { sha, message };
+      }),
+  );
   for (const [file, tag, compare] of [
     ['budgets.json', '[budget-increase-approved]', compareBudgets],
     ['api-surface.json', '[api-change-approved]', compareApi],

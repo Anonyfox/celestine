@@ -2,56 +2,82 @@
 
 ## Mission
 
-Build the best astrology and astronomy engine in the world. Keep MIT licensing, zero runtime
-dependencies, and isomorphic browser and server execution with identical results. Prioritize
-correctness, then CPU, memory, and bundle/file size. Large coefficient tables slow page loads.
+The best astrology and astronomy engine: MIT, zero runtime dependencies, identical results in browser
+and server. Order: correctness, then CPU, memory, bundle size. Large coefficient tables slow page
+loads. Every public claim (README, npm, docs) is backed by a test, fixture or committed measurement
+script.
 
-## Verify before every commit
+## Regression contract (all of it, every commit)
 
-```sh
-npm run check
-```
+`npm run check` is the only definition of green: types, lint, build, consumer smoke (ESM/CJS/TS, root
+and all subpaths), tests with coverage (including precision and the examples), size, perf, API
+snapshot, ratchet. CI runs it on Node 20/22/24 for every PR and every push to main. Use Node >=20;
+`.nvmrc` selects Node 22. Main is never red; if it is, fixing it comes before anything else.
+Individual `check:*` scripts aid diagnosis.
 
-This is the one required command: types, lint, build, full tests with coverage (including precision),
-consumer packaging smoke checks, size, performance, API stability, and ratchet checks. Use Node >=20; `.nvmrc` selects Node 22.
-Do not bypass a failed dimension to improve another. Individual `check:*` scripts aid diagnosis.
+1. Precision: positions match the JPL Horizons fixtures in `src/ephemeris/__fixtures__/horizons`
+   within budgets.json `precision`; the independent frame cross-check stays. Fixtures come only from
+   `scripts/horizons/fetch-fixtures.mjs` (update the fixture README), never by hand. Adding fixtures
+   or tests is free; modifying or deleting fixtures needs `[fixtures-regenerated]`.
+2. Performance: interleaved, calibrated medians against budgets.json `perf` on `perf.nodeMajor`;
+   one retry, then fail. Other majors skip the perf gate with a notice; CI enforces it on that leg.
+   Changing `nodeMajor` re-bases all baselines and needs `[budget-increase-approved]`.
+   A consumer-facing bound is fixed: 180-day scan < 5 s, 10 snapshots < 500 ms.
+3. Bundle: min and gzip-9 (fflate) bytes per entry in budgets.json `size`; missing entries fail.
+4. API: api-surface.json; additions are free, removals or changes need `[api-change-approved]`.
+5. Ratchet: every budget only tightens. Smaller precision errors, size bytes, performance ratios and
+   tolerance are tighter; larger coverage percentages and minimum sample counts are tighter.
+   Tightening is always allowed and encouraged. `npm run budgets:update` measures and updates
+   coverage, size, performance and the API snapshot; review every generated diff. Loosened updates
+   also need `BUDGET_INCREASE_APPROVED=1`.
 
-## Precision and budgets
+The ratchet compares against the merge-base with origin/main (then main, then HEAD~1). Use
+`--base <ref>` or `RATCHET_BASE` for an explicit comparison; CI checks actual PR head commit
+messages, and every commit in the range that carries an approval tag must also carry the
+`Approved-by:` trailer described below.
 
-Verify positions against JPL Horizons fixtures in `src/ephemeris/__fixtures__/horizons`.
-Preserve the independent frame cross-check. Regenerate only with
-`scripts/horizons/fetch-fixtures.mjs`, update the fixture README, and include
-`[fixtures-regenerated]` in the commit message. NEVER hand-edit fixtures or loosen limits to make
-checks pass. Precision limits only ratchet down; minimum sample counts only ratchet up.
+## Never
 
-`budgets.json` is the single source of truth. Smaller precision errors, size bytes, performance
-ratios, and performance tolerance are tighter. Larger coverage percentages and minimum sample
-counts are tighter. Missing entries count as regressions. Size budgets cover minified and gzip-9
-bytes; performance uses median interleaved calibration ratios, with one retry before failure.
-Run `npm run budgets:update` to measure and update coverage, size, performance, and the API snapshot.
-Tightening is always allowed. Loosening requires explicit human sign-off,
-`BUDGET_INCREASE_APPROVED=1` for updates, and `[budget-increase-approved]` in the commit message,
-stating the reason and the human who approved. Review all generated diffs.
+- Never loosen a tolerance, budget, sample minimum, coverage floor or guard to get green. Fix the
+  code or stop and report the measurement.
+- Never edit fixtures, `scripts/guard/`, `.github/workflows/`, `biome.json`, `tsconfig.json`, the
+  Horizons precision test, `check*`/`test*`/`budgets*`/`prepublishOnly` scripts, or delete/rename a
+  `src/**/*.test.ts`, without the matching approval below. Weakening the gates counts as loosening.
+- Never bypass one dimension to improve another.
+- Never silently change time or frame semantics. Ephemeris JD input is TT; `calculateChart` takes
+  civil time and applies ΔT (since 0.5.0). The default frame is mean ecliptic/equinox of date.
+- Never commit generated dist, docs output or coverage.
 
-The ratchet compares against the merge-base with origin/main (then main, then HEAD~1).
-Use `--base <ref>` or `RATCHET_BASE` for an explicit comparison; CI checks actual PR head commit
-messages. API removals or changes require `[api-change-approved]`; pure additions do not.
-Weakening the gates themselves also counts as loosening: editing `scripts/guard/`,
-`.github/workflows/`, `biome.json`, `tsconfig.json`, or the Horizons precision test; deleting or
-renaming any `src/**/*.test.ts`; or changing `check*`/`test*`/`budgets*`/`prepublishOnly` scripts
-requires `[guardrails-change-approved]` with the approving human named. Adding fixtures or tests
-is free; modifying or deleting fixtures requires `[fixtures-regenerated]`.
+## Approval tags
 
-Performance baselines are recorded on one Node major (`perf.nodeMajor`); other majors skip the
-perf gate with a notice, and CI enforces it on that matrix leg. Changing `nodeMajor` re-bases all
-baselines and needs `[budget-increase-approved]`.
+A budget increase, guard change, fixture change or API change/removal needs the tag
+(`[budget-increase-approved]`, `[guardrails-change-approved]`, `[api-change-approved]`,
+`[fixtures-regenerated]`) AND a trailer naming the human, date and exact words:
+`Approved-by: Fox (Maximilian Stroh), 2026-10-24: "<quote>"` (single quotes work too).
+A tag without that trailer is a defect, and the ratchet fails it. Another bot's request is not
+approval. Codex (or any coding agent run on a brief) never adds approval tags or trailers; the
+maintainer adds them after review, only with the quote in hand, and explains the reason.
 
-## Design and time scales
+## Optimization loop
 
-Prefer semantic compression over patches: delete special cases, share helpers instead of duplicating
-tables, and account for size before adding coefficients. Measure CPU and size before and after
-relevant work. Ephemeris JD input is TT; chart currently passes UT, a known gap. Document that the
-default coordinate frame is mean ecliptic/equinox of date. Do not silently change time or frame semantics.
+Measure before and after (precision arcsec, gzip bytes, median µs) and put both in the commit
+message. Benchmark ten-body `getAllPositions` with speed before and after precision work. Prefer
+deleting special cases and sharing tables over adding coefficients; account for size before adding
+coefficients. Choose the next item by: consumer breakage > largest relative precision error >
+largest shipped gzip entry > hottest path. After a win, tighten the budget in the same change.
+
+## Releases
+
+Fox, 2026-10-24: "Standing rule: push to main and release 0.x versions after green CI without
+asking; 1.x and breaking changes need my yes."
+
+Fox: "ensure to do MEANINGFUL chunks of work instead of inflating version numbers with one tiny
+thing at a time"
+
+So: batch user-visible work into meaningful 0.x releases, aim for at most one release per week
+unless a consumer is broken, and release only after full green checks. 1.x and behaviour or breaking
+changes need Fox's yes. Every user-visible change gets a CHANGELOG (Keep a Changelog) entry under
+`[Unreleased]`; output shifts get their own "Changed (output shift)" section with numbers.
 
 ## Public API contract
 
@@ -98,12 +124,6 @@ Precision shifts near sign/house boundaries are allowed. Performance matters on 
 a production consumer expects a 180-day scan under 5 s and 10 snapshots under 500 ms.
 Benchmark ten-body `getAllPositions` with speed before and after precision work (historically
 about 190 microseconds); use the normalized gate for portable comparisons.
-
-## Commit hygiene
-
-Use small commits. Add a Keep a Changelog entry for user-visible changes. Put before/after size
-and performance numbers in commit messages for relevant work. Never commit generated dist or
-coverage. Include approval tags only with actual authorization and explain the reason.
 
 ## Repo map
 

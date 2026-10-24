@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { compareApi, compareBudgets, guardrailChanges } from './ratchet.mjs';
+import {
+  APPROVAL_TAGS,
+  approvalTrailerFailures,
+  compareApi,
+  compareBudgets,
+  guardrailChanges,
+} from './ratchet.mjs';
 
 const before = {
   precision: { Mercury: { lonArcsec: 7, latArcsec: 1.5, minSamples: 170 } },
@@ -111,4 +117,46 @@ test('API symbol-id renumbering is ignored; real member changes are not', () => 
     },
   };
   assert.deepEqual(compareApi(at(1738), toTag), ['public.Name: changed']);
+});
+test('approval tags need an Approved-by trailer with a quoted human statement', () => {
+  const ok = [
+    "Approved-by: Fox, 2026-10-24: 'please stop asking me for these minor details'",
+    'Approved-by: Fox (Maximilian Stroh), 2026-10-24: "Yes, apply ΔT by default"',
+    'Approved-by: Fox, 2026-10-24: “typographic quotes”',
+  ];
+  const bad = [
+    '',
+    'Approved-by: Fox',
+    'Approved-by: Fox, 2026-10-24',
+    'Approved-by: Fox, 2026-10-24: unquoted words',
+    "Approved-by: Fox, 2026-10-24: ''",
+    "Approved-by: , 2026-10-24: 'no human named'",
+    "Approved-by: Fox, 24.10.2026: 'wrong date format'",
+    "approved-by: Fox, 2026-10-24: 'lowercase key'",
+    "Mentions Approved-by: Fox, 2026-10-24: 'only mid-line'",
+  ];
+  const commit = (message) => ({ sha: '0123456789abcdef', message });
+  for (const tag of APPROVAL_TAGS) {
+    for (const trailer of ok)
+      assert.deepEqual(
+        approvalTrailerFailures([commit(`fix: x ${tag}\n\n${trailer}\n`)]),
+        [],
+        trailer,
+      );
+    for (const trailer of bad)
+      assert.equal(
+        approvalTrailerFailures([commit(`fix: x ${tag}\n\n${trailer}\n`)]).length,
+        1,
+        trailer,
+      );
+  }
+  // Untagged commits need no trailer; each tagged commit is checked on its own.
+  assert.deepEqual(approvalTrailerFailures([commit('docs: plain change')]), []);
+  assert.equal(
+    approvalTrailerFailures([
+      commit(`a ${APPROVAL_TAGS[0]}\n\n${ok[0]}`),
+      commit(`b ${APPROVAL_TAGS[1]}`),
+    ]).length,
+    1,
+  );
 });
