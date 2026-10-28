@@ -41,6 +41,7 @@
   "customFooterHtml": "<footer class=\"tsd-page-footer\"><div class=\"container\"><p>Celestine — Positions checked against JPL Horizons in CI</p><p>Made with <span style=\"color: #7c3aed\">♥</span> by <a href=\"https://anonyfox.com\" target=\"_blank\" rel=\"noopener\">Anonyfox</a> • <a href=\"https://github.com/Anonyfox/celestine\" target=\"_blank\" rel=\"noopener\">GitHub</a> • <a href=\"https://www.npmjs.com/package/celestine\" target=\"_blank\" rel=\"noopener\">npm</a> • <a href=\"https://cosmolytic.com\" target=\"_blank\" rel=\"noopener\">Live Demo</a></p></div></footer>",
   "titleLink": "https://github.com/Anonyfox/celestine",
   "navigationLinks": {
+    "Accuracy": "https://anonyfox.github.io/celestine/accuracy/",
     "GitHub": "https://github.com/Anonyfox/celestine",
     "npm": "https://www.npmjs.com/package/celestine"
   }

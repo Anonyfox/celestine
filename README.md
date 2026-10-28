@@ -17,6 +17,8 @@ Used by [Cosmolytic](https://cosmolytic.com).
 
 ## Precision
 
+The [accuracy page](https://anonyfox.github.io/celestine/accuracy/) lists residuals against Horizons, the NASA eclipse canon, ERFA and USNO, regenerated on every docs deploy by `npm run bench:accuracy`.
+
 Measured against committed [JPL Horizons fixtures](src/ephemeris/__fixtures__/horizons)
 using `node --import tsx scripts/horizons/measure.ts`. Values below are sampled
 maximum absolute errors, rounded to milliarcseconds, not guarantees between samples.
