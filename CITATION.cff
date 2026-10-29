@@ -5,8 +5,8 @@ authors:
   - family-names: Stroh
     given-names: Maximilian
     alias: Anonyfox
-version: 0.5.0
-date-released: 2026-10-24
+version: 0.8.0
+date-released: 2026-10-29
 license: MIT
 repository-code: https://github.com/Anonyfox/celestine
 url: https://anonyfox.github.io/celestine

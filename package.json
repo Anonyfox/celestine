@@ -1,6 +1,6 @@
 {
   "name": "celestine",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Astrology and astronomy engine in TypeScript: charts, houses, aspects, transits, stations and progressions. Positions checked against JPL Horizons in CI. Zero runtime dependencies; browser and Node.",
   "type": "module",
   "main": "./dist/index.cjs",
