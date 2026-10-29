@@ -13,6 +13,9 @@ export const THRESHOLDS = {
     solar: 26,
     lunar: 18,
     combined: 26,
+    solarMagnitude: 0.0008,
+    lunarUmbralMagnitude: 0.0011,
+    lunarPenumbralMagnitude: 0.0011,
   },
   positions: {
     Sun: {
@@ -146,6 +149,18 @@ const eclipseRows = refs.map((r) => {
     type: match.e.type,
     actualJD: match.e.jd,
     error: (match.e.jd - r.jd) * 86400,
+    utError: (match.e.jdUT - (r.jd - r.deltaT / 86400)) * 86400,
+    gammaError: match.e.gamma - r.gamma,
+    magnitudeError:
+      match.e.magnitude -
+      (r.kind === 'solar'
+        ? r.magnitude
+        : r.type === 'penumbral'
+          ? r.penumbralMagnitude
+          : r.umbralMagnitude),
+    umbralMagnitudeError: r.kind === 'lunar' ? match.e.umbralMagnitude - r.umbralMagnitude : null,
+    penumbralMagnitudeError:
+      r.kind === 'lunar' ? match.e.penumbralMagnitude - r.penumbralMagnitude : null,
   };
 });
 if (used.size !== found.length)
@@ -157,6 +172,15 @@ const eclipses = Object.fromEntries(
       ...stats(rows),
       canonCount: rows.length,
       foundCount: found.filter((e) => kind === 'combined' || e.kind === kind).length,
+      maxMagnitudeError: Math.max(0, ...rows.map((r) => Math.abs(r.magnitudeError))),
+      maxUmbralMagnitudeError: Math.max(
+        0,
+        ...rows.map((r) => Math.abs(r.umbralMagnitudeError ?? 0)),
+      ),
+      maxPenumbralMagnitudeError: Math.max(
+        0,
+        ...rows.map((r) => Math.abs(r.penumbralMagnitudeError ?? 0)),
+      ),
       typeAgreement: rows.filter((r) => r.type === r.referenceType).length,
     };
     guard(`eclipses.${kind} seconds`, result.max, THRESHOLDS.eclipses[kind]);
@@ -165,6 +189,27 @@ const eclipses = Object.fromEntries(
     return [kind, result];
   }),
 );
+guard(
+  'eclipses.solar magnitude',
+  eclipses.solar.maxMagnitudeError,
+  THRESHOLDS.eclipses.solarMagnitude,
+);
+guard(
+  'eclipses.lunar umbral magnitude',
+  eclipses.lunar.maxUmbralMagnitudeError,
+  THRESHOLDS.eclipses.lunarUmbralMagnitude,
+);
+guard(
+  'eclipses.lunar penumbral magnitude',
+  eclipses.lunar.maxPenumbralMagnitudeError,
+  THRESHOLDS.eclipses.lunarPenumbralMagnitude,
+);
+const recentCanon = await json('src/events/__fixtures__/nasa-eclipses-2026-2028.json');
+const eclipses2026To2028 = recentCanon.events.map((r) => {
+  const row = eclipseRows.find((e) => e.date === r.date && e.kind === r.kind);
+  if (!row) throw Error(`Missing 2026–2028 eclipse ${r.date}`);
+  return row;
+});
 const positions = {};
 const bodies = [
   'Sun',
@@ -334,6 +379,7 @@ const report = {
   missing,
   thresholds: THRESHOLDS,
   eclipses,
+  eclipses2026To2028,
   positions,
   node,
   angles,

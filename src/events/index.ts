@@ -1,7 +1,8 @@
 /** Event searches take TT Julian Dates; returned instants also include model-derived UT. */
 export { findAspectTimes } from './aspects.js';
 export { findAscendantSigns, getSignsDuring } from './day.js';
-export { findEclipses } from './eclipses.js';
+export { getLunarEclipseLocal, getSolarEclipseLocal } from './eclipse-local.js';
+export { findEclipses, findNextEclipse, findPreviousEclipse } from './eclipses.js';
 export { findSignIngresses } from './ingresses.js';
 export type { LocalDayDate, LocalDayUT } from './local-day.js';
 export { localDayToUT } from './local-day.js';
@@ -12,11 +13,14 @@ export { chartToNatalPoints, findTransitPasses, searchTransitPasses } from './tr
 export type {
   AscendantSignInterval,
   AspectTimeEvent,
+  EclipseContact,
   EclipseEvent,
   EclipseKind,
+  EclipseObserver,
   EventFrameOptions,
   EventInstant,
   LunarEclipseEvent,
+  LunarEclipseLocal,
   LunarEclipseType,
   LunarPhase,
   LunarPhaseAlias,
@@ -27,7 +31,9 @@ export type {
   SignIngress,
   SignsDuring,
   SignsDuringOptions,
+  SolarEclipseContact,
   SolarEclipseEvent,
+  SolarEclipseLocal,
   SolarEclipseType,
   StationEvent,
   TransitPassOptions,

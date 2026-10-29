@@ -2,6 +2,7 @@ import { getMoonPosition, moonLatitude } from '../ephemeris/moon.js';
 import { getSunPosition } from '../ephemeris/sun.js';
 import { meanObliquity } from '../houses/obliquity.js';
 import { toUT } from '../time/delta-t.js';
+import { getSignName } from '../zodiac/sign-properties.js';
 import { findLunarPhases } from './lunar.js';
 import { interval } from './search.js';
 import type { EclipseEvent, EclipseKind, EventFrameOptions } from './types.js';
@@ -53,8 +54,8 @@ function geometry(jd: number, kind: EclipseKind) {
   const l2 = z * f2 - ku * Math.sqrt(1 + f2 * f2);
   return { s, m, rho, gamma: Math.sign(y) * rho, x, y, b2, z0, h, inside, f1, f2, l1, l2 };
 }
-// Golden-section minimisation to <0.01 seconds; phase candidates bracket the minimum.
-function minimum(f: (jd: number) => number, a: number, b: number): number {
+/** @internal Golden-section minimisation to <0.01 seconds. @example minimum(f, a, b) */
+export function minimum(f: (jd: number) => number, a: number, b: number): number {
   const g = (Math.sqrt(5) - 1) / 2;
   let c = b - g * (b - a),
     d = a + g * (b - a);
@@ -122,7 +123,8 @@ function solar(jd: number) {
     magnitude: central ? (L1 - L2) / (L1 + L2) : (L1 - m) / (L1 + L2),
   };
 }
-function lunar(jd: number) {
+/** @internal Shared NASA lunar shadow geometry. @example lunar(2461102.98) */
+export function lunar(jd: number) {
   const g = geometry(jd, 'lunar');
   const r = length(g.m),
     s = length(g.s);
@@ -171,18 +173,49 @@ export function findEclipses(
   for (const phase of phases) {
     if (Math.abs(moonLatitude((phase.jd - 2451545) / 36525)) > 1.8) continue;
     const kind = phase.phase === 'new-moon' ? 'solar' : 'lunar';
-    const jd = minimum((t) => geometry(t, kind).rho ** 2, phase.jd - 0.4, phase.jd + 0.4);
+    // Canonical bracket makes an event bit-identical across overlapping search windows.
+    const center = Math.round(phase.jd * 1000) / 1000;
+    const jd = minimum((t) => geometry(t, kind).rho ** 2, center - 0.4, center + 0.4);
     if (jd < startJD - 1e-7 || jd > endJD + 1e-7) continue;
     const eclipse = kind === 'solar' ? solar(jd) : lunar(jd);
     if (!eclipse) continue;
     const frame = { includeNutation: options.includeNutation ?? options.nutation };
+    const sunLongitude = getSunPosition(jd, frame).longitude;
+    const moonLongitude = getMoonPosition(jd, frame).longitude;
     result.push({
       ...eclipse,
       jd,
       jdUT: toUT(jd),
-      sunLongitude: getSunPosition(jd, frame).longitude,
-      moonLongitude: getMoonPosition(jd, frame).longitude,
+      sunLongitude,
+      sunSign: Math.floor(sunLongitude / 30),
+      sunSignName: getSignName(Math.floor(sunLongitude / 30)),
+      moonLongitude,
+      moonSign: Math.floor(moonLongitude / 30),
+      moonSignName: getSignName(Math.floor(moonLongitude / 30)),
     });
   }
   return result.sort((a, b) => a.jd - b.jd);
+}
+
+type EclipseSearchOptions = EventFrameOptions & { kinds?: EclipseKind[] };
+function adjacent(jd: number, direction: number, options: EclipseSearchOptions): EclipseEvent {
+  interval(jd, jd);
+  // Overlap by a day so rounding of a phase candidate cannot hide a boundary event.
+  for (let offset = 0; offset < 1200; offset += 200) {
+    const a = jd + direction * offset;
+    const b = jd + direction * (offset + 201);
+    const events = findEclipses(Math.min(a, b), Math.max(a, b), options).filter(
+      (e) => direction * (e.jd - jd) > 0,
+    );
+    if (events.length) return direction > 0 ? events[0] : events[events.length - 1];
+  }
+  throw new RangeError('No eclipse of the requested kinds within 1201 days');
+}
+/** Find the first eclipse strictly after a TT instant. @example findNextEclipse(2461041.5) */
+export function findNextEclipse(jd: number, options: EclipseSearchOptions = {}): EclipseEvent {
+  return adjacent(jd, 1, options);
+}
+/** Find the first eclipse strictly before a TT instant. @example findPreviousEclipse(2461041.5) */
+export function findPreviousEclipse(jd: number, options: EclipseSearchOptions = {}): EclipseEvent {
+  return adjacent(jd, -1, options);
 }

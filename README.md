@@ -76,6 +76,34 @@ const chart = calculateChart(birth, { houseSystem: 'placidus' });
 console.log(chart.planets.find((planet) => planet.name === 'Sun')?.signName); // Capricorn
 ```
 
+## Eclipses
+
+Next/previous searches and local circumstances are exported from `celestine/events`.
+Longitudes include sign indices (Aries=0) and names. Instants carry TT `jd` and model-derived UT `jdUT`.
+
+```ts
+import { findNextEclipse, getSolarEclipseLocal } from 'celestine/events';
+const eclipse = findNextEclipse(2461041.5, { kinds: ['solar'] }); // TT
+if (eclipse.kind === 'solar') {
+  const local = getSolarEclipseLocal(eclipse, { latitude: 64.1466, longitude: -21.9426 });
+  console.log(local.localType, local.maximum.jdUT, local.maximum.obscuration);
+}
+```
+
+Local solar contacts use WGS84, geometric Sun centre altitude and north=0°, east=90° azimuth.
+No refraction, terrain or lunar limb profile is included. The [NASA validation fixtures](src/events/__fixtures__/nasa-eclipses-2026-2028.json)
+cover all 14 eclipses of 2026–2028; measured errors are on the [accuracy page](https://anonyfox.github.io/celestine/accuracy/).
+
+## Black Moon Lilith
+
+Mean and true (perturbed apogee) Black Moon Lilith are available as separate getters.
+
+```ts
+import { getMeanLilith, getTrueLilith } from 'celestine/ephemeris';
+const jd = 2461041.5; // TT
+console.log(getMeanLilith(jd).longitude, getTrueLilith(jd).longitude);
+```
+
 See the [module guide](docs/GUIDE.md), [comparison](docs/COMPARISON.md), and
 [API documentation](https://anonyfox.github.io/celestine).
 Runnable integrations: [Node CLI](examples/node-cli.mjs),

@@ -336,3 +336,34 @@ of the separately retrieved random400 observer dataset from the Chiron study,
 with provenance preserved. It is independent of the model fitting vectors.
 Its maximum event longitude error is 0.59343″, tested with a 0.60″ bound.
 It supplies available offline accuracy evidence, not ingress or station references.
+
+### 2026–2028 eclipse search and local circumstances
+
+`nasa-eclipses-2026-2028.json` contains all six solar and eight lunar rows from the
+NASA Five Millennium SE2001–2100 and LE2001–2100 catalogs, retrieved 2026-10-29.
+Run `node scripts/events/fetch-nasa-eclipses-2026-2028.mjs` to reproduce it. Optional
+arguments supply saved solar/lunar HTML; otherwise it uses the named NASA caches
+in the system temporary directory, or downloads with curl. This environment's
+curl DNS lookup failed; the committed subset was generated from the same catalog
+rows retrieved through the web tool. Existing NASA and Horizons fixtures are unchanged.
+
+The fixture preserves catalog number, raw type (including `Ne`), TD clock, predicted
+ΔT, derived ISO UT/JD, gamma, magnitudes and lunar phase durations. NASA rounds
+magnitudes/gamma to four decimals and durations to 0.1 min. TD is compared directly
+with TT; UT is compared separately using NASA's ΔT. July 2027's 0.0014-magnitude
+penumbral event is included: its very short duration is sensitive to small limb offsets.
+
+`nasa-solar-local-2026.json` transcribes the NASA Science August 12 city table for
+four totality and six partial cities. Each row states its coordinate source and
+UTC offset; coordinates are rounded conventional city centres, elevation zero,
+not claimed to be NASA's exact observing points. An asterisk in the table is sunset,
+not C4: those tests check C4 below the geometric horizon instead of treating sunset
+as a contact. Remaining contacts/maximum allow 90 seconds; coverage allows one
+percentage point. The fixture records all source URLs and retrieval date.
+
+Lunar visibility is independently checked from the March 2026 NASA catalog's
+sublunar point (6N,171W): Honolulu is near that point and Berlin is on the opposite
+hemisphere. A separate equatorial observer checks moonrise during the penumbra
+following the umbral phase. Altitudes use the topocentric geometric centre, with
+no refraction. Run `node scripts/events/measure-local-eclipses.mjs` after building
+for global and city residuals, including below-horizon C4 altitudes.

@@ -119,6 +119,10 @@ interface EclipseGeometry extends EventInstant {
   sunLongitude: number;
   /** Same frame and units as sunLongitude. */
   moonLongitude: number;
+  sunSign: number;
+  sunSignName: string;
+  moonSign: number;
+  moonSignName: string;
 }
 /** Greatest solar eclipse; apparent diameter ratio for central eclipses. @example event.central */
 export interface SolarEclipseEvent extends EclipseGeometry {
@@ -171,4 +175,55 @@ export interface SignsDuring {
   endSignName: string;
   changesSign: boolean;
   ingresses: SignIngress[];
+}
+
+/** WGS84 geodetic observer; degrees, east-positive longitude, elevation in metres. @example { latitude: 52.52, longitude: 13.405 } */
+export interface EclipseObserver {
+  latitude: number;
+  longitude: number;
+  elevation?: number;
+}
+/** Contact instant with geometric topocentric centre altitude in degrees. @example contact.jdUT */
+export interface EclipseContact extends EventInstant {
+  altitude: number;
+}
+/** Solar contact with geometric Sun centre altitude in degrees. @example contact.sunAltitude */
+export interface SolarEclipseContact extends EventInstant {
+  sunAltitude: number;
+}
+/** Local solar circumstances; azimuth north=0, east=90; no refraction or limb profile. @example local.partialBegin */
+export interface SolarEclipseLocal {
+  kind: 'solar';
+  visible: boolean;
+  localType: 'none' | 'partial' | 'annular' | 'total';
+  maximum: EventInstant & {
+    magnitude: number;
+    obscuration: number;
+    sunAltitude: number;
+    sunAzimuth: number;
+  };
+  partialBegin: SolarEclipseContact | null;
+  partialEnd: SolarEclipseContact | null;
+  centralBegin: SolarEclipseContact | null;
+  centralEnd: SolarEclipseContact | null;
+  /** Central phase seconds, or null when there is no central phase. */
+  duration: number | null;
+}
+/** Lunar contacts are global; altitudes are topocentric geometric Moon centre, no refraction. @example local.P1 */
+export interface LunarEclipseLocal {
+  kind: 'lunar';
+  maximum: EventInstant;
+  P1: EclipseContact | null;
+  U1: EclipseContact | null;
+  U2: EclipseContact | null;
+  U3: EclipseContact | null;
+  U4: EclipseContact | null;
+  P4: EclipseContact | null;
+  moonAltitude: number;
+  visibleAtMaximum: boolean;
+  /** False for penumbral eclipses. */
+  visibleDuringUmbral: boolean;
+  visibleDuringEclipse: boolean;
+  /** Full P1..P4, U1..U4 and U2..U3 intervals in minutes; absent phases are zero. */
+  durations: { penumbral: number; partial: number; total: number };
 }

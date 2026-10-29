@@ -1,0 +1,258 @@
+{
+  "sources": [
+    {
+      "url": "https://eclipse.gsfc.nasa.gov/SEcat5/SE2001-2100.html",
+      "retrieved": "2026-10-29"
+    },
+    {
+      "url": "https://eclipse.gsfc.nasa.gov/LEcat5/LE2001-2100.html",
+      "retrieved": "2026-10-29"
+    }
+  ],
+  "events": [
+    {
+      "kind": "solar",
+      "catalogNumber": "09565",
+      "date": "2026-02-17",
+      "td": "12:13:06",
+      "jd": 2461089.0090972222,
+      "deltaT": 75,
+      "ut": "2026-02-17T12:11:51.000Z",
+      "jdUT": 2461089.0082291667,
+      "rawType": "A",
+      "type": "annular",
+      "gamma": -0.9743,
+      "magnitude": 0.963
+    },
+    {
+      "kind": "lunar",
+      "catalogNumber": "09708",
+      "date": "2026-03-03",
+      "td": "11:34:52",
+      "jd": 2461102.9825462964,
+      "deltaT": 75,
+      "ut": "2026-03-03T11:33:37.000Z",
+      "jdUT": 2461102.981678241,
+      "rawType": "T",
+      "type": "total",
+      "gamma": -0.3765,
+      "penumbralMagnitude": 2.1838,
+      "umbralMagnitude": 1.1507,
+      "durations": {
+        "penumbral": 338.6,
+        "partial": 207.2,
+        "total": 58.3
+      }
+    },
+    {
+      "kind": "solar",
+      "catalogNumber": "09566",
+      "date": "2026-08-12",
+      "td": "17:47:06",
+      "jd": 2461265.241041667,
+      "deltaT": 75,
+      "ut": "2026-08-12T17:45:51.000Z",
+      "jdUT": 2461265.2401736113,
+      "rawType": "T",
+      "type": "total",
+      "gamma": 0.8977,
+      "magnitude": 1.0386
+    },
+    {
+      "kind": "lunar",
+      "catalogNumber": "09709",
+      "date": "2026-08-28",
+      "td": "04:14:04",
+      "jd": 2461280.676435185,
+      "deltaT": 75,
+      "ut": "2026-08-28T04:12:49.000Z",
+      "jdUT": 2461280.6755671296,
+      "rawType": "P",
+      "type": "partial",
+      "gamma": 0.4964,
+      "penumbralMagnitude": 1.9645,
+      "umbralMagnitude": 0.9299,
+      "durations": {
+        "penumbral": 337.8,
+        "partial": 198.1,
+        "total": 0
+      }
+    },
+    {
+      "kind": "solar",
+      "catalogNumber": "09567",
+      "date": "2027-02-06",
+      "td": "16:00:48",
+      "jd": 2461443.1672222223,
+      "deltaT": 76,
+      "ut": "2027-02-06T15:59:32.000Z",
+      "jdUT": 2461443.166342593,
+      "rawType": "A",
+      "type": "annular",
+      "gamma": -0.2952,
+      "magnitude": 0.9281
+    },
+    {
+      "kind": "lunar",
+      "catalogNumber": "09710",
+      "date": "2027-02-20",
+      "td": "23:14:06",
+      "jd": 2461457.468125,
+      "deltaT": 76,
+      "ut": "2027-02-20T23:12:50.000Z",
+      "jdUT": 2461457.4672453706,
+      "rawType": "N",
+      "type": "penumbral",
+      "gamma": -1.048,
+      "penumbralMagnitude": 0.9266,
+      "umbralMagnitude": -0.0569,
+      "durations": {
+        "penumbral": 241,
+        "partial": 0,
+        "total": 0
+      }
+    },
+    {
+      "kind": "lunar",
+      "catalogNumber": "09711",
+      "date": "2027-07-18",
+      "td": "16:04:09",
+      "jd": 2461605.169548611,
+      "deltaT": 76,
+      "ut": "2027-07-18T16:02:53.000Z",
+      "jdUT": 2461605.1686689816,
+      "rawType": "Ne",
+      "type": "penumbral",
+      "gamma": -1.5758,
+      "penumbralMagnitude": 0.0014,
+      "umbralMagnitude": -1.068,
+      "durations": {
+        "penumbral": 11.8,
+        "partial": 0,
+        "total": 0
+      }
+    },
+    {
+      "kind": "solar",
+      "catalogNumber": "09568",
+      "date": "2027-08-02",
+      "td": "10:07:50",
+      "jd": 2461619.9221064816,
+      "deltaT": 76,
+      "ut": "2027-08-02T10:06:34.000Z",
+      "jdUT": 2461619.921226852,
+      "rawType": "T",
+      "type": "total",
+      "gamma": 0.1421,
+      "magnitude": 1.079
+    },
+    {
+      "kind": "lunar",
+      "catalogNumber": "09712",
+      "date": "2027-08-17",
+      "td": "07:14:59",
+      "jd": 2461634.8020717595,
+      "deltaT": 76,
+      "ut": "2027-08-17T07:13:43.000Z",
+      "jdUT": 2461634.80119213,
+      "rawType": "N",
+      "type": "penumbral",
+      "gamma": 1.2797,
+      "penumbralMagnitude": 0.5456,
+      "umbralMagnitude": -0.5254,
+      "durations": {
+        "penumbral": 218.6,
+        "partial": 0,
+        "total": 0
+      }
+    },
+    {
+      "kind": "lunar",
+      "catalogNumber": "09713",
+      "date": "2028-01-12",
+      "td": "04:14:13",
+      "jd": 2461782.6765393517,
+      "deltaT": 76,
+      "ut": "2028-01-12T04:12:57.000Z",
+      "jdUT": 2461782.675659722,
+      "rawType": "P",
+      "type": "partial",
+      "gamma": 0.9817,
+      "penumbralMagnitude": 1.0468,
+      "umbralMagnitude": 0.0662,
+      "durations": {
+        "penumbral": 250.7,
+        "partial": 56,
+        "total": 0
+      }
+    },
+    {
+      "kind": "solar",
+      "catalogNumber": "09569",
+      "date": "2028-01-26",
+      "td": "15:08:59",
+      "jd": 2461797.131238426,
+      "deltaT": 76,
+      "ut": "2028-01-26T15:07:43.000Z",
+      "jdUT": 2461797.1303587966,
+      "rawType": "A",
+      "type": "annular",
+      "gamma": 0.3901,
+      "magnitude": 0.9208
+    },
+    {
+      "kind": "lunar",
+      "catalogNumber": "09714",
+      "date": "2028-07-06",
+      "td": "18:20:57",
+      "jd": 2461959.264548611,
+      "deltaT": 77,
+      "ut": "2028-07-06T18:19:40.000Z",
+      "jdUT": 2461959.2636574074,
+      "rawType": "P",
+      "type": "partial",
+      "gamma": -0.7903,
+      "penumbralMagnitude": 1.4266,
+      "umbralMagnitude": 0.3892,
+      "durations": {
+        "penumbral": 310.6,
+        "partial": 141.5,
+        "total": 0
+      }
+    },
+    {
+      "kind": "solar",
+      "catalogNumber": "09570",
+      "date": "2028-07-22",
+      "td": "02:56:40",
+      "jd": 2461974.622685185,
+      "deltaT": 77,
+      "ut": "2028-07-22T02:55:23.000Z",
+      "jdUT": 2461974.6217939816,
+      "rawType": "T",
+      "type": "total",
+      "gamma": -0.6056,
+      "magnitude": 1.056
+    },
+    {
+      "kind": "lunar",
+      "catalogNumber": "09715",
+      "date": "2028-12-31",
+      "td": "16:53:15",
+      "jd": 2462137.2036458333,
+      "deltaT": 77,
+      "ut": "2028-12-31T16:51:58.000Z",
+      "jdUT": 2462137.20275463,
+      "rawType": "T",
+      "type": "total",
+      "gamma": 0.3258,
+      "penumbralMagnitude": 2.2742,
+      "umbralMagnitude": 1.2463,
+      "durations": {
+        "penumbral": 336.2,
+        "partial": 208.8,
+        "total": 71.3
+      }
+    }
+  ]
+}

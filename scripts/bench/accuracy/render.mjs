@@ -130,13 +130,20 @@ export function render(r) {
       if (v !== null && typeof v === 'object') flatten(v, key);
       else {
         const parts = key.split('.');
-        let measured = r[parts[0]][parts[1]];
-        measured =
-          parts[0] === 'positions'
+        const magnitudeKey = {
+          solarMagnitude: ['solar', 'maxMagnitudeError'],
+          lunarUmbralMagnitude: ['lunar', 'maxUmbralMagnitudeError'],
+          lunarPenumbralMagnitude: ['lunar', 'maxPenumbralMagnitudeError'],
+        }[parts[0] === 'eclipses' ? parts[1] : ''];
+        let measured = magnitudeKey ? r.eclipses[magnitudeKey[0]] : r[parts[0]][parts[1]];
+        measured = magnitudeKey
+          ? measured?.[magnitudeKey[1]]
+          : parts[0] === 'positions'
             ? measured[parts[2] === 'latitude' ? 'maxLatitude' : 'max']
             : measured?.max;
-        const unit =
-          parts[0] === 'timing'
+        const unit = magnitudeKey
+          ? ''
+          : parts[0] === 'timing'
             ? r.timing[parts[1]].unit
             : ['eclipses', 'deltaT'].includes(parts[0])
               ? 's'
@@ -179,14 +186,47 @@ ${r.missing.length ? `<p class="notice">Incomplete benchmark: ${r.missing.length
   )}
 <h2>Eclipses</h2><p>NASA Five Millennium solar and lunar canons, greatest-eclipse instants in TT, 2020-01-01 inclusive through 2031-01-01 exclusive. Each reference is matched once to the nearest same-kind event within one day. Residuals compare TT directly, without applying NASA’s ΔT to civil times.</p>
 ${table(
-  ['Kind', 'Canon / found', 'Type agrees', 'Max / median (s)'],
+  [
+    'Kind',
+    'Canon / found',
+    'Type agrees',
+    'Max / median (s)',
+    'Magnitude max |Δ|',
+    'Umbral max |Δ|',
+    'Penumbral max |Δ|',
+  ],
   Object.entries(r.eclipses).map(([name, s]) => [
     name,
     `${s.canonCount} / ${s.foundCount}`,
     `${s.typeAgreement}/${s.count}`,
     `${f(s.max)} / ${f(s.median)}`,
+    f(s.maxMagnitudeError, 6),
+    f(s.maxUmbralMagnitudeError, 6),
+    f(s.maxPenumbralMagnitudeError, 6),
   ]),
-)}${stripChart(all.rows)}
+)}
+<h3>2026–2028 catalog validation</h3><p>TD is TT. UT residuals use NASA’s predicted ΔT separately from Celestine’s model. Magnitude is solar, lunar umbral, or lunar penumbral for penumbral-only events.</p>
+${table(
+  [
+    'Date',
+    'Kind',
+    'NASA / Celestine type',
+    'TD error (s)',
+    'UT error (s)',
+    'Magnitude Δ',
+    'Gamma Δ',
+  ],
+  r.eclipses2026To2028.map((e) => [
+    e.date,
+    e.kind,
+    `${e.referenceType} / ${e.type}`,
+    f(e.error),
+    f(e.utError),
+    f(e.magnitudeError, 6),
+    f(e.gammaError, 6),
+  ]),
+)}
+${stripChart(all.rows)}
 <h2>Positions</h2><p>Apparent geocentric longitude and latitude, TT input, mean ecliptic and mean equinox of date. These reuse the Horizons LT+S vectors and frame transformations checked by the precision tests, including their independent quantity-31 cross-check. Longitude residuals wrap to ±180°. Precise Chiron uses only epochs inside PRECISE_RANGE. Every committed sample is measured.</p>
 ${table(
   ['Body', 'N', 'Lon max (″)', 'Lon median (″)', 'Lat max (″)'],

@@ -419,8 +419,58 @@ for (const eclipse of eclipses) {
 `sunLongitude` and `moonLongitude` equal the position getters at greatest eclipse:
 apparent geocentric ecliptic longitudes, mean equinox of date by default, true equinox
 with `includeNutation: true`. NASA Canon comparisons for 2020–2030 match all 50 types;
-maximum TT timing error is 17.103 seconds (mean 5.879 seconds). These are geocentric
-searches; results do not describe local visibility or contact times.
+maximum TT timing error is 17.10 seconds (see the generated [accuracy report](https://anonyfox.github.io/celestine/accuracy/)).
+`sunSign`, `sunSignName`, `moonSign` and `moonSignName` use those same longitudes; Aries is index 0.
+
+`findNextEclipse(jd, options?)` and `findPreviousEclipse(jd, options?)` select strictly after/before
+the supplied TT instant, with the same frame and `kinds` options. Empty kinds or a search with no
+result within 1201 days throws `RangeError`.
+
+```ts
+import { findNextEclipse, getSolarEclipseLocal } from 'celestine/events';
+const eclipse = findNextEclipse(2461041.5, { kinds: ['solar'] }); // TT
+if (eclipse.kind === 'solar') {
+  const local = getSolarEclipseLocal(eclipse, { latitude: 64.1466, longitude: -21.9426 });
+  console.log(local.localType, local.maximum.jdUT, local.maximum.obscuration);
+}
+```
+
+`getSolarEclipseLocal(eventOrTT, observer)` returns C1/C4 (`partialBegin`, `partialEnd`),
+C2/C3 (`centralBegin`, `centralEnd`), local maximum, diameter magnitude and disk-area obscuration.
+`duration` is central-phase seconds, or null. `localType` describes the geometric alignment,
+including phases below the horizon; `visible` means any partial phase has Sun centre altitude >0°.
+No local eclipse means `localType: 'none'`, `visible: false` and null contacts/duration.
+Maximum is the maximum diameter magnitude within 0.4 day of greatest global eclipse.
+
+Observer coordinates are WGS84 geodetic degrees, longitude east-positive; optional elevation is
+metres, default zero. Altitudes are topocentric geometric centre altitudes, without refraction,
+terrain or horizon dip. Solar azimuth is north=0°, east=90°. The Moon radii are 0.2725076 Earth
+radii for partial contacts and 0.272281 for central contacts. Lunar limb relief is not modelled.
+Contacts converge to <0.01 s numerically; this is separate from ephemeris and ΔT uncertainty.
+
+`getLunarEclipseLocal(eventOrTT, observer)` returns global P1, U1, U2, U3, U4, P4 instants with
+local topocentric Moon `altitude`, `moonAltitude` at maximum and visibility flags. Absent
+contacts are null. `visibleDuringUmbral` is false for penumbral-only events. `durations`
+contains penumbral (P1..P4), partial (U1..U4) and total (U2..U3) minutes, zero for absent phases.
+Contact geometry shares the global NASA Canon model, including its 1.01 enlarged umbra.
+
+The [2026–2028 fixture](../src/events/__fixtures__/nasa-eclipses-2026-2028.json) matches all
+14 NASA types; maximum TT/UT residuals are 10.84/16.66 s, with NASA's predicted ΔT used only
+for the UT comparison. Lunar durations differ by at most 0.49 min for the shallow July 2027
+penumbral eclipse, and 0.10 min otherwise. The ten-city
+[solar fixture](../src/events/__fixtures__/nasa-solar-local-2026.json) records minute rounding,
+city coordinates and sunset annotations; the tests allow 90 s and one percentage point.
+
+### Black Moon Lilith
+
+Use separate getters for mean and true (perturbed apogee) Black Moon Lilith:
+
+```ts
+import { getMeanLilith, getTrueLilith } from 'celestine/ephemeris';
+const jd = 2461041.5; // TT
+console.log(getMeanLilith(jd).longitude, getTrueLilith(jd).longitude);
+```
+
 
 For integrations, see [examples](../examples/). For signatures and option types,
 see the [API documentation](https://anonyfox.github.io/celestine).

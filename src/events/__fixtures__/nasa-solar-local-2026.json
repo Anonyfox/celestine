@@ -1,0 +1,179 @@
+{
+  "source": "https://science.nasa.gov/eclipses/future-eclipses/total-solar-eclipse-on-august-12-2026/",
+  "retrieved": "2026-10-29",
+  "date": "2026-08-12",
+  "coordinates": "Rounded standard city-centre coordinates in degrees; elevation 0 m. These points need not equal NASA table locations. Allow 90 seconds for minute rounding and coordinate differences.",
+  "horizon": "NASA asterisk times are sunset, not C4. Test C4 altitude < 0 instead of comparing C4 with sunset.",
+  "cities": [
+    {
+      "name": "León",
+      "observer": {
+        "latitude": 42.5987,
+        "longitude": -5.5671
+      },
+      "localType": "total",
+      "utcOffset": 2,
+      "partialBegin": "19:32",
+      "centralBegin": "20:28",
+      "centralEnd": "20:30",
+      "partialEnd": "21:22",
+      "maximum": null,
+      "obscuration": 1,
+      "endsAfterSunset": false,
+      "coordinateSource": "https://www.countrycoordinate.com/city-leon-spain/"
+    },
+    {
+      "name": "Reykjavík",
+      "observer": {
+        "latitude": 64.1466,
+        "longitude": -21.9426
+      },
+      "localType": "total",
+      "utcOffset": 0,
+      "partialBegin": "16:47",
+      "centralBegin": "17:48",
+      "centralEnd": "17:49",
+      "partialEnd": "18:47",
+      "maximum": null,
+      "obscuration": 1,
+      "endsAfterSunset": false,
+      "coordinateSource": "https://www.travelreykjavik.com/attractions/reykjavik"
+    },
+    {
+      "name": "Valencia",
+      "observer": {
+        "latitude": 39.4699,
+        "longitude": -0.3763
+      },
+      "localType": "total",
+      "utcOffset": 2,
+      "partialBegin": "19:38",
+      "centralBegin": "20:32",
+      "centralEnd": "20:33",
+      "partialEnd": "21:01",
+      "maximum": null,
+      "obscuration": 1,
+      "endsAfterSunset": true,
+      "coordinateSource": "https://www.distanciasentreciudades.com/distancia-valencia-a-zaragoza"
+    },
+    {
+      "name": "Zaragoza",
+      "observer": {
+        "latitude": 41.6488,
+        "longitude": -0.8891
+      },
+      "localType": "total",
+      "utcOffset": 2,
+      "partialBegin": "19:34",
+      "centralBegin": "20:29",
+      "centralEnd": "20:30",
+      "partialEnd": "21:07",
+      "maximum": null,
+      "obscuration": 1,
+      "endsAfterSunset": true,
+      "coordinateSource": "https://www.distanciasentreciudades.com/distancia-valencia-a-zaragoza"
+    },
+    {
+      "name": "Berlin",
+      "observer": {
+        "latitude": 52.52,
+        "longitude": 13.405
+      },
+      "localType": "partial",
+      "utcOffset": 2,
+      "partialBegin": "19:15",
+      "centralBegin": null,
+      "centralEnd": null,
+      "partialEnd": "20:38",
+      "maximum": "20:08",
+      "obscuration": 0.85,
+      "endsAfterSunset": true,
+      "coordinateSource": "https://www.findlatlong.com/coordinates/germany/berlin"
+    },
+    {
+      "name": "London",
+      "observer": {
+        "latitude": 51.5074,
+        "longitude": -0.1278
+      },
+      "localType": "partial",
+      "utcOffset": 1,
+      "partialBegin": "18:17",
+      "centralBegin": null,
+      "centralEnd": null,
+      "partialEnd": "20:06",
+      "maximum": "19:13",
+      "obscuration": 0.91,
+      "endsAfterSunset": false,
+      "coordinateSource": "https://huggingface.co/datasets/burtenshaw/european-cities/viewer"
+    },
+    {
+      "name": "Paris",
+      "observer": {
+        "latitude": 48.8566,
+        "longitude": 2.3522
+      },
+      "localType": "partial",
+      "utcOffset": 2,
+      "partialBegin": "19:22",
+      "centralBegin": null,
+      "centralEnd": null,
+      "partialEnd": "21:09",
+      "maximum": "20:17",
+      "obscuration": 0.92,
+      "endsAfterSunset": false,
+      "coordinateSource": "https://huggingface.co/datasets/burtenshaw/european-cities/viewer"
+    },
+    {
+      "name": "Madrid",
+      "observer": {
+        "latitude": 40.4168,
+        "longitude": -3.7038
+      },
+      "localType": "partial",
+      "utcOffset": 2,
+      "partialBegin": "19:36",
+      "centralBegin": null,
+      "centralEnd": null,
+      "partialEnd": "21:16",
+      "maximum": "20:32",
+      "obscuration": 0.99,
+      "endsAfterSunset": true,
+      "coordinateSource": "https://gps-pins.org/en/coordinates/madrid"
+    },
+    {
+      "name": "New York",
+      "observer": {
+        "latitude": 40.7128,
+        "longitude": -74.006
+      },
+      "localType": "partial",
+      "utcOffset": -4,
+      "partialBegin": "13:07",
+      "centralBegin": null,
+      "centralEnd": null,
+      "partialEnd": "14:38",
+      "maximum": "13:54",
+      "obscuration": 0.09,
+      "endsAfterSunset": false,
+      "coordinateSource": "https://www.epa.gov/sites/production/files/2019-08/documents/swc_users_guide_web_app-3.2.0-8-7-19-final-508.pdf"
+    },
+    {
+      "name": "Boston",
+      "observer": {
+        "latitude": 42.3601,
+        "longitude": -71.0589
+      },
+      "localType": "partial",
+      "utcOffset": -4,
+      "partialBegin": "13:01",
+      "centralBegin": null,
+      "centralEnd": null,
+      "partialEnd": "14:46",
+      "maximum": "13:55",
+      "obscuration": 0.16,
+      "endsAfterSunset": false,
+      "coordinateSource": "https://www.epa.gov/sites/production/files/2019-08/documents/swc_users_guide_web_app-3.2.0-8-7-19-final-508.pdf"
+    }
+  ]
+}
