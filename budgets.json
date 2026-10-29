@@ -1,58 +1,58 @@
 {
   "precision": {
     "Mercury": {
-      "lonArcsec": 1.4,
-      "latArcsec": 0.9,
+      "lonArcsec": 1.21,
+      "latArcsec": 0.76,
       "minSamples": 176
     },
     "Pluto": {
-      "lonArcsec": 3.8,
-      "latArcsec": 0.45,
+      "lonArcsec": 3.4,
+      "latArcsec": 0.37,
       "minSamples": 91
     },
     "Sun": {
-      "lonArcsec": 0.4,
-      "latArcsec": 0.2,
+      "lonArcsec": 0.33,
+      "latArcsec": 0.16,
       "minSamples": 123
     },
     "Moon": {
       "lonArcsec": 8,
-      "latArcsec": 1.6,
+      "latArcsec": 1.4,
       "minSamples": 123
     },
     "Venus": {
-      "lonArcsec": 0.7,
-      "latArcsec": 0.55,
+      "lonArcsec": 0.61,
+      "latArcsec": 0.47,
       "minSamples": 148
     },
     "Mars": {
-      "lonArcsec": 1.4,
-      "latArcsec": 0.85,
+      "lonArcsec": 1.3,
+      "latArcsec": 0.72,
       "minSamples": 148
     },
     "Jupiter": {
-      "lonArcsec": 1.7,
-      "latArcsec": 0.8,
+      "lonArcsec": 1.5,
+      "latArcsec": 0.67,
       "minSamples": 123
     },
     "Saturn": {
-      "lonArcsec": 2,
-      "latArcsec": 1.3,
+      "lonArcsec": 1.8,
+      "latArcsec": 1.1,
       "minSamples": 123
     },
     "Uranus": {
-      "lonArcsec": 4,
-      "latArcsec": 0.8,
+      "lonArcsec": 3.6,
+      "latArcsec": 0.7,
       "minSamples": 123
     },
     "Neptune": {
-      "lonArcsec": 5.6,
-      "latArcsec": 0.45,
+      "lonArcsec": 4.9,
+      "latArcsec": 0.38,
       "minSamples": 123
     },
     "Chiron": {
-      "lonArcsec": 24000,
-      "latArcsec": 2700,
+      "lonArcsec": 21000,
+      "latArcsec": 2400,
       "minSamples": 123
     }
   },
@@ -143,13 +143,13 @@
     "nodeMajor": 20,
     "tolerance": 1.3,
     "baselines": {
-      "calculateChart": 12540,
+      "calculateChart": 10280,
       "ephemeris.getAllPositions": 2147,
       "getMercuryPosition": 369.3,
       "getPlutoPosition": 240.2,
       "getMoonPosition": 179.6,
       "transits.findStationPoints.180days": 33100,
-      "time.toJulianDate.x64": 52.35
+      "time.toJulianDate.x64": 43.36
     }
   }
 }
