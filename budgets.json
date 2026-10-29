@@ -99,8 +99,8 @@
       "gzipBytes": 38272
     },
     "events.full": {
-      "minBytes": 76672,
-      "gzipBytes": 32704
+      "minBytes": 81600,
+      "gzipBytes": 34688
     },
     "events.findSeasons": {
       "minBytes": 9088,

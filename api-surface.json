@@ -14,6 +14,12 @@
   "events:exports.findLunarPhases": {
     "kind": "function"
   },
+  "events:exports.findNextEclipse": {
+    "kind": "function"
+  },
+  "events:exports.findPreviousEclipse": {
+    "kind": "function"
+  },
   "events:exports.findSeasons": {
     "kind": "function"
   },
@@ -29,10 +35,16 @@
   "events:exports.findVoidOfCourseMoon": {
     "kind": "function"
   },
+  "events:exports.getLunarEclipseLocal": {
+    "kind": "function"
+  },
   "events:exports.getMoonPhase": {
     "kind": "function"
   },
   "events:exports.getSignsDuring": {
+    "kind": "function"
+  },
+  "events:exports.getSolarEclipseLocal": {
     "kind": "function"
   },
   "events:exports.localDayToUT": {
@@ -115,6 +127,28 @@
       "NatalPoint": "public.transits.NatalPoint"
     }
   },
+  "events:public.EclipseContact": {
+    "kind": "type",
+    "type": "EclipseContact",
+    "members": {
+      "altitude": {
+        "type": "number",
+        "optional": false
+      },
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface EclipseContact extends EventInstant { altitude: number; }",
+    "references": {
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
   "events:public.EclipseEvent": {
     "kind": "type",
     "type": "EclipseEvent",
@@ -143,12 +177,28 @@
         "type": "number",
         "optional": false
       },
+      "moonSign": {
+        "type": "number",
+        "optional": false
+      },
+      "moonSignName": {
+        "type": "string",
+        "optional": false
+      },
       "sunLongitude": {
         "type": "number",
         "optional": false
       },
+      "sunSign": {
+        "type": "number",
+        "optional": false
+      },
+      "sunSignName": {
+        "type": "string",
+        "optional": false
+      },
       "type": {
-        "type": "\"total\" | \"annular\" | \"hybrid\" | \"partial\" | \"penumbral\"",
+        "type": "\"total\" | \"partial\" | \"penumbral\" | \"annular\" | \"hybrid\"",
         "optional": false
       }
     },
@@ -373,6 +423,25 @@
     },
     "definition": "export type EclipseKind = 'solar' | 'lunar';"
   },
+  "events:public.EclipseObserver": {
+    "kind": "type",
+    "type": "EclipseObserver",
+    "members": {
+      "elevation": {
+        "type": "number | undefined",
+        "optional": true
+      },
+      "latitude": {
+        "type": "number",
+        "optional": false
+      },
+      "longitude": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface EclipseObserver { latitude: number; longitude: number; elevation?: number; }"
+  },
   "events:public.EventFrameOptions": {
     "kind": "type",
     "type": "EventFrameOptions",
@@ -439,6 +508,45 @@
       "LunarPhaseEvent": "events:public.LunarPhaseEvent"
     }
   },
+  "events:public.findNextEclipse": {
+    "kind": "value",
+    "type": "(jd: number, options?: EclipseSearchOptions) => EclipseEvent",
+    "references": {
+      "EclipseEvent": "events:public.EclipseEvent",
+      "EclipseSearchOptions": "events:public.findNextEclipse.types.EclipseSearchOptions"
+    }
+  },
+  "events:public.findNextEclipse.types.EclipseSearchOptions": {
+    "kind": "type",
+    "type": "EclipseSearchOptions",
+    "members": {
+      "includeNutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      },
+      "kinds": {
+        "type": "EclipseKind[] | undefined",
+        "optional": true
+      },
+      "nutation": {
+        "type": "boolean | undefined",
+        "optional": true
+      }
+    },
+    "definition": "type EclipseSearchOptions = EventFrameOptions & { kinds?: EclipseKind[]; };",
+    "references": {
+      "EclipseKind": "events:public.EclipseKind",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions"
+    }
+  },
+  "events:public.findPreviousEclipse": {
+    "kind": "value",
+    "type": "(jd: number, options?: EclipseSearchOptions) => EclipseEvent",
+    "references": {
+      "EclipseEvent": "events:public.EclipseEvent",
+      "EclipseSearchOptions": "events:public.findNextEclipse.types.EclipseSearchOptions"
+    }
+  },
   "events:public.findSeasons": {
     "kind": "value",
     "type": "(startJD: number, endJD: number) => SeasonEvent[]",
@@ -482,6 +590,15 @@
       "VoidOfCoursePeriod": "events:public.VoidOfCoursePeriod"
     }
   },
+  "events:public.getLunarEclipseLocal": {
+    "kind": "value",
+    "type": "(eclipse: LunarEclipseEvent | number, observer: EclipseObserver) => LunarEclipseLocal",
+    "references": {
+      "EclipseObserver": "events:public.EclipseObserver",
+      "LunarEclipseEvent": "events:public.LunarEclipseEvent",
+      "LunarEclipseLocal": "events:public.LunarEclipseLocal"
+    }
+  },
   "events:public.getMoonPhase": {
     "kind": "value",
     "type": "(jd: number) => MoonPhaseInfo",
@@ -495,6 +612,15 @@
     "references": {
       "SignsDuring": "events:public.SignsDuring",
       "SignsDuringOptions": "events:public.SignsDuringOptions"
+    }
+  },
+  "events:public.getSolarEclipseLocal": {
+    "kind": "value",
+    "type": "(eclipse: SolarEclipseEvent | number, observer: EclipseObserver) => SolarEclipseLocal",
+    "references": {
+      "EclipseObserver": "events:public.EclipseObserver",
+      "SolarEclipseEvent": "events:public.SolarEclipseEvent",
+      "SolarEclipseLocal": "events:public.SolarEclipseLocal"
     }
   },
   "events:public.LocalDayDate": {
@@ -579,12 +705,28 @@
         "type": "number",
         "optional": false
       },
+      "moonSign": {
+        "type": "number",
+        "optional": false
+      },
+      "moonSignName": {
+        "type": "string",
+        "optional": false
+      },
       "penumbralMagnitude": {
         "type": "number",
         "optional": false
       },
       "sunLongitude": {
         "type": "number",
+        "optional": false
+      },
+      "sunSign": {
+        "type": "number",
+        "optional": false
+      },
+      "sunSignName": {
+        "type": "string",
         "optional": false
       },
       "type": {
@@ -626,13 +768,92 @@
         "type": "number",
         "optional": false
       },
+      "moonSign": {
+        "type": "number",
+        "optional": false
+      },
+      "moonSignName": {
+        "type": "string",
+        "optional": false
+      },
       "sunLongitude": {
         "type": "number",
         "optional": false
+      },
+      "sunSign": {
+        "type": "number",
+        "optional": false
+      },
+      "sunSignName": {
+        "type": "string",
+        "optional": false
       }
     },
-    "definition": "interface EclipseGeometry extends EventInstant { gamma: number; magnitude: number; sunLongitude: number; moonLongitude: number; }",
+    "definition": "interface EclipseGeometry extends EventInstant { gamma: number; magnitude: number; sunLongitude: number; moonLongitude: number; sunSign: number; sunSignName: string; moonSign: number; moonSignName: string; }",
     "references": {
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
+  "events:public.LunarEclipseLocal": {
+    "kind": "type",
+    "type": "LunarEclipseLocal",
+    "members": {
+      "durations": {
+        "type": "{ penumbral: number; partial: number; total: number; }",
+        "optional": false
+      },
+      "kind": {
+        "type": "\"lunar\"",
+        "optional": false
+      },
+      "maximum": {
+        "type": "EventInstant",
+        "optional": false
+      },
+      "moonAltitude": {
+        "type": "number",
+        "optional": false
+      },
+      "P1": {
+        "type": "EclipseContact | null",
+        "optional": false
+      },
+      "P4": {
+        "type": "EclipseContact | null",
+        "optional": false
+      },
+      "U1": {
+        "type": "EclipseContact | null",
+        "optional": false
+      },
+      "U2": {
+        "type": "EclipseContact | null",
+        "optional": false
+      },
+      "U3": {
+        "type": "EclipseContact | null",
+        "optional": false
+      },
+      "U4": {
+        "type": "EclipseContact | null",
+        "optional": false
+      },
+      "visibleAtMaximum": {
+        "type": "boolean",
+        "optional": false
+      },
+      "visibleDuringEclipse": {
+        "type": "boolean",
+        "optional": false
+      },
+      "visibleDuringUmbral": {
+        "type": "boolean",
+        "optional": false
+      }
+    },
+    "definition": "export interface LunarEclipseLocal { kind: 'lunar'; maximum: EventInstant; P1: EclipseContact | null; U1: EclipseContact | null; U2: EclipseContact | null; U3: EclipseContact | null; U4: EclipseContact | null; P4: EclipseContact | null; moonAltitude: number; visibleAtMaximum: boolean; visibleDuringUmbral: boolean; visibleDuringEclipse: boolean; durations: { penumbral: number; partial: number; total: number; }; }",
+    "references": {
+      "EclipseContact": "events:public.EclipseContact",
       "EventInstant": "events:public.EventInstant"
     }
   },
@@ -1701,6 +1922,28 @@
       "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions"
     }
   },
+  "events:public.SolarEclipseContact": {
+    "kind": "type",
+    "type": "SolarEclipseContact",
+    "members": {
+      "jd": {
+        "type": "number",
+        "optional": false
+      },
+      "jdUT": {
+        "type": "number",
+        "optional": false
+      },
+      "sunAltitude": {
+        "type": "number",
+        "optional": false
+      }
+    },
+    "definition": "export interface SolarEclipseContact extends EventInstant { sunAltitude: number; }",
+    "references": {
+      "EventInstant": "events:public.EventInstant"
+    }
+  },
   "events:public.SolarEclipseEvent": {
     "kind": "type",
     "type": "SolarEclipseEvent",
@@ -1733,8 +1976,24 @@
         "type": "number",
         "optional": false
       },
+      "moonSign": {
+        "type": "number",
+        "optional": false
+      },
+      "moonSignName": {
+        "type": "string",
+        "optional": false
+      },
       "sunLongitude": {
         "type": "number",
+        "optional": false
+      },
+      "sunSign": {
+        "type": "number",
+        "optional": false
+      },
+      "sunSignName": {
+        "type": "string",
         "optional": false
       },
       "type": {
@@ -1746,6 +2005,53 @@
     "references": {
       "EclipseGeometry": "events:public.LunarEclipseEvent.types.EclipseGeometry",
       "SolarEclipseType": "events:public.SolarEclipseType"
+    }
+  },
+  "events:public.SolarEclipseLocal": {
+    "kind": "type",
+    "type": "SolarEclipseLocal",
+    "members": {
+      "centralBegin": {
+        "type": "SolarEclipseContact | null",
+        "optional": false
+      },
+      "centralEnd": {
+        "type": "SolarEclipseContact | null",
+        "optional": false
+      },
+      "duration": {
+        "type": "number | null",
+        "optional": false
+      },
+      "kind": {
+        "type": "\"solar\"",
+        "optional": false
+      },
+      "localType": {
+        "type": "\"total\" | \"partial\" | \"annular\" | \"none\"",
+        "optional": false
+      },
+      "maximum": {
+        "type": "EventInstant & { magnitude: number; obscuration: number; sunAltitude: number; sunAzimuth: number; }",
+        "optional": false
+      },
+      "partialBegin": {
+        "type": "SolarEclipseContact | null",
+        "optional": false
+      },
+      "partialEnd": {
+        "type": "SolarEclipseContact | null",
+        "optional": false
+      },
+      "visible": {
+        "type": "boolean",
+        "optional": false
+      }
+    },
+    "definition": "export interface SolarEclipseLocal { kind: 'solar'; visible: boolean; localType: 'none' | 'partial' | 'annular' | 'total'; maximum: EventInstant & { magnitude: number; obscuration: number; sunAltitude: number; sunAzimuth: number; }; partialBegin: SolarEclipseContact | null; partialEnd: SolarEclipseContact | null; centralBegin: SolarEclipseContact | null; centralEnd: SolarEclipseContact | null; duration: number | null; }",
+    "references": {
+      "EventInstant": "events:public.EventInstant",
+      "SolarEclipseContact": "events:public.SolarEclipseContact"
     }
   },
   "events:public.SolarEclipseType": {
