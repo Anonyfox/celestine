@@ -26,12 +26,12 @@
       "minSamples": 148
     },
     "Mars": {
-      "lonArcsec": 1.3,
+      "lonArcsec": 1.24,
       "latArcsec": 0.72,
       "minSamples": 148
     },
     "Jupiter": {
-      "lonArcsec": 1.5,
+      "lonArcsec": 1.43,
       "latArcsec": 0.67,
       "minSamples": 123
     },
@@ -147,8 +147,8 @@
     "nodeMajor": 20,
     "tolerance": 1.3,
     "baselines": {
-      "calculateChart": 10280,
-      "ephemeris.getAllPositions": 2147,
+      "calculateChart": 7903,
+      "ephemeris.getAllPositions": 2029,
       "getMercuryPosition": 369.3,
       "getPlutoPosition": 240.2,
       "getMoonPosition": 179.6,
