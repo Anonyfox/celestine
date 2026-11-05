@@ -137,6 +137,10 @@
     "precise.all": {
       "minBytes": 43520,
       "gzipBytes": 30720
+    },
+    "retrograde.getRetrogradeProgress": {
+      "minBytes": 56320,
+      "gzipBytes": 23232
     }
   },
   "perf": {

@@ -474,3 +474,20 @@ console.log(getMeanLilith(jd).longitude, getTrueLilith(jd).longitude);
 
 For integrations, see [examples](../examples/). For signatures and option types,
 see the [API documentation](https://anonyfox.github.io/celestine).
+
+### Halfway through Mercury retrograde
+
+Use TT Julian Dates with the transits helpers. Progress measures elapsed time between
+stations, with a percentage clamped to 0–100 and the current retrograde or shadow phase.
+
+```ts
+import { CelestialBody } from 'celestine';
+import { getRetrogradeProgress } from 'celestine/retrograde';
+import { findRetrogradePeriods } from 'celestine/transits';
+
+const period = findRetrogradePeriods(CelestialBody.Mercury, 2460401, 2460432)[0];
+const halfwayJD = (period.stationRetroJD + period.stationDirectJD) / 2;
+const progress = getRetrogradeProgress(period, halfwayJD);
+console.log(progress.percentDone); // 50: halfway through Mercury retrograde
+console.log(progress.phase); // 'retrograde'
+```

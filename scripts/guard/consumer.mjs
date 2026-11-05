@@ -105,6 +105,18 @@ assert.deepEqual(precise.getPallasPosition(2460000.5), preciseCjs.getPallasPosit
 assert.deepEqual(precise.PRECISE_RANGE, preciseCjs.PRECISE_RANGE);
 assert.throws(() => precise.getChironPosition(precise.PRECISE_RANGE.endJD + 1), RangeError);
 console.log('Consumer: subpath-only celestine/precise matches across ESM and CJS.');
+const retrograde = await import('celestine/retrograde');
+const retrogradeCjs = createRequire(import.meta.url)('celestine/retrograde');
+assert.equal('retrograde' in esm, false);
+assert.equal('retrograde' in cjs, false);
+assert.equal('getRetrogradeProgress' in esm.transits, false);
+assert.equal('getRetrogradeProgress' in cjs.transits, false);
+assert.deepEqual(Object.keys(retrograde).sort(), Object.keys(retrogradeCjs).sort());
+assert.deepEqual(
+  retrograde.getRetrogradeProgress(esm.CelestialBody.Mercury, 2460415),
+  retrogradeCjs.getRetrogradeProgress(cjs.CelestialBody.Mercury, 2460415),
+);
+console.log('Consumer: subpath-only celestine/retrograde matches across ESM and CJS.');
 const manifest = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
 const pkgCjs = createRequire(import.meta.url)('celestine/package.json');
 const { default: pkgEsm } = await import('celestine/package.json', { with: { type: 'json' } });

@@ -117,7 +117,17 @@
         "default": "./dist/precise/index.cjs"
       }
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./retrograde": {
+      "import": {
+        "types": "./dist/retrograde/index.d.ts",
+        "default": "./dist/retrograde/index.js"
+      },
+      "require": {
+        "types": "./dist/retrograde/index.d.cts",
+        "default": "./dist/retrograde/index.cjs"
+      }
+    }
   },
   "files": [
     "dist",
@@ -240,6 +250,9 @@
       ],
       "precise": [
         "dist/precise/index.d.ts"
+      ],
+      "retrograde": [
+        "dist/retrograde/index.d.ts"
       ]
     }
   }

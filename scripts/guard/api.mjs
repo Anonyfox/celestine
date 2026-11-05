@@ -3,6 +3,7 @@ import ts from 'typescript';
 import * as eventsApi from '../../dist/events/index.js';
 import * as api from '../../dist/index.js';
 import * as preciseApi from '../../dist/precise/index.js';
+import * as retrogradeApi from '../../dist/retrograde/index.js';
 import { stableApi } from './api-normalize.mjs';
 import { updating } from './common.mjs';
 
@@ -11,6 +12,7 @@ const ENTRIES = [
   ['dist/index.d.ts', api, ''],
   ['dist/events/index.d.ts', eventsApi, 'events:'],
   ['dist/precise/index.d.ts', preciseApi, 'precise:'],
+  ['dist/retrograde/index.d.ts', retrogradeApi, 'retrograde:'],
 ];
 
 const program = ts.createProgram(

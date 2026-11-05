@@ -22,6 +22,7 @@ import {findAllAspects} from 'celestine/aspects';
 import {calculateChart} from 'celestine/chart';
 export * from 'celestine/ephemeris';
 export {toJulianDate, fromJulianDate, eclipticToZodiac, findStationPoints, findAllAspects, calculateChart};`,
+  'retrograde.getRetrogradeProgress': `export {getRetrogradeProgress} from 'celestine/retrograde';`,
   // celestine/events is subpath-only (never re-exported from the root).
   'events.full': `export * from 'celestine/events';`,
   'events.findSeasons': `export {findSeasons} from 'celestine/events';`,

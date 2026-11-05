@@ -1,8 +1,12 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  // celestine/events is subpath-only, so its CJS build is a separate bundle.
-  entry: { index: 'src/index.ts', 'events/index': 'src/events/index.ts' },
+  // Subpath-only APIs have separate CJS bundles.
+  entry: {
+    index: 'src/index.ts',
+    'events/index': 'src/events/index.ts',
+    'retrograde/index': 'src/retrograde/index.ts',
+  },
   format: ['cjs'],
   dts: true,
   splitting: false,

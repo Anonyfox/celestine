@@ -4,6 +4,7 @@
     "src/index.ts",
     "src/events/index.ts",
     "src/precise/index.ts",
+    "src/retrograde/index.ts",
     "src/time/index.ts"
   ],
   "out": "docs",

@@ -18794,5 +18794,52 @@
     "references": {
       "Sign": "public.zodiac.Sign"
     }
+  },
+  "retrograde:exports.getRetrogradeProgress": {
+    "kind": "function"
+  },
+  "retrograde:public.getRetrogradeProgress": {
+    "kind": "value",
+    "type": "{ (body: CelestialBody, jd: number, options?: EventFrameOptions): RetrogradeProgress | null; (period: RetrogradePeriod, jd: number): RetrogradeProgress; }",
+    "references": {
+      "CelestialBody": "public.ephemeris.CelestialBody",
+      "EventFrameOptions": "public.transits.findNextStation.types.EventFrameOptions",
+      "RetrogradePeriod": "public.transits.RetrogradePeriod",
+      "RetrogradeProgress": "retrograde:public.RetrogradeProgress"
+    }
+  },
+  "retrograde:public.RetrogradeProgress": {
+    "kind": "type",
+    "type": "RetrogradeProgress",
+    "members": {
+      "midpointJD": {
+        "type": "number",
+        "optional": false
+      },
+      "midpointJDUT": {
+        "type": "number | undefined",
+        "optional": true
+      },
+      "percentDone": {
+        "type": "number",
+        "optional": false
+      },
+      "period": {
+        "type": "RetrogradePeriod",
+        "optional": false
+      },
+      "phase": {
+        "type": "\"retrograde\" | \"pre-shadow\" | \"post-shadow\" | \"outside\"",
+        "optional": false
+      },
+      "shadow": {
+        "type": "{ preShadowStartJD: number; postShadowEndJD: number; shadowZoneStart: number; shadowZoneEnd: number; }",
+        "optional": false
+      }
+    },
+    "definition": "export interface RetrogradeProgress { period: RetrogradePeriod; shadow: ReturnType<typeof import('../transits/retrograde-transits.js').getRetrogradeShadow>; midpointJD: number; midpointJDUT?: number; percentDone: number; phase: 'pre-shadow' | 'retrograde' | 'post-shadow' | 'outside'; }",
+    "references": {
+      "RetrogradePeriod": "public.transits.RetrogradePeriod"
+    }
   }
 }
