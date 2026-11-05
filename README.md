@@ -118,7 +118,7 @@ access can retain the whole module; other bundlers may shake it differently.
 
 | Entry point | Contents | Minified bytes | Gzip bytes |
 |---|---|---:|---:|
-| `celestine` | Root modules (excludes events and precise) | 173,189 | 59,008 |
+| `celestine` | Root modules (excludes events, precise, and retrograde) | 173,189 | 59,008 |
 | `celestine/ephemeris` | Positions, nodes, Lilith, lots, small bodies | 61,935 | 24,623 |
 | `celestine/time` | Julian dates, ΔT, sidereal time | 5,502 | 2,571 |
 | `celestine/zodiac` | Signs, dignities, formatting | 5,877 | 2,218 |
@@ -129,6 +129,7 @@ access can retain the whole module; other bundlers may shake it differently.
 | `celestine/progressions` | Progressions and solar arc | 71,088 | 28,993 |
 | `celestine/events` | Event searches | 60,136 | 24,546 |
 | `celestine/precise` | Opt-in small-body models | 43,517 | 30,715 |
+| `celestine/retrograde` | Retrograde progress helper | 56,264 | 23,199 |
 
 Measured after `npm run build` with esbuild using the neutral-platform, minified
 ESM options in [the size guard](scripts/guard/entries.mjs), exporting every symbol

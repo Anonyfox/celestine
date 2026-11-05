@@ -6,6 +6,16 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-05
+
+### Added
+
+- `getRetrogradeProgress(body, jd, options?)` and `getRetrogradeProgress(period, jd)` on the
+  opt-in `celestine/retrograde` subpath: shadow bounds (via `getRetrogradeShadow`), station
+  midpoint, `percentDone` (0–100 between retrograde and direct stations), and
+  `phase` (`pre-shadow` | `retrograde` | `post-shadow` | `outside`). Root and
+  `celestine/transits` bundles are unchanged; import the helper from the subpath.
+
 ### Added
 
 - Docs builds generate a curated sitemap and robots.txt, and copy optional verification files from
