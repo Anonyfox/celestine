@@ -6,6 +6,11 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+### Added
+
+- Docs builds generate a curated sitemap and robots.txt, and copy optional verification files from
+  `doc/site-verification/` into the site root.
+
 ## [0.8.0] - 2026-10-29
 
 ### Added

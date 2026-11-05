@@ -136,7 +136,7 @@
     "check": "npm run check:types && npm run check:lint && npm run build && npm run check:consumer && npm run check:coverage && npm run check:size && npm run check:perf && npm run check:api && npm run check:ratchet",
     "prepublishOnly": "npm run check",
     "typecheck": "tsc --noEmit",
-    "docs": "typedoc && node scripts/bench/accuracy.mjs --check",
+    "docs": "typedoc && node scripts/bench/accuracy.mjs --check && node scripts/docs-seo.mjs",
     "bench:accuracy": "node scripts/bench/accuracy.mjs",
     "docs:serve": "npx serve docs",
     "release:patch": "npm run check && npm version patch -m 'Release v%s' && git push && git push --tags",
