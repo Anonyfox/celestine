@@ -8,6 +8,10 @@ All notable changes to this project are documented here, following
 
 ### Documentation
 
+- Add descriptive titles, descriptions, canonical and Open Graph metadata to the docs home and
+  module pages; include module and root landing pages in the sitemap and derive last-modified dates
+  from source Git history or file modification times.
+
 - Fully refresh the comparison page for Celestine 0.9.0 with measurements dated 2026-11-09,
   including Astronomy Engine, Celestine 0.2.1 and sweph in Moshier mode; document scope and omissions.
 

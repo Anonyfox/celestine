@@ -1,5 +1,13 @@
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const root = new URL('../', import.meta.url);
@@ -7,7 +15,8 @@ const docs = new URL('docs/', root);
 const base = 'https://anonyfox.github.io/celestine/';
 const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin' }).format(new Date());
 
-// Keep this list editorial: generated API pages and media are deliberately excluded.
+// Keep this list editorial; module landing pages are discovered below.
+// Individual API symbols, media and site-verification HTML are excluded.
 const pages = [
   { path: '', output: 'index.html', sources: ['README.md'] },
   { path: 'accuracy/', output: 'accuracy/index.html', sources: ['scripts/bench/accuracy.mjs'] },
@@ -23,6 +32,12 @@ function lastmod(sources) {
   const source = sources.find((path) => existsSync(new URL(path, root)));
   if (source) {
     try {
+      const dirty = execFileSync('git', ['status', '--porcelain', '--', source], {
+        cwd: fileURLToPath(root),
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+      if (dirty) return statSync(new URL(source, root)).mtime.toISOString().slice(0, 10);
       const date = execFileSync('git', ['log', '-1', '--format=%cs', '--', source], {
         cwd: fileURLToPath(root),
         encoding: 'utf8',
@@ -33,7 +48,7 @@ function lastmod(sources) {
       // Source archives may not contain Git history.
     }
   }
-  return today;
+  return source ? statSync(new URL(source, root)).mtime.toISOString().slice(0, 10) : today;
 }
 
 function escapeXml(value) {
@@ -41,7 +56,62 @@ function escapeXml(value) {
   return value.replace(/[&<>"']/g, (character) => entities[character]);
 }
 
+// Facts from README.md: introduction and the sampled JPL Horizons precision checks.
+const siteTitle =
+  'Celestine: TypeScript astrology and astronomy library (zero runtime dependencies, JPL Horizons checked)';
+const description =
+  'MIT-licensed TypeScript astrology and astronomy library for charts, houses, aspects, transits, stations, progressions and events. Zero runtime dependencies, browser and Node support, with positions checked against JPL Horizons fixtures.';
+
+function updateMetadata(output, title) {
+  const file = new URL(output, docs);
+  if (!existsSync(file)) return;
+  const canonical = base + (output === 'index.html' ? '' : output);
+  const metadata = [
+    `<title>${escapeXml(title)}</title>`,
+    `<meta name="description" content="${escapeXml(description)}"/>`,
+    `<link rel="canonical" href="${escapeXml(canonical)}"/>`,
+    ...Object.entries({ title, description, type: 'website', url: canonical }).map(
+      ([property, content]) => `<meta property="og:${property}" content="${escapeXml(content)}"/>`,
+    ),
+  ].join('');
+  // Replace owned metadata rather than append duplicates, including on repeated builds.
+  const html = readFileSync(file, 'utf8')
+    .replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, '')
+    .replace(/<meta\b[^>]*>/gi, (tag) =>
+      /\b(?:name|property)\s*=\s*["'](?:description|og:(?:title|description|type|url))["']/i.test(
+        tag,
+      )
+        ? ''
+        : tag,
+    )
+    .replace(/<link\b[^>]*>/gi, (tag) => (/\brel\s*=\s*["']canonical["']/i.test(tag) ? '' : tag))
+    .replace(/<\/head>/i, `${metadata}</head>`);
+  writeFileSync(file, html, 'utf8');
+}
+
 mkdirSync(docs, { recursive: true });
+updateMetadata('index.html', siteTitle);
+for (const output of ['modules.html', 'hierarchy.html']) {
+  if (existsSync(new URL(output, docs))) {
+    pages.push({ path: output, output, sources: ['src/index.ts', 'README.md'] });
+  }
+}
+const modules = new URL('modules/', docs);
+if (existsSync(modules)) {
+  for (const entry of readdirSync(modules, { withFileTypes: true }).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  )) {
+    if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
+    const name = entry.name.slice(0, -5).replace(/^index\./, '');
+    const output = `modules/${entry.name}`;
+    updateMetadata(output, `${name} API | ${siteTitle}`);
+    pages.push({
+      path: output,
+      output,
+      sources: [name === 'index' ? 'src/index.ts' : `src/${name}/index.ts`, 'README.md'],
+    });
+  }
+}
 const urls = pages
   .filter(({ output }) => {
     const file = new URL(output, docs);
