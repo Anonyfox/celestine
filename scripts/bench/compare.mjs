@@ -313,7 +313,7 @@ for (const lib of libraries) {
   }
 }
 const result = {
-  date: '2026-10-24',
+  date: new Date().toISOString().slice(0, 10),
   node: process.version,
   machine: `${platform()} ${arch()} ${cpus()[0]?.model}`,
   peers,

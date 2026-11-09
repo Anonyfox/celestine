@@ -6,6 +6,11 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+### Documentation
+
+- Fully refresh the comparison page for Celestine 0.9.0 with measurements dated 2026-11-09,
+  including Astronomy Engine, Celestine 0.2.1 and sweph in Moshier mode; document scope and omissions.
+
 ## [0.9.0] - 2026-11-05
 
 ### Added

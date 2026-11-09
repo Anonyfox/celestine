@@ -1,46 +1,44 @@
 # Ephemeris comparison
 
-Measured on 2026-10-24. The following environment and package metadata are copied from the script output. This is a shared container; no speed comparison was made.
+Measured on 2026-11-09 with Celestine 0.9.0 as current. All four libraries were measured in this full refresh using the same comparison script, fixtures and adapters as the 2026-10-24 page. No speed comparison was made.
 
-Date: 2026-10-24
-Node: v20.19.2
-Machine: linux x64 Intel(R) Xeon(R) Processor
-Peers: /workspace/celestine-compare
+Node: v24.22.1
+
+Peers were installed in a separate scratch project: `astronomy-engine@2.1.19`, `celestine-021@npm:celestine@0.2.1`, and `sweph@2.10.3-8`. Only sweph was measured as the Swiss Ephemeris binding; swisseph was not loaded or measured.
+
+## Package metadata
 
 | library | version | license | runtimeDependencies | installedBytes | native |
 | --- | --- | --- | --- | --- | --- |
-| celestine current | 0.5.0 | MIT | 0 | 1796034 | false |
+| celestine current | 0.9.0 | MIT | 0 | 2011902 | false |
 | astronomy-engine | 2.1.19 | MIT | 0 | 1838627 | false |
 | celestine-021 | 0.2.1 | MIT | 0 | 4335795 | false |
 | sweph | 2.10.3-8 | (AGPL-3.0-or-later OR LGPL-3.0-or-later) | 2 | 5422486 | true |
 
-Only sweph was measured as the Swiss Ephemeris binding; swisseph was not installed or measured. License strings above are the installed package.json fields verbatim. Runtime dependency counts are direct `dependencies` keys, not transitive counts. Native detection checks for binding.gyp or native addon files.
+License strings are installed package.json fields verbatim. Runtime dependency counts are direct `dependencies` keys, not transitive counts. Native detection checks for binding.gyp or native addon files.
 
-Exact commands from `/workspace/celestine-060`:
+Commands relative to the repository root, with `CELESTINE_COMPARE_DIR` set to the separate scratch project containing the installed peers:
 
 ```sh
 npm run build
-node scripts/bench/compare.mjs > /workspace/celestine-compare/results-2026-10-24.txt
-node scripts/bench/compare.mjs --json > /workspace/celestine-compare/results-2026-10-24.json
-npx biome check scripts/bench/compare.mjs
+node scripts/bench/compare.mjs --peers "$CELESTINE_COMPARE_DIR" > results-2026-11-09-full.txt
+node scripts/bench/compare.mjs --peers "$CELESTINE_COMPARE_DIR" --json > results-2026-11-09-full.json
 ```
 
 ## Summary
 
-Largest longitude error vs the same JPL Horizons fixtures (arcsec, Sun–Pluto; Moon 1900–2100,
-Pluto 1885–2099, others 1800–2200), chart-equivalent browser bundle, and package facts. All values
-are copied from the tables below.
+Largest longitude errors against JPL Horizons in arcseconds, over the fixture samples. Moon covers 1900–2100, Pluto 1885–2099, and the other bodies 1800–2200. Browser entries have different feature sets, as listed.
 
-| library | worst planet (excl. Moon) | Moon | gzip bundle | license | runtime deps | implementation |
-| --- | --- | --- | --- | --- | --- | --- |
-| celestine 0.5.0 (this repo) | Neptune 4.643 | 7.583 | 33,005 B (`calculateChart`, root import) | MIT | 0 | pure TypeScript/JS |
-| astronomy-engine 2.1.19 | Neptune 19.383 | 3.671 | 22,083 B (positions + sidereal time; no houses/chart) | MIT | 0 | pure JS |
-| sweph 2.10.3-8, Moshier mode | Neptune 1.978 | 2.155 | not bundleable for browsers (native addon) | AGPL-3.0-or-later OR LGPL-3.0-or-later | 2 | native C addon |
-| celestine 0.2.1 (published baseline) | Mercury 8214.893 | 7.583 | 63,773 B (root import) | MIT | 0 | pure TypeScript/JS |
+| library | worst planet excl. Moon vs JPL Horizons (arcsec) | Moon vs JPL Horizons (arcsec) | browser gzip entry | license | runtime deps |
+| --- | --- | --- | --- | --- | --- |
+| celestine current 0.9.0 | Neptune 4.643 | 7.583 | 32,791 B (root chart) | MIT | 0 |
+| astronomy-engine 2.1.19 | Neptune 19.383 | 3.671 | 22,083 B (positions + sidereal time) | MIT | 0 |
+| celestine-021 0.2.1 | Mercury 8214.893 | 7.583 | 63,773 B (root chart) | MIT | 0 |
+| sweph 2.10.3-8 | Neptune 1.978 | 2.155 | not bundleable for browsers (native addon) | (AGPL-3.0-or-later OR LGPL-3.0-or-later) | 2 |
 
 ## Method
 
-Celestine provides astrology charts and astronomical positions. Astronomy Engine provides general astronomical calculations. Swiss Ephemeris provides astronomical and astrological calculations with selectable ephemerides. Swiss Ephemeris with its data files is far more precise than its built-in Moshier mode; only Moshier was measured because data files are not installed. These results do not measure Swiss data-file precision.
+Celestine provides astrology charts and astronomical positions. Astronomy Engine provides general astronomical calculations. Swiss Ephemeris provides astronomical and astrological calculations with selectable ephemerides. Only built-in Moshier mode was measured; Swiss Ephemeris data files were not used. These results do not measure Swiss data-file precision.
 
 The unchanged JPL Horizons fixtures are geocentric body-center vectors corrected for light-time and stellar aberration (LT+S), rotated to the IAU76/80 mean ecliptic and equinox of date. Each numeric epoch is supplied to the libraries as TT; Horizons used the same numeric epoch as TDB. See the [fixture README](../src/ephemeris/__fixtures__/horizons/README.md) for source ephemerides, rounding, the TT/TDB approximation and omitted frame bias.
 
@@ -53,6 +51,8 @@ Current and baseline Celestine use their individual position functions with spee
 Longitude error is the wrapped angular difference; latitude error is the direct difference. Maxima are absolute errors; RMS is the square root of the mean squared errors. Angular error columns are arcseconds, rounded to 0.001 (raw values: `--json`).
 
 ## Fixture measurements
+
+All longitude and latitude error columns below use **JPL Horizons as the reference**, in arcseconds.
 
 | library | body | samples | fromTT | toTT | lonMaxArcsec | lonRmsArcsec | latMaxArcsec | latRmsArcsec |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -85,7 +85,7 @@ Longitude error is the wrapped angular difference; latitude error is the direct 
 | celestine-021 | Saturn | 123 | 1800-01-01T12:00:00.000 | 2200-01-01T12:00:00.000 | 53.195 | 23.538 | 1.715 | 0.678 |
 | celestine-021 | Uranus | 123 | 1800-01-01T12:00:00.000 | 2200-01-01T12:00:00.000 | 41.638 | 21.132 | 1.213 | 0.370 |
 | celestine-021 | Neptune | 123 | 1800-01-02T12:00:00.000 | 2199-12-29T12:00:00.000 | 38.611 | 21.171 | 0.855 | 0.388 |
-| celestine-021 | Pluto | 91 | 1885-01-01T12:00:00.000 | 2099-01-01T12:00:00.000 | 5844.952 | 3072.448 | 69.910 | 24.64828878610729 |
+| celestine-021 | Pluto | 91 | 1885-01-01T12:00:00.000 | 2099-01-01T12:00:00.000 | 5844.952 | 3072.448 | 69.910 | 24.648 |
 | sweph | Sun | 123 | 1800-01-01T12:00:00.000 | 2200-01-01T12:00:00.000 | 0.077 | 0.026 | 0.059 | 0.024 |
 | sweph | Moon | 123 | 1900-01-01T12:00:00.000 | 2100-01-01T12:00:00.000 | 2.155 | 0.687 | 1.457 | 0.490 |
 | sweph | Mercury | 176 | 1800-01-01T12:00:00.000 | 2200-01-01T12:00:00.000 | 0.133 | 0.046 | 0.175 | 0.041 |
@@ -103,8 +103,8 @@ The bundle entry uses the repository guard's shared esbuild options: bundled, mi
 
 | library | entry | minBytes | gzipBytes |
 | --- | --- | --- | --- |
-| celestine current | root chart | 86766 | 33005 |
-| celestine current | subpath chart | 86766 | 33556 |
+| celestine current | root chart | 85309 | 32791 |
+| celestine current | subpath chart | 85301 | 33339 |
 | astronomy-engine | positions + sidereal time | 48597 | 22083 |
 | celestine-021 | root chart | 196888 | 63773 |
 | sweph | not bundleable for browsers (native addon) | unavailable | unavailable |
@@ -113,7 +113,7 @@ Installed bytes in the metadata table sum regular package files, excluding depen
 
 ## Frame diagnostics
 
-The following checks compare independent coordinate paths, not additional Horizons observations. Small differences reflect different precession conventions. They do not show an unremoved nutation-scale offset or a missing annual precession term. No diagnostic residual was subtracted from a measurement.
+The following checks compare independent coordinate paths, not precision errors against JPL Horizons. Small differences reflect different precession conventions. They do not show an unremoved nutation-scale offset or a missing annual precession term. No diagnostic residual was subtracted from a measurement.
 
 | library | body | comparison | maxArcsec | rmsArcsec |
 | --- | --- | --- | --- | --- |
@@ -140,7 +140,7 @@ The following checks compare independent coordinate paths, not additional Horizo
 
 ## Anchor dates
 
-These dates are not fixture epochs, so there is no Horizons truth value here. All libraries receive the same TT epoch derived from UT using Astronomy Engine's Delta-T model. Both the absolute longitude and the signed wrapped difference from Astronomy Engine are in arcminutes; absolute longitude is measured from the mean equinox of date. Baseline Pluto retains the mixed-frame limitation described above. Dates lacking a requested time use midnight UT.
+These dates are not fixture epochs, so there is no JPL Horizons truth value here. All libraries receive the same TT epoch derived from UT using Astronomy Engine's Delta-T model. Both the absolute longitude and the signed wrapped difference from Astronomy Engine are in arcminutes; absolute longitude is measured from the mean equinox of date. Baseline Pluto retains the mixed-frame limitation described above. Dates lacking a requested time use midnight UT.
 
 | body | ut | jdTT | library | deltaTSeconds | longitudeArcmin | minusAstronomyEngineArcmin |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -165,4 +165,6 @@ These dates are not fixture epochs, so there is no Horizons truth value here. Al
 
 The sample counts and exact TT endpoints are in the fixture table. The samples do not establish worst-case error between epochs or outside their ranges. Moon and Pluto cover different intervals from the other bodies. Chiron is excluded. Numerical discrepancies can include theory truncation, frame conventions, aberration implementations and the differing gravitational-deflection treatment. Astronomy Engine's `GeoVector` special-cases the Moon as `GeoMoon`, so its lunar result is its provided geometric model rather than a separately backdated aberrated vector.
 
-The published baseline's frame defect prevents a fully normalized comparison for Pluto; reporting its returned values makes that limitation explicit. No peer is inferred to support features it was not asked to compute. No speed ranking, data-file Swiss accuracy claim, license compatibility advice or between-sample precision claim follows from these measurements. The focused Mercury/Pluto report is saved separately as `/workspace/celestine-compare/issue1.txt`.
+The published baseline's frame defect prevents a fully normalized comparison for Pluto; reporting its returned values makes that limitation explicit. No peer is inferred to support features it was not asked to compute. No speed ranking, data-file Swiss accuracy claim, license compatibility advice or between-sample precision claim follows from these measurements.
+
+This run measures TT position calls directly with speed disabled. It does not measure civil-time chart conversion, houses or chart accuracy, asteroids (including Chiron), opt-in precise calculations, retrograde helpers, events, or execution speed.
