@@ -6,6 +6,11 @@ All notable changes to this project are documented here, following
 
 ## [Unreleased]
 
+### Added
+
+- Interactive browser chart (ASC-left, counter-clockwise wheel) with computed SVG houses, aspects and planetary positions, date playback,
+  local-build loading, and a dependency-free Chrome/ffmpeg GIF recorder (`npm run demo:gif`).
+
 ### Documentation
 
 - Add descriptive titles, descriptions, canonical and Open Graph metadata to the docs home and

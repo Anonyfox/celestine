@@ -90,6 +90,12 @@ function updateMetadata(output, title) {
 }
 
 mkdirSync(docs, { recursive: true });
+// Publish the standalone CDN demo alongside the API docs (no generated HTML edits).
+mkdirSync(new URL('examples/', docs), { recursive: true });
+copyFileSync(
+  new URL('examples/browser-natal-chart.html', root),
+  new URL('examples/browser-natal-chart.html', docs),
+);
 updateMetadata('index.html', siteTitle);
 for (const output of ['modules.html', 'hierarchy.html']) {
   if (existsSync(new URL(output, docs))) {

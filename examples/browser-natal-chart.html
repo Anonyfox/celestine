@@ -1,76 +1,193 @@
 <!doctype html>
 <html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Celestine natal chart</title>
+<title>Celestine · A moment in orbit</title>
 <style>
-  body { font: 1rem system-ui; max-width: 55rem; margin: 2rem auto; padding: 1rem; }
-  form { display: flex; flex-wrap: wrap; gap: 1rem; } label { display: grid; gap: .3rem; }
-  table { border-collapse: collapse; } td, th { padding: .4rem; text-align: left; }
-  svg { width: 100%; max-width: 28rem; } input, button { font: inherit; }
+:root { color-scheme: dark; font: 13px system-ui, sans-serif; color: #e4eceb; background: #0b151b; }
+* { box-sizing: border-box; }
+body { margin: 0 auto; padding: 20px 26px; max-width: 1000px; }
+header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #29404a; padding-bottom: 12px; }
+h1 { font-size: 23px; font-weight: 500; letter-spacing: -.6px; margin: 2px 0; }
+.eyebrow { color: #8fd3be; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+button { cursor: pointer; background: #173a38; color: #b5efdb; border: 1px solid #457367; border-radius: 5px; padding: 7px 12px; }
+button, input, select { font: inherit; }
+form { display: flex; flex-wrap: wrap; gap: 10px; margin: 13px 0 4px; align-items: end; }
+label { display: grid; gap: 4px; font-size: 10px; color: #a8bdc6; }
+input, select { border: 1px solid #304550; border-radius: 4px; padding: 5px; background: #12232c; color: #e4eceb; min-width: 0; }
+input[type=number] { width: 79px; }
+main { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: center; }
+svg { width: 100%; max-height: 330px; display: block; overflow: visible; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; font-variant-numeric: tabular-nums; }
+th { color: #8fa8b4; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
+th, td { text-align: left; padding: 5px 2px; border-bottom: 1px solid #20333d; }
+td:first-child { color: #b9e8d8; } td:last-child { color: #e4b27d; }
+#stamp { font-size: 16px; margin: 9px 0; font-variant-numeric: tabular-nums; }
+footer { border-top: 1px solid #29404a; padding-top: 9px; display: flex; justify-content: space-between; gap: 12px; color: #91aab6; font-size: 10px; }
+#status { margin: 5px 0; color: #b5d8cb; font-size: 11px; min-height: 16px; }
+@media (min-width: 601px) {
+  html.playback { height: 100%; overflow: hidden; }
+  .playback body { padding: 12px 22px; }
+  .playback header { padding-bottom: 7px; }
+  .playback h1 { font-size: 21px; margin: 0; }
+  .playback form { margin: 9px 0 3px; gap: 8px; }
+  .playback svg { max-height: min(310px, calc(100dvh - 165px)); }
+  .playback main { gap: 16px; }
+  .playback th, .playback td { padding: 3px 2px; }
+  .playback #stamp { margin: 6px 0; font-size: 15px; }
+  .playback #status { margin: 5px 0; font-size: 10px; }
+  .playback footer { padding-top: 6px; }
+}
+@media (max-width: 600px) { body { padding: 16px; } main { grid-template-columns: 1fr; } svg { max-height: 360px; } footer { flex-wrap: wrap; } }
 </style>
-<h1>Natal chart</h1>
+</head>
+<body>
+<header><div><div class="eyebrow">Celestine / celestial mechanics</div><h1>A moment in orbit</h1></div><button id="play" type="button" aria-pressed="false">Play dates ↗</button></header>
 <form id="birth">
-  <label>Date <input name="date" type="date" value="2000-01-01" required></label>
-  <label>Local time <input name="time" type="time" value="12:00" required></label>
-  <label>UTC offset (hours east) <input name="timezone" type="number" step="any" min="-14" max="14" value="0" required></label>
-  <label>Latitude <input name="latitude" type="number" step="any" min="-90" max="90" value="51.5074" required></label>
-  <label>Longitude (east) <input name="longitude" type="number" step="any" min="-180" max="180" value="-0.1278" required></label>
-  <button type="submit">Calculate</button>
+<label>Date · UT<input name="date" type="date" value="2026-01-01" required></label>
+<label>Time · UT<input name="time" type="time" value="12:00" required></label>
+<label>Latitude · °N<input name="latitude" type="number" min="-90" max="90" step="any" value="53.55" required></label>
+<label>Longitude · °E<input name="longitude" type="number" min="-180" max="180" step="any" value="9.99" required></label>
+<label>Houses<select name="houses"><option value="placidus">Placidus</option><option value="equal">Equal</option><option value="whole-sign">Whole sign</option></select></label>
+<button type="submit">Calculate</button>
 </form>
-<p>Civil local birth time; default mean ecliptic/equinox of date. Wheel uses absolute zodiac longitude.</p>
-<p id="angles" aria-live="polite"></p>
-<table><thead><tr><th>Planet</th><th>Sign</th><th>Position</th><th>Retrograde</th></tr></thead><tbody id="planets"></tbody></table>
-<svg id="wheel" viewBox="-150 -150 300 300" role="img" aria-label="Planet longitude wheel"></svg>
+<main>
+<svg id="wheel" viewBox="-190 -190 380 380" role="img" aria-label="Computed chart: zodiac, house cusps, planet longitudes and major aspects"></svg>
+<section aria-label="Computed positions"><div class="eyebrow">Geocentric / mean of date</div><p id="stamp"></p><table><thead><tr><th scope="col">Body</th><th scope="col">Sign</th><th scope="col">Degree</th><th scope="col">Rx</th></tr></thead><tbody id="planets"></tbody></table><p id="status" role="status" aria-live="polite">Loading ephemeris…</p></section>
+</main>
+<footer><span>UT input → ΔT → TT ephemeris · ASC at left · longitude counter-clockwise</span><span>Mint: △ ⚹ harmonious · amber: □ ☍ tense · ℞: retrograde</span></footer>
 <script type="module">
-  import { calculateChart } from 'https://esm.sh/celestine@0.5.0';
-  // When served from the repo root after building, use '../dist/index.js' instead.
-  export function computeChart(birth) {
-    return calculateChart(birth, { houseSystem: 'placidus' });
+  const local = typeof location !== 'undefined' && new URLSearchParams(location.search).get('src') === 'local';
+  const { calculateChart } = await import(local ? '../dist/index.js' : 'https://esm.sh/celestine@0.9.0');
+  export function computeChart(birth, houseSystem = 'placidus') {
+    return calculateChart(birth, { houseSystem });
   }
   if (typeof document !== 'undefined') {
     const form = document.querySelector('#birth');
     const svg = document.querySelector('#wheel');
+    const button = document.querySelector('#play');
+    const params = new URLSearchParams(location.search);
+    document.documentElement.classList.toggle('playback', params.get('play') === '1');
+    const glyphs = ['☉', '☽', '☿', '♀', '♂', '♃', '♄', '♅', '♆', '♇'];
+    const signs = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'];
+    let timer;
+    let epoch = Date.UTC(2026, 0, 1, 12);
+    let ascendant = 0;
+    function point(longitude, radius) {
+      const angle = (180 + longitude - ascendant) * Math.PI / 180;
+      return [radius * Math.cos(angle), -radius * Math.sin(angle)];
+    }
     function draw(tag, attributes, text = '') {
       const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
       for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, String(value));
       node.textContent = text;
       svg.append(node);
+      return node;
+    }
+    function line(longitude, from, to, color, width = 1) {
+      const [x1, y1] = point(longitude, from), [x2, y2] = point(longitude, to);
+      draw('line', { x1, y1, x2, y2, stroke: color, 'stroke-width': width });
+    }
+    // Try every circular cut, enforce spacing, then center the displacement.
+    // Checking the closing gap also protects conjunctions across 0° Aries.
+    function glyphLongitudes(planets) {
+      const sorted = planets.map((p, index) => ({ longitude: p.longitude, index }))
+        .sort((a, b) => a.longitude - b.longitude);
+      const gap = 12;
+      let best, bestCost = Infinity;
+      for (let start = 0; start < sorted.length; start++) {
+        const ordered = sorted.slice(start).concat(sorted.slice(0, start));
+        const truth = ordered.map((p, i) => p.longitude + (i >= sorted.length - start ? 360 : 0));
+        const placed = [];
+        truth.forEach((longitude, i) => placed.push(i ? Math.max(longitude, placed[i - 1] + gap) : longitude));
+        if (placed.at(-1) - placed[0] > 360 - gap) continue;
+        const offset = placed.reduce((sum, longitude, i) => sum + longitude - truth[i], 0) / placed.length;
+        const cost = placed.reduce((sum, longitude, i) => sum + (longitude - offset - truth[i]) ** 2, 0);
+        if (cost >= bestCost) continue;
+        bestCost = cost;
+        best = [];
+        ordered.forEach((p, i) => { best[p.index] = placed[i] - offset; });
+      }
+      return best;
     }
     function render() {
       try {
         const fields = new FormData(form);
         const [year, month, day] = fields.get('date').split('-').map(Number);
         const [hour, minute] = fields.get('time').split(':').map(Number);
-        const result = computeChart({ year, month, day, hour, minute, second: 0,
-          timezone: Number(fields.get('timezone')), latitude: Number(fields.get('latitude')),
-          longitude: Number(fields.get('longitude')) });
-        document.querySelector('#angles').textContent =
-          `Ascendant: ${result.angles.ascendant.formatted}; MC: ${result.angles.midheaven.formatted}`;
-        const table = document.querySelector('#planets');
-        table.replaceChildren();
+        const result = computeChart({ year, month, day, hour, minute, second: 0, timezone: 0,
+          latitude: Number(fields.get('latitude')), longitude: Number(fields.get('longitude')) }, fields.get('houses'));
+        const planets = result.planets.slice(0, 10);
+        ascendant = result.angles.ascendant.longitude;
         svg.replaceChildren();
-        draw('circle', { r: 130, fill: 'none', stroke: 'currentColor' });
-        for (let sign = 0; sign < 12; sign++) {
-          const angle = sign * Math.PI / 6;
-          draw('line', { x1: 110 * Math.cos(angle), y1: -110 * Math.sin(angle),
-            x2: 130 * Math.cos(angle), y2: -130 * Math.sin(angle), stroke: 'currentColor' });
+        for (const r of [177, 146, 114, 91]) draw('circle', { r, fill: r === 177 ? '#10232c' : 'none', stroke: '#304651', 'stroke-width': .8 });
+        for (let d = 0; d < 360; d += 5) line(d, d % 30 === 0 ? 146 : 172, 177, '#46616b');
+        signs.forEach((sign, i) => {
+          const [x, y] = point(i * 30 + 15, 161);
+          draw('text', { x, y, fill: i % 2 ? '#94b0c1' : '#b2d8ca', 'font-size': 18, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, sign);
+        });
+        for (const cusp of result.houses.cusps) {
+          line(cusp.longitude, 91, 145, cusp.house === 1 ? '#9ae5c8' : '#3a5460');
+          const [x, y] = point(cusp.longitude + cusp.size / 2, 102);
+          draw('text', { x, y, fill: '#8ea7b3', 'font-size': 8, 'text-anchor': 'middle' }, cusp.house);
         }
-        for (const planet of result.planets) {
+        for (const aspect of result.aspects.all) {
+          const a = planets.find(p => p.name === aspect.body1), b = planets.find(p => p.name === aspect.body2);
+          if (!a || !b || !['trine', 'sextile', 'square', 'opposition'].includes(aspect.type)) continue;
+          const [x1, y1] = point(a.longitude, 90), [x2, y2] = point(b.longitude, 90);
+          draw('line', { x1, y1, x2, y2, stroke: ['square', 'opposition'].includes(aspect.type) ? '#f3aa62' : '#81ddc0', 'stroke-opacity': .9, 'stroke-width': 1.1 });
+        }
+        for (const [longitude, label] of [[ascendant, 'AC'], [result.angles.midheaven.longitude, 'MC']]) {
+          line(longitude, 91, 180, '#b7cec9', 1.6);
+          line(longitude + 180, 91, 180, '#b7cec9', 1.6);
+          const [x, y] = point(longitude, 186);
+          draw('text', { x, y, fill: '#e0f2e9', 'font-size': 8, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, label);
+        }
+        const displayed = glyphLongitudes(planets);
+        planets.forEach((planet, i) => {
+          line(planet.longitude, 114, 119, '#c8eee0', 1);
+          const [x1, y1] = point(planet.longitude, 119);
+          const [x2, y2] = point(displayed[i], 126);
+          draw('line', { x1, y1, x2, y2, stroke: '#8bb5a9', 'stroke-width': .8 });
+          const [x, y] = point(displayed[i], 135);
+          const node = draw('text', { x, y, fill: i < 2 ? '#ffe0a6' : '#d8ffed', 'font-size': 18, 'font-weight': 600, 'text-anchor': 'middle', 'dominant-baseline': 'central', stroke: '#10232c', 'stroke-width': 1, 'paint-order': 'stroke' }, glyphs[i]);
+          const title = document.createElementNS(svg.namespaceURI, 'title');
+          title.textContent = `${planet.name}: ${planet.formatted}`; node.append(title);
+        });
+        const table = document.querySelector('#planets'); table.replaceChildren();
+        planets.forEach((planet, i) => {
           const row = table.insertRow();
-          for (const value of [planet.name, planet.signName, planet.formatted, planet.isRetrograde ? 'Yes' : 'No']) {
-            row.insertCell().textContent = value;
-          }
-          const angle = planet.longitude * Math.PI / 180;
-          draw('text', { x: 100 * Math.cos(angle), y: -100 * Math.sin(angle),
-            'text-anchor': 'middle', 'font-size': 8 }, planet.name);
-        }
+          for (const value of [`${glyphs[i]} ${planet.name}`, planet.signName, `${planet.degree}°${String(planet.minute).padStart(2, '0')}′`, planet.isRetrograde ? '℞' : '—']) row.insertCell().textContent = value;
+        });
+        document.querySelector('#stamp').textContent = `${fields.get('date')} · ${fields.get('time')} UT`;
+        document.querySelector('#status').textContent = `ASC ${result.angles.ascendant.formatted} · ${result.houses.systemName}${result.warnings?.length ? ` · ${result.warnings.join(' ')}` : ''}`;
+        window.demoReady = true;
+        window.demoError = null;
       } catch (error) {
-        document.querySelector('#angles').textContent = error.message;
+        document.querySelector('#status').textContent = error.message;
+        window.demoError = error.message;
       }
     }
-    form.addEventListener('submit', (event) => { event.preventDefault(); render(); });
+    function pause() { clearInterval(timer); timer = undefined; button.textContent = 'Play dates ↗'; button.setAttribute('aria-pressed', 'false'); }
+    function frame(index) {
+      const date = new Date(epoch + index * 86400000);
+      form.elements.date.value = date.toISOString().slice(0, 10);
+      form.elements.time.value = date.toISOString().slice(11, 16);
+      render();
+    }
+    window.demoFrame = frame;
+    button.addEventListener('click', () => {
+      if (timer) { pause(); return; }
+      epoch = Date.parse(`${form.elements.date.value}T${form.elements.time.value}:00Z`);
+      let index = 0;
+      timer = setInterval(() => frame(++index % 120), 100);
+      button.textContent = 'Pause dates'; button.setAttribute('aria-pressed', 'true');
+    });
+    form.addEventListener('submit', event => { event.preventDefault(); pause(); render(); });
     render();
+    if (params.get('play') === '1' && params.get('capture') !== '1' && !matchMedia('(prefers-reduced-motion: reduce)').matches) button.click();
   }
 </script>
+</body>
 </html>

@@ -15,6 +15,10 @@ and the same calculation results in browsers and Node.
 
 Used by [Cosmolytic](https://cosmolytic.com).
 
+[![Celestine chart wheel and computed planetary positions animating through dates](https://raw.githubusercontent.com/Anonyfox/celestine/main/assets/demo.gif)](https://anonyfox.github.io/celestine/examples/browser-natal-chart.html)
+
+Explore the [interactive chart demo](https://anonyfox.github.io/celestine/examples/browser-natal-chart.html): change the moment or play through the planets’ motion.
+
 ## Precision
 
 The [accuracy page](https://anonyfox.github.io/celestine/accuracy/) lists residuals against Horizons, the NASA eclipse canon, ERFA and USNO, regenerated on every docs deploy by `npm run bench:accuracy`.

@@ -137,6 +137,7 @@
   "scripts": {
     "build": "tsup && tsup --config tsup.precise.config.ts && node scripts/build-esm.mjs",
     "dev": "tsx src/index.ts",
+    "demo:gif": "npm run build && node scripts/demo/record-gif.mjs",
     "test": "node --import tsx --test --test-reporter=dot $(find src -name '*.test.ts' -type f)",
     "test:verbose": "node --import tsx --test $(find src -name '*.test.ts' -type f)",
     "test:watch": "node --import tsx --test --watch $(find src -name '*.test.ts' -type f)",
