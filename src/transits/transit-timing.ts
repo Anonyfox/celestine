@@ -591,6 +591,7 @@ export function estimateNextAspect(
   const direction = speed >= 0 ? 1 : -1;
   const dist1 = normalizeAngle((target1 - currentLong) * direction);
   const dist2 = normalizeAngle((target2 - currentLong) * direction);
+  // biome-ignore lint/complexity/useMathMinMax: Deliberately select dist2 on ties or unordered (NaN) comparisons.
   const distance = dist1 < dist2 ? dist1 : dist2;
 
   // Estimate time based on average motion

@@ -209,7 +209,7 @@
   },
   "homepage": "https://anonyfox.github.io/celestine",
   "devDependencies": {
-    "@biomejs/biome": "^2.3.10",
+    "@biomejs/biome": "^2.6.6",
     "@types/node": "^26.6.6",
     "esbuild": "0.28.2",
     "fflate": "0.8.3",
