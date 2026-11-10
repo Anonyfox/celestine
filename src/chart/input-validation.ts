@@ -49,7 +49,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
   const warnings: string[] = [];
 
   // --- Year validation ---
-  if (typeof birth.year !== 'number' || !Number.isFinite(birth.year)) {
+  if (!Number.isFinite(birth.year)) {
     errors.push({
       field: 'year',
       message: 'Year must be a finite number',
@@ -67,7 +67,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
   }
 
   // --- Month validation ---
-  if (typeof birth.month !== 'number' || !Number.isInteger(birth.month)) {
+  if (!Number.isInteger(birth.month)) {
     errors.push({
       field: 'month',
       message: 'Month must be an integer',
@@ -83,7 +83,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
   }
 
   // --- Day validation ---
-  if (typeof birth.day !== 'number' || !Number.isInteger(birth.day)) {
+  if (!Number.isInteger(birth.day)) {
     errors.push({
       field: 'day',
       message: 'Day must be an integer',
@@ -109,7 +109,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
   }
 
   // --- Hour validation ---
-  if (typeof birth.hour !== 'number' || !Number.isFinite(birth.hour)) {
+  if (!Number.isFinite(birth.hour)) {
     errors.push({
       field: 'hour',
       message: 'Hour must be a finite number',
@@ -125,7 +125,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
   }
 
   // --- Minute validation ---
-  if (typeof birth.minute !== 'number' || !Number.isInteger(birth.minute)) {
+  if (!Number.isInteger(birth.minute)) {
     errors.push({
       field: 'minute',
       message: 'Minute must be an integer',
@@ -142,7 +142,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
 
   // --- Second validation (optional field) ---
   if (birth.second !== undefined) {
-    if (typeof birth.second !== 'number' || !Number.isFinite(birth.second)) {
+    if (!Number.isFinite(birth.second)) {
       errors.push({
         field: 'second',
         message: 'Second must be a finite number',
@@ -159,7 +159,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
   }
 
   // --- Timezone validation ---
-  if (typeof birth.timezone !== 'number' || !Number.isFinite(birth.timezone)) {
+  if (!Number.isFinite(birth.timezone)) {
     errors.push({
       field: 'timezone',
       message: 'Timezone must be a finite number',
@@ -175,7 +175,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
   }
 
   // --- Latitude validation ---
-  if (typeof birth.latitude !== 'number' || !Number.isFinite(birth.latitude)) {
+  if (!Number.isFinite(birth.latitude)) {
     errors.push({
       field: 'latitude',
       message: 'Latitude must be a finite number',
@@ -191,7 +191,7 @@ export function validateBirthData(birth: BirthData): ValidationResult {
   }
 
   // --- Longitude validation ---
-  if (typeof birth.longitude !== 'number' || !Number.isFinite(birth.longitude)) {
+  if (!Number.isFinite(birth.longitude)) {
     errors.push({
       field: 'longitude',
       message: 'Longitude must be a finite number',

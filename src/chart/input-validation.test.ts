@@ -17,6 +17,34 @@ import {
 
 describe('chart/input-validation', () => {
   describe('validateBirthData', () => {
+    it('rejects non-number fields without coercion', () => {
+      const birth = {
+        year: 2000,
+        month: 1,
+        day: 1,
+        hour: 12,
+        minute: 0,
+        second: 0,
+        timezone: 0,
+        latitude: 51.5074,
+        longitude: -0.1278,
+      };
+      for (const field of Object.keys(birth)) {
+        for (const value of ['0', null, true, {}, [], 0n, Symbol('number'), NaN, Infinity]) {
+          const result = validateBirthData({ ...birth, [field]: value });
+          assert.equal(result.valid, false, field);
+          const error = result.errors.find((error) => error.field === field);
+          assert.ok(error, field);
+          assert.equal(error.value, value);
+          const label = field[0].toUpperCase() + field.slice(1);
+          const kind = ['month', 'day', 'minute'].includes(field)
+            ? 'an integer'
+            : 'a finite number';
+          assert.equal(error.message, `${label} must be ${kind}`);
+        }
+      }
+    });
+
     describe('Valid inputs', () => {
       it('should accept valid birth data', () => {
         const result = validateBirthData({

@@ -11,6 +11,11 @@ All notable changes to this project are documented here, following
 - Interactive browser chart (ASC-left, counter-clockwise wheel) with computed SVG houses, aspects and planetary positions, date playback,
   local-build loading, and a dependency-free Chrome/ffmpeg GIF recorder (`npm run demo:gif`).
 
+### Changed
+
+- Update esbuild to 0.28.2 and remove redundant birth-data type checks; validation results
+  and numerical output are unchanged.
+
 ### Documentation
 
 - Add a docs landing page with install instructions and links to HTML guide and comparison pages,
