@@ -13,6 +13,10 @@ All notable changes to this project are documented here, following
 
 ### Documentation
 
+- Add a docs landing page with install instructions and links to HTML guide and comparison pages,
+  API reference, accuracy measurements and the browser chart demo. Include these destinations in
+  the sitemap and link them back to the docs home.
+
 - Add descriptive titles, descriptions, canonical and Open Graph metadata to the docs home and
   module pages; include module and root landing pages in the sitemap and derive last-modified dates
   from source Git history or file modification times.

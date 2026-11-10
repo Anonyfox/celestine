@@ -18,13 +18,18 @@ const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin' }).fo
 // Keep this list editorial; module landing pages are discovered below.
 // Individual API symbols, media and site-verification HTML are excluded.
 const pages = [
-  { path: '', output: 'index.html', sources: ['README.md'] },
+  { path: '', output: 'index.html', sources: ['doc/landing.md', 'typedoc.json'] },
   { path: 'accuracy/', output: 'accuracy/index.html', sources: ['scripts/bench/accuracy.mjs'] },
-  { path: 'GUIDE.md', output: 'GUIDE.md', sources: ['GUIDE.md', 'docs/GUIDE.md'] },
+  { path: 'documents/GUIDE.html', output: 'documents/GUIDE.html', sources: ['docs/GUIDE.md'] },
   {
-    path: 'COMPARISON.md',
-    output: 'COMPARISON.md',
-    sources: ['COMPARISON.md', 'docs/COMPARISON.md'],
+    path: 'documents/COMPARISON.html',
+    output: 'documents/COMPARISON.html',
+    sources: ['docs/COMPARISON.md'],
+  },
+  {
+    path: 'examples/browser-natal-chart.html',
+    output: 'examples/browser-natal-chart.html',
+    sources: ['examples/browser-natal-chart.html'],
   },
 ];
 
@@ -65,7 +70,7 @@ const description =
 function updateMetadata(output, title) {
   const file = new URL(output, docs);
   if (!existsSync(file)) return;
-  const canonical = base + (output === 'index.html' ? '' : output);
+  const canonical = base + output.replace(/(^|\/)index\.html$/, '$1');
   const metadata = [
     `<title>${escapeXml(title)}</title>`,
     `<meta name="description" content="${escapeXml(description)}"/>`,
@@ -96,9 +101,25 @@ copyFileSync(
   new URL('examples/browser-natal-chart.html', root),
   new URL('examples/browser-natal-chart.html', docs),
 );
+// Give each destination a static route back to the documentation home.
+for (const { output } of pages) {
+  if (output === 'index.html') continue;
+  const file = new URL(output, docs);
+  if (!existsSync(file)) throw new Error(`Missing docs destination: ${output}`);
+  const title = readFileSync(file, 'utf8').match(/<title[^>]*>([^<]*)<\/title>/i)?.[1];
+  updateMetadata(output, title || siteTitle);
+  const html = readFileSync(file, 'utf8')
+    .replace(/<nav aria-label="Documentation home">[\s\S]*?<\/nav>/g, '')
+    .replace(
+      /<body\b[^>]*>/i,
+      '$&<nav aria-label="Documentation home"><a href="../index.html">Celestine documentation</a></nav>',
+    );
+  writeFileSync(file, html, 'utf8');
+}
 updateMetadata('index.html', siteTitle);
 for (const output of ['modules.html', 'hierarchy.html']) {
   if (existsSync(new URL(output, docs))) {
+    updateMetadata(output, `API reference | ${siteTitle}`);
     pages.push({ path: output, output, sources: ['src/index.ts', 'README.md'] });
   }
 }
